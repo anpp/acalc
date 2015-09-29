@@ -67,7 +67,11 @@ CalcParser::~CalcParser()
 
 void CalcParser::SetVariable(String name, String value, e_type_var type, bool readonly)
 {
+#ifdef _QT4
+    if(name.isEmpty() || name == "")
+#else
     if(name.empty() || name == "")
+#endif
         return;
     Variable var(name, value, type);
     var.read_only = readonly;
@@ -801,8 +805,12 @@ String CalcParser::GetExpression(String eq, bool html)
                 e_tag = "</FONT>";
 
                 if(t.Type() == FUNCTION)
-                    //tokVal.erase(tokVal.end() - 1);
+#ifdef _QT4
                     tokVal.remove('(');
+#else
+                    tokVal.erase(tokVal.end() - 1);
+#endif
+
                 mit = ToksHtml.find(tokVal);
                 if(mit != ToksHtml.end())
                 {
@@ -979,7 +987,11 @@ void CalcParser::Mul_exp(CValue *res)
 
         op = token->Value()[0];
 #ifdef _QT4
+    #ifdef HAVE_QT5
+        c_op = (char)(op.toLatin1());
+    #else
         c_op = (char)(op.toAscii());
+    #endif
 #else
         c_op = op;
 #endif
@@ -1218,8 +1230,11 @@ long double CalcParser::ScaleToVal(String s, int scale)
     long double res = 0;
     String tst = "";
     String::iterator val;
-
+#ifdef _QT4
+    if(!dec_point.isEmpty())
+#else
     if(!dec_point.empty())
+#endif
     {
         String::iterator it = s.begin();
         for(; it != s.end(); ++it)

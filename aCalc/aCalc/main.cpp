@@ -1,4 +1,9 @@
+#ifndef HAVE_QT5
 #include <QtGui/QApplication>
+#else
+#include <QtWidgets/QApplication>
+#endif
+
 #include "mainwidget.h"
 
 int main(int argc, char *argv[])

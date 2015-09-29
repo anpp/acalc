@@ -27,7 +27,8 @@ MainWidget::MainWidget(QWidget *parent) :
     bPasting = false;
 
     InitLocale();
-    QApplication::setStyle("plastique");
+    //QApplication::setStyle("plastique");
+    QApplication::setStyle("fusion");
 
     setWindowTitle(tr("Calculator"));
 
@@ -96,7 +97,8 @@ void MainWidget::CreateMenus(void)
     MenuBar->addMenu(MenuHelp);
 
     for(int i = ORIGINAL; i <= PROGRAMMABLE; ++i)
-        MenuView->addAction(QObject::tr(sViews[i].toAscii()))->setCheckable(true);
+        MenuView->addAction(QObject::tr(sViews[i].toStdString().c_str()))->setCheckable(true);
+
     MenuView->actions().last()->setEnabled(false);
 
     connect(MenuView, SIGNAL(triggered(QAction*)), SLOT(slotView(QAction*)));
@@ -164,12 +166,12 @@ void MainWidget::slotPaste(void)
 #ifndef _QT4
     std::string value, num_val;
     std::string pasteString = QApplication::clipboard()->text().toStdString();
+    if(pasteString.empty() || "" == pasteString)
 #else
     QString value, num_val;
     QString pasteString = QApplication::clipboard()->text();
+    if(pasteString.isEmpty() || "" == pasteString)
 #endif
-
-    if(pasteString.empty() || "" == pasteString)
         return;
 
     SendKey(Qt::Key_Escape);

@@ -20,7 +20,10 @@ class Variable;
     typedef QMap<String, Variable> VarList;
     typedef QMap<String, String> MapStrings;
     typedef QMap<QChar, String> MapCharString;
-    #define empty isEmpty
+
+    #ifdef HAVE_QT5
+        #define toAscii toStdString().c_str
+    #endif
 #else
     #include <string>
     #include <list>
