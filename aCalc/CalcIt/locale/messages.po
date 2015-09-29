@@ -1,0 +1,252 @@
+# SOME DESCRIPTIVE TITLE.
+# Copyright (C) YEAR THE PACKAGE'S COPYRIGHT HOLDER
+# This file is distributed under the same license as the PACKAGE package.
+# FIRST AUTHOR <EMAIL@ADDRESS>, YEAR.
+#
+#: calcparser.cpp:19 calcparser.cpp:90 calcparser.cpp:230 calcparser.cpp:232
+#: calcparser.cpp:284 calcparser.cpp:521 calcparser.cpp:544
+#, fuzzy
+msgid ""
+msgstr ""
+"Project-Id-Version: PACKAGE VERSION\n"
+"Report-Msgid-Bugs-To: \n"
+"POT-Creation-Date: 2012-09-04 17:51+0400\n"
+"PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
+"Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
+"Language-Team: LANGUAGE <LL@li.org>\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=CHARSET\n"
+"Content-Transfer-Encoding: 8bit\n"
+
+#: calcparser.cpp:4
+msgid "Unknown error!"
+msgstr ""
+
+#: calcparser.cpp:4
+msgid "Syntax error"
+msgstr ""
+
+#: calcparser.cpp:4
+msgid "Unclosed parenthesis"
+msgstr ""
+
+#: calcparser.cpp:5
+msgid "Unknown function"
+msgstr ""
+
+#: calcparser.cpp:5
+msgid "Division by zero!"
+msgstr ""
+
+#: calcparser.cpp:6
+msgid "Invalid argument"
+msgstr ""
+
+#: calcparser.cpp:6
+msgid "Value is too large"
+msgstr ""
+
+#: calcparser.cpp:6
+msgid "Undefined variable"
+msgstr ""
+
+#: calcparser.cpp:9
+msgid "sin("
+msgstr ""
+
+#: calcparser.cpp:9
+msgid "cos("
+msgstr ""
+
+#: calcparser.cpp:9
+msgid "tan("
+msgstr ""
+
+#: calcparser.cpp:9
+msgid "ctan("
+msgstr ""
+
+#: calcparser.cpp:9
+msgid "asin("
+msgstr ""
+
+#: calcparser.cpp:9
+msgid "acos("
+msgstr ""
+
+#: calcparser.cpp:10
+msgid "atan("
+msgstr ""
+
+#: calcparser.cpp:10
+msgid "actan("
+msgstr ""
+
+#: calcparser.cpp:10
+msgid "sinh("
+msgstr ""
+
+#: calcparser.cpp:10
+msgid "cosh("
+msgstr ""
+
+#: calcparser.cpp:10
+msgid "tanh("
+msgstr ""
+
+#: calcparser.cpp:10
+msgid "ctanh("
+msgstr ""
+
+#: calcparser.cpp:10
+msgid "asinh"
+msgstr ""
+
+#: calcparser.cpp:11
+msgid "acosh("
+msgstr ""
+
+#: calcparser.cpp:11
+msgid "atanh("
+msgstr ""
+
+#: calcparser.cpp:11
+msgid "actanh("
+msgstr ""
+
+#: calcparser.cpp:12
+msgid "ln("
+msgstr ""
+
+#: calcparser.cpp:12
+msgid "log("
+msgstr ""
+
+#: calcparser.cpp:12
+msgid "fact("
+msgstr ""
+
+#: calcparser.cpp:16
+msgid "pi"
+msgstr ""
+
+#: calcparser.cpp:17
+msgid "e"
+msgstr ""
+
+#: calcparser.cpp:42 calcparser.cpp:60 calcparser.cpp:132 calcparser.cpp:242
+#: calcparser.cpp:243
+msgid "="
+msgstr ""
+
+#: calcparser.cpp:128
+msgid "*/+-()%^!&|~="
+msgstr ""
+
+#: calcparser.cpp:137
+msgid "<>"
+msgstr ""
+
+#: calcparser.cpp:159
+msgid "1234567890"
+msgstr ""
+
+#: calcparser.cpp:170
+msgid "ie+-"
+msgstr ""
+
+#: calcparser.cpp:176
+msgid "-+"
+msgstr ""
+
+#: calcparser.cpp:183
+msgid "."
+msgstr ""
+
+#: calcparser.cpp:293
+msgid "\n"
+msgstr ""
+
+#: calcparser.cpp:303
+msgid "0123456789.,ie"
+msgstr ""
+
+#: calcparser.cpp:325 calcparser.cpp:426
+msgid "+"
+msgstr ""
+
+#: calcparser.cpp:325 calcparser.cpp:426
+msgid "-"
+msgstr ""
+
+#: calcparser.cpp:347
+msgid "*"
+msgstr ""
+
+#: calcparser.cpp:347
+msgid "/"
+msgstr ""
+
+#: calcparser.cpp:347
+msgid ">"
+msgstr ""
+
+#: calcparser.cpp:348
+msgid "<"
+msgstr ""
+
+#: calcparser.cpp:348
+msgid "%"
+msgstr ""
+
+#: calcparser.cpp:349
+msgid "&"
+msgstr ""
+
+#: calcparser.cpp:349
+msgid "|"
+msgstr ""
+
+#: calcparser.cpp:349
+msgid "!"
+msgstr ""
+
+#: calcparser.cpp:350 calcparser.cpp:360 calcparser.cpp:443
+msgid "("
+msgstr ""
+
+#: calcparser.cpp:412
+msgid "^"
+msgstr ""
+
+#: calcparser.cpp:426
+msgid "~"
+msgstr ""
+
+#: calcparser.cpp:448 calcparser.cpp:476
+msgid ")"
+msgstr ""
+
+#: calcparser.cpp:548
+msgid "10"
+msgstr ""
+
+#: calcparser.cpp:550
+msgid "11"
+msgstr ""
+
+#: calcparser.cpp:552
+msgid "12"
+msgstr ""
+
+#: calcparser.cpp:554
+msgid "13"
+msgstr ""
+
+#: calcparser.cpp:556
+msgid "14"
+msgstr ""
+
+#: calcparser.cpp:558
+msgid "15"
+msgstr ""
