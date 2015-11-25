@@ -1367,7 +1367,7 @@ long double res = 0;
                 res = ChoiceRes(res);
                 break;
         case ACTNH:
-                res = 1 / atanh(arg);
+                res = log((arg + 1) / (arg - 1)) / 2;
                 res = ChoiceRes(res);
                 break;
         case LN:

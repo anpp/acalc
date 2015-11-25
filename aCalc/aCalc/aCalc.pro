@@ -4,7 +4,7 @@
 #
 #-------------------------------------------------
 
-QT       += core gui widgets
+QT       += core gui widgets declarative
 DEFINES += HAVE_QT5
 
 TARGET = aCalc
@@ -17,7 +17,9 @@ SOURCES += main.cpp\
     ../CalcIt/cvalue.cpp \
     ../CalcIt/token.cpp \
     ../CalcIt/variable.cpp \
-    ../CalcIt/calcparser.cpp
+    ../CalcIt/calcparser.cpp \
+    settings.cpp \
+    dialogsettings.cpp
 
 HEADERS  += mainwidget.h \
     common.h \
@@ -28,7 +30,9 @@ HEADERS  += mainwidget.h \
     ../CalcIt/consts.h \
     ../CalcIt/token.h \
     ../CalcIt/def.h \
-    buttexts.h
+    buttexts.h \
+    settings.h \
+    dialogsettings.h
 
 FORMS    += mainwidget.ui
 
@@ -43,3 +47,5 @@ TRANSLATIONS = acalc_en.ts \
 
 RESOURCES += \
     aCalc.qrc
+
+DISTFILES +=

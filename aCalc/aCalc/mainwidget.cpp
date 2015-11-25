@@ -1,6 +1,7 @@
 #include "mainwidget.h"
 #include "ui_mainwidget.h"
 #include "buttexts.h"
+#include "dialogsettings.h"
 
 QString sViews[] = {QObject::tr("Original"), QObject::tr("Simple"), QObject::tr("Programmable")};
 
@@ -259,7 +260,10 @@ void MainWidget::slotPaste(void)
 
 void MainWidget::slotSettings(void)
 {
-//
+  DialogSettings settings;
+  settings.adjustSize();
+  settings.setFixedSize(settings.width(), settings.height());
+  settings.exec();
 }
 
 void
