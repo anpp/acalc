@@ -2,8 +2,6 @@
 #define DIALOGSETTINGS_H
 
 #include <QDialog>
-#include <QDeclarativeView>
-#include <QtDeclarative/QDeclarativeContext>
 
 
 
@@ -18,7 +16,6 @@ public:
 
 
 private:
-    QDeclarativeView *dv;
 };
 
 #endif // DIALOGSETTINGS_H

@@ -66,8 +66,10 @@ protected:
     void mousePressEvent(QMouseEvent *mpe);
     bool event(QEvent *e);
 private:
-    void InitLocale(void);
+    void InitLocale(const QString& sloc = "ru");
+    void LoadLocale(const QString& sloc);
     void CreateMenus(void);
+    void SetMenuTexts(void);
     bool InitLayouts();
     void LayoutOriginal(void);
     void LayoutSimple(void);
@@ -135,6 +137,16 @@ private:
     QMenu *MenuView;
     QMenu *MenuEdit;
     QMenu *MenuHelp;
+    QMenu *MenuLanguages;
+    QAction *ActionEnglish;
+    QAction *ActionRussian;
+    QAction *ActionCopy;
+    QAction *ActionPaste;
+    QAction *ActionSettings;
+    QAction *ActionContextHelp;
+    QAction *ActionAbout;
+    QAction *ActionWhatIs;
+
 
     QMenu *MenuOnButton;
 
@@ -180,6 +192,7 @@ public slots:
     void slotView(QAction* action);
     void slotAbout(void);
     void slotSettings(void);
+    void slotLanguage(QAction* action);
 
 };
 

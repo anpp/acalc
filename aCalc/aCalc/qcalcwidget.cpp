@@ -43,8 +43,6 @@ void QCalcWidget::Init(QWidget *widget, unsigned i, unsigned j, unsigned n_rows,
                 lblW->setAlignment(Qt::AlignCenter);
                 layout->addWidget(lblW);
                 this->widget->setLayout(layout);
-                if(!Value().isEmpty())
-                    this->lblW->setWhatsThis("<B></B>" + QObject::tr(Value().toStdString().c_str()));
             }
             SetText(key);
             connect(widget, SIGNAL(clicked()), SLOT(sendSignalClick()));

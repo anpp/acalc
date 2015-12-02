@@ -7,7 +7,4 @@
         <file>popup_ru.qm</file>
         <file>acalc_ru.qm</file>
     </qresource>
-    <qresource prefix="/qml">
-        <file>settings.qml</file>
-    </qresource>
 </RCC>

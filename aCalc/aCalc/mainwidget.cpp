@@ -27,13 +27,12 @@ MainWidget::MainWidget(QWidget *parent) :
     curr_widget = NULL;
     bPasting = false;
 
-    InitLocale();
     //QApplication::setStyle("plastique");
     QApplication::setStyle("fusion");
 
-    setWindowTitle(tr("Calculator"));
 
     CreateMenus();
+    InitLocale("ru");
 
     shape = QFrame::WinPanel | QFrame::Sunken;
     colorDigits = Qt::blue;
@@ -89,9 +88,10 @@ void MainWidget::CreateMenus(void)
     MenuBar = new QMenuBar(this);
     MenuBar->setContentsMargins(0, 0, 0, 0);
 
-    MenuView = new QMenu(tr("View"));
-    MenuEdit = new QMenu(tr("Edit"));
-    MenuHelp = new QMenu(tr("Help"));
+    MenuView = new QMenu();
+    MenuEdit = new QMenu();
+    MenuHelp = new QMenu();
+    MenuLanguages = new QMenu();
 
     MenuBar->addMenu(MenuView);
     MenuBar->addMenu(MenuEdit);
@@ -104,16 +104,58 @@ void MainWidget::CreateMenus(void)
 
     connect(MenuView, SIGNAL(triggered(QAction*)), SLOT(slotView(QAction*)));
 
-    MenuEdit->addAction(tr("&Copy"), this, SLOT(slotCopy(void)), Qt::CTRL + Qt::Key_Insert);
-    MenuEdit->addAction(tr("&Paste"), this, SLOT(slotPaste(void)), Qt::SHIFT + Qt::Key_Insert);
-    MenuEdit->addSeparator();
-    MenuEdit->addAction(tr("Settings"), this, SLOT(slotSettings(void)));
+    ActionEnglish = new QAction(this);
+    ActionRussian = new QAction(this);
 
-    MenuHelp->addAction(tr("Contex help"), this, SLOT(slotEnterWhatIsThis(void)), Qt::SHIFT + Qt::Key_F1);
-    MenuHelp->addAction(tr("About..."), this, SLOT(slotAbout(void)));
+    ActionEnglish->setCheckable(true);
+    ActionRussian->setCheckable(true);
+
+    MenuLanguages->addAction(ActionEnglish);
+    MenuLanguages->addAction(ActionRussian);
+
+    connect(MenuLanguages, SIGNAL(triggered(QAction*)), SLOT(slotLanguage(QAction*)));
+
+    ActionCopy = MenuEdit->addAction("", this, SLOT(slotCopy(void)), Qt::CTRL + Qt::Key_Insert);
+    ActionPaste = MenuEdit->addAction("", this, SLOT(slotPaste(void)), Qt::SHIFT + Qt::Key_Insert);
+    MenuEdit->addSeparator();
+    MenuEdit->addMenu(MenuLanguages);
+    ActionSettings = MenuEdit->addAction("", this, SLOT(slotSettings(void)));
+
+    ActionContextHelp = MenuHelp->addAction("", this, SLOT(slotEnterWhatIsThis(void)), Qt::SHIFT + Qt::Key_F1);
+    ActionAbout = MenuHelp->addAction("", this, SLOT(slotAbout(void)));
 
     MenuOnButton = new QMenu(this);
-    MenuOnButton->addAction(tr("What is this?"), this, SLOT(slotMenuWhatIsThis(void)));
+    ActionWhatIs = MenuOnButton->addAction("", this, SLOT(slotMenuWhatIsThis(void)));
+}
+
+
+void MainWidget::SetMenuTexts()
+{
+    setWindowTitle(tr("Calculator"));
+
+    MenuView->setTitle(tr("View"));
+    MenuEdit->setTitle(tr("Edit"));
+    MenuHelp->setTitle(tr("Help"));
+    MenuLanguages->setTitle(tr("Languages"));
+    ActionEnglish->setText(tr("English"));
+    ActionRussian->setText(tr("Russian"));
+    ActionCopy->setText(tr("&Copy"));
+    ActionPaste->setText(tr("&Paste"));
+    ActionSettings->setText(tr("Settings"));
+    ActionContextHelp->setText(tr("Contex help"));
+    ActionWhatIs->setText(tr("What is this?"));
+    ActionAbout->setText(tr("About..."));
+/*
+    int i = ORIGINAL;
+    QAction *action;
+    QList<QAction*>::iterator ait = MenuView->actions().begin();
+    for(; ait != MenuView->actions().end(); ++ait)
+    {
+        action = *ait;
+        action->setText("");//tr(sViews[i].toStdString().c_str()));
+
+    }
+    */
 
 }
 
@@ -138,8 +180,19 @@ void MainWidget::slotView(QAction* menu_action)
         vc++;
     }
     if(!InitLayouts())
-        QApplication::exit(-1);
+        QApplication::exit(-1);        
 }
+
+
+void MainWidget::slotLanguage(QAction* action)
+{
+    if(action == NULL) return;
+    if(action->text() == "English")
+        LoadLocale("en");
+    else
+        LoadLocale("ru");
+}
+
 
 
 void MainWidget::slotAbout(void)
@@ -266,6 +319,8 @@ void MainWidget::slotSettings(void)
   settings.exec();
 }
 
+
+
 void
 MainWidget::SendKey(int Key, int Mod)
 {
@@ -376,7 +431,7 @@ bool MainWidget::event(QEvent *e)
 }
 
 
-void MainWidget::InitLocale(void)
+void MainWidget::InitLocale(const QString& sloc)
 {
 
 #ifndef _QT4 // для парсера, если он собирается с gettext, а не с Qt
@@ -390,21 +445,25 @@ void MainWidget::InitLocale(void)
     #endif
         textdomain(PACKAGE);
 #endif
-
-    //QString localePath = qApp->applicationDirPath() + "/locale";
-    QString localePath = ":/locales";
-
     qtTrans = new QTranslator(this);
     qtTransPopup = new QTranslator(this);
     qtTransErrors = new QTranslator(this);
+    LoadLocale(sloc);
+}
 
-    qtTrans->load("acalc_ru", localePath);
-    qtTransPopup->load("popup_ru", localePath);
-    qtTransErrors->load("errors_ru", localePath);
+
+void MainWidget::LoadLocale(const QString& sloc)
+{
+    QString localePath = ":/locales";
+
+    qtTrans->load("acalc_" + sloc, localePath);
+    qtTransPopup->load("popup_" + sloc, localePath);
+    qtTransErrors->load("errors_" + sloc, localePath);
 
     qApp->installTranslator(qtTrans);
     qApp->installTranslator(qtTransPopup);
     qApp->installTranslator(qtTransErrors);
+    SetMenuTexts();
 }
 
 

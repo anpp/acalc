@@ -1,51 +1,51 @@
-﻿<?xml version="1.0" encoding="utf-8"?>
+<?xml version="1.0" encoding="utf-8"?>
 <!DOCTYPE TS>
-<TS version="2.0" language="ru_RU">
+<TS version="2.1" language="ru_RU">
 <context>
     <name>QObject</name>
     <message>
         <source>Unknown error!</source>
-        <translation>Неизвестная ошибка!</translation>
+        <translation>Unknown error!</translation>
     </message>
     <message>
         <source>Syntax error</source>
-        <translation>Синтаксическая ошибка</translation>
+        <translation>Syntax error</translation>
     </message>
     <message>
         <source>Unclosed parenthesis</source>
-        <translation>Незакрытые скобки</translation>
+        <translation>Unclosed parenthesis</translation>
     </message>
     <message>
         <source>Unknown function</source>
-        <translation>Неизвестная функция</translation>
+        <translation>Unknown function</translation>
     </message>
     <message>
         <source>Division by zero!</source>
-        <translation>Деление на ноль!</translation>
+        <translation>Division by zero!</translation>
     </message>
     <message>
         <source>Invalid argument</source>
-        <translation>Недопустимый аргумент функции</translation>
+        <translation>Invalid argument</translation>
     </message>
     <message>
         <source>Value is too large</source>
-        <translation>Значение слишком велико</translation>
+        <translation>Value is too large</translation>
     </message>
     <message>
         <source>Undefined variable</source>
-        <translation>Неопределенная переменная</translation>
+        <translation>Undefined variable</translation>
     </message>
     <message>
         <source>Empty parentheses</source>
-        <translation>Пустые скобки</translation>
+        <translation>Empty parentheses</translation>
     </message>
     <message>
         <source>Type mismatch</source>
-        <translation>Несовпадение типов</translation>
+        <translation>Type mismatch</translation>
     </message>
     <message>
         <source>Readonly variable</source>
-        <translation>Переменная только для чтения</translation>
+        <translation>Readonly variable</translation>
     </message>
 </context>
 </TS>
