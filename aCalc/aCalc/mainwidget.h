@@ -72,8 +72,7 @@ private:
     void CreateMenus(void);
     void SetMenuTexts(void);
     bool InitLayouts();
-    void FillLayoutModeWidgets(QBoxLayout *l, pnl atype);
-    void FillLayoutWidgets(QGridLayout *l, pnl atype);
+    void FillLayoutWidgets(QLayout *l, pnl atype, bool bGrid = true);
     void LayoutOriginal(void);
     void LayoutSimple(void);
     void LayoutProgrammable(void);
@@ -82,6 +81,7 @@ private:
     void CreateWidgets();
     void CreateButtons(pnl atype);
     void SetSizeOfWidgets();
+    void ResizeWidgets(unsigned w, unsigned h, pnl atype);
     void UpdateDisplay(ud how_update = RESEMPTY);
     bool AddToken(const QString& stok);
     QString GetExpression(bool bHtml = false);

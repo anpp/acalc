@@ -525,40 +525,12 @@ void MainWidget::FreeLayouts(void)
 }
 
 
-void MainWidget::FillLayoutWidgets(QGridLayout *l, pnl atype)
+void MainWidget::FillLayoutWidgets(QLayout *l, pnl atype, bool bGrid)
 {
-    QCalcWidget *w;
-
-    if(!l)
-        return;
-    std::vector<QCalcWidget*>::iterator it = vec_btns.begin();
-
-    for(; it != vec_btns.end(); ++it)
-    {
-        w = (QCalcWidget*)*it;
-        if(w->GetType() == atype)
-            l->addWidget(w->widget, w->i, w->j, w->n_rows, w->n_cols);
-    }
-
+    stTypeLayout TL = {l, atype, bGrid};
+    std::for_each(vec_btns.begin(), vec_btns.end(), bind2nd(setBtnLayout(), TL));
 }
 
-
-void MainWidget::FillLayoutModeWidgets(QBoxLayout *l, pnl atype)
-{
-    QCalcWidget *w;
-
-    if(!l)
-        return;
-    std::vector<QCalcWidget*>::iterator it = vec_btns.begin();
-
-    for(; it != vec_btns.end(); ++it)
-    {
-        w = (QCalcWidget*)*it;
-        if(w->GetType() == atype)
-            l->addWidget(w->widget);
-    }
-
-}
 
 void MainWidget::LayoutOriginal(void)
 {
@@ -691,7 +663,7 @@ void MainWidget::LayoutSimple(void)
     lMode->setMargin(0);
     lMode->setSpacing(spacing);
     lMode->addStretch();
-    FillLayoutModeWidgets(lMode, SERVBUTTONS);
+    FillLayoutWidgets(lMode, SERVBUTTONS, false);
 
     wBottom->setLayout(lBottom);
     wDigits->setLayout(lDigits);
@@ -730,23 +702,23 @@ void MainWidget::InitModesLayouts()
 
     lScale->setContentsMargins(spacing, 0, 0, 0);
     lScale->setSpacing(0);
-    FillLayoutModeWidgets(lScale, SCALE);
+    FillLayoutWidgets(lScale, SCALE, false);
 
     lDrg->setContentsMargins(0, 0, 0, 0);
     lDrg->setSpacing(0);
-    FillLayoutModeWidgets(lDrg, DRG);
+    FillLayoutWidgets(lDrg, DRG, false);
 
 
     lModeTop->setMargin(0);
     lModeTop->setSpacing(spacing);
     lModeTop->addWidget(wFuncModes);
     lModeTop->addStretch();
-    FillLayoutModeWidgets(lModeTop, SERVBUTTONS);
+    FillLayoutWidgets(lModeTop, SERVBUTTONS, false);
 
 
     lFuncModes->setContentsMargins(spacing, 0, 0, 0);
     lFuncModes->setSpacing(0);
-    FillLayoutModeWidgets(lFuncModes, FUNCMODES);
+    FillLayoutWidgets(lFuncModes, FUNCMODES, false);
 
     wScale->setLayout(lScale);
     wDRG->setLayout(lDrg);
@@ -945,17 +917,10 @@ void MainWidget::CreateButtons(pnl atype)
 
 
 
-void ResizeWidgetsInVectors(std::vector<QCalcWidget*> *vec, unsigned w, unsigned h, pnl atype)
+void MainWidget::ResizeWidgets(unsigned w, unsigned h, pnl atype)
 {
-    if(!vec) return;
-    std::vector<QCalcWidget*>::iterator it = vec->begin();
-    QCalcWidget *wi;
-    for(; it != vec->end(); ++it)
-    {
-        wi = (QCalcWidget*)(*it);
-        if(wi->GetType() == atype)
-            wi->SetSize(w, h);
-    }
+    stTypeSize TS = {atype, w, h};
+    std::for_each(vec_btns.begin(), vec_btns.end(), bind2nd(setBtnSize(), TS));
 }
 
 
@@ -993,7 +958,7 @@ void MainWidget::SetSizeOfWidgets()
 
 
         wFuncModes->setFixedSize(button_func_w * 2 + spacing * 3, wScale->height());
-        ResizeWidgetsInVectors(&vec_btns, button_w, wFuncModes->height(), SERVBUTTONS);
+        ResizeWidgets(button_w, wFuncModes->height(), SERVBUTTONS);
         wMode->setFixedSize(wBottom->width(), wScale->height() + wFuncModes->height() + spacing);
 
         this->setFixedSize(wBottom->width() + i_left + i_right,
@@ -1004,7 +969,7 @@ void MainWidget::SetSizeOfWidgets()
         wBottom->setFixedSize(wDigits->width() + wOps->width() + spacing, wDigits->height());
         wDisplay->setFixedSize(wBottom->width(), button_h + h_bord);
         wMode->setFixedSize(wBottom->width(), GetHFButton(button_h) + h_bord);
-        ResizeWidgetsInVectors(&vec_btns, button_w, wMode->height(), SERVBUTTONS);
+        ResizeWidgets(button_w, wMode->height(), SERVBUTTONS);
 
         this->setFixedSize(wBottom->width() + i_left + i_right,
                            wBottom->height() + wMode->height() +
@@ -1024,17 +989,17 @@ void MainWidget::ResizeAll(unsigned new_button_w, unsigned new_button_h)
 {
     button_w = new_button_w;
     button_h = new_button_h;
-    ResizeWidgetsInVectors(&vec_btns, new_button_w, new_button_h, DIG);
-    ResizeWidgetsInVectors(&vec_btns, new_button_w, new_button_h, OP);
-    ResizeWidgetsInVectors(&vec_btns, new_button_w, new_button_h, MEM);
-    ResizeWidgetsInVectors(&vec_btns, new_button_w, new_button_h, ABC);
+    ResizeWidgets(new_button_w, new_button_h, DIG);
+    ResizeWidgets(new_button_w, new_button_h, OP);
+    ResizeWidgets(new_button_w, new_button_h, MEM);
+    ResizeWidgets(new_button_w, new_button_h, ABC);
 
     SetSizeOfWidgets();
 
-    ResizeWidgetsInVectors(&vec_btns, button_func_w, GetHFButton(button_h), FUNC);
-    ResizeWidgetsInVectors(&vec_btns, button_func_w + 2, GetHFButton(button_h), SCALE);
-    ResizeWidgetsInVectors(&vec_btns, button_func_w + 2, GetHFButton(button_h), DRG);
-    ResizeWidgetsInVectors(&vec_btns, button_func_w + 2, GetHFButton(button_h), FUNCMODES);
+    ResizeWidgets(button_func_w, GetHFButton(button_h), FUNC);
+    ResizeWidgets(button_func_w + 2, GetHFButton(button_h), SCALE);
+    ResizeWidgets(button_func_w + 2, GetHFButton(button_h), DRG);
+    ResizeWidgets(button_func_w + 2, GetHFButton(button_h), FUNCMODES);
 
     posMousePress.setX(button_w / 2);
     posMousePress.setY(button_h / 3);
@@ -1187,15 +1152,10 @@ void MainWidget::ProcessClickFuncModes(const QString& sModeValue)
 
     std::vector<QCalcWidget*>::iterator it = btns_func.begin();
 
-    for(; it != btns_func.end(); ++it)
-    {
-        if(sModeValue == "Inv")
-            ((QCalcWidget*)(*it))->SetInvMode(((QCheckBox*)((QCalcWidget*)btns_fm.at(0)->widget))->isChecked());
-
-        if(sModeValue == "Hyp")
-            ((QCalcWidget*)(*it))->SetHypMode(((QCheckBox*)((QCalcWidget*)btns_fm.at(1)->widget))->isChecked());
-    }
-
+    if(sModeValue == "Inv")
+        std::for_each(btns_func.begin(), btns_func.end(), bind2nd(setInv(), ((QCheckBox*)((QCalcWidget*)btns_fm.at(0)->widget))->isChecked()));
+    if(sModeValue == "Hyp")
+        std::for_each(btns_func.begin(), btns_func.end(), bind2nd(setHyp(), ((QCheckBox*)((QCalcWidget*)btns_fm.at(1)->widget))->isChecked()));
 }
 
 
