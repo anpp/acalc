@@ -24,6 +24,7 @@
 #include <QWaitCondition>
 #include <QTime>
 #include <QMessageBox>
+#include <algorithm>
 
 #include "qcalcwidget.h"
 #include "common.h"
@@ -71,13 +72,15 @@ private:
     void CreateMenus(void);
     void SetMenuTexts(void);
     bool InitLayouts();
+    void FillLayoutModeWidgets(QBoxLayout *l, pnl atype);
+    void FillLayoutWidgets(QGridLayout *l, pnl atype);
     void LayoutOriginal(void);
     void LayoutSimple(void);
     void LayoutProgrammable(void);
     void InitModesLayouts();
     void FreeLayouts(void);
     void CreateWidgets();
-    void CreateButtons(int ePnl);
+    void CreateButtons(pnl atype);
     void SetSizeOfWidgets();
     void UpdateDisplay(ud how_update = RESEMPTY);
     bool AddToken(const QString& stok);
@@ -86,7 +89,6 @@ private:
     QString NumberToString(double n, int precision = 34);
     void DefaultKeysMap(void);
     QCalcWidget* FindButtonByValue(QString value);
-    QCalcWidget* FindButtonInVector(QVector<QCalcWidget*> *vecw, QString value);
     void AssignKeyToButton(QString button_value, int key, int mod = 0);
     QCalcWidget* FindWidgetByKey(sKeyMod km);
     sKeyMod FindKeyByValue(QString value);
@@ -119,15 +121,7 @@ private:
     QColor colorMem;
     QColor colorFunc;
 
-    QVector<QCalcWidget*> vec_btn_Digits;
-    QVector<QCalcWidget*> vec_btn_Ops;
-    QVector<QCalcWidget*> vec_btn_Mem;
-    QVector<QCalcWidget*> vec_btn_Abc;
-    QVector<QCalcWidget*> vec_btn_Func;
-    QVector<QCalcWidget*> vec_btn_Scale;
-    QVector<QCalcWidget*> vec_btn_DRG;
-    QVector<QCalcWidget*> vec_btn_FuncModes;
-    QVector<QCalcWidget*> vec_btn_ServButtons;
+    std::vector<QCalcWidget*> vec_btns;
 
     QMap<sKeyMod, QCalcWidget*> map_keys;
     QMap<QString, sKeyMod> map_val_key;

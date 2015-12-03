@@ -8,6 +8,13 @@ QCalcWidget::QCalcWidget(QWidget *widget, unsigned i, unsigned j, QString key, Q
     SetSize(WIDTH_BUT, HEIGHT_BUT);
 }
 
+QCalcWidget::QCalcWidget(QWidget *widget, unsigned i, unsigned j, pnl atype, QString key, QString value, unsigned n_rows, unsigned n_cols, bool bsoftsize)
+{
+    SetType(atype);
+    Init(widget, i, j, n_rows, n_cols, key, value);
+    this->bsoftsize = bsoftsize;
+    SetSize(WIDTH_BUT, HEIGHT_BUT);
+}
 
 void QCalcWidget::Init(QWidget *widget, unsigned i, unsigned j, unsigned n_rows, unsigned n_cols, QString key, QString value)
 {
@@ -43,9 +50,13 @@ void QCalcWidget::Init(QWidget *widget, unsigned i, unsigned j, unsigned n_rows,
                 lblW->setAlignment(Qt::AlignCenter);
                 layout->addWidget(lblW);
                 this->widget->setLayout(layout);
+                if(!Value().isEmpty())
+                    lblW->setWhatsThis("<B></B>" + QObject::tr(Value().toStdString().c_str()));
+
             }
             SetText(key);
             connect(widget, SIGNAL(clicked()), SLOT(sendSignalClick()));
+
         }
         else
             if(s == "QRadioButton" || s == "QCheckBox")

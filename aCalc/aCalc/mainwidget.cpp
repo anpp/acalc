@@ -2,6 +2,7 @@
 #include "ui_mainwidget.h"
 #include "buttexts.h"
 #include "dialogsettings.h"
+#include "functors.h"
 
 QString sViews[] = {QObject::tr("Original"), QObject::tr("Simple"), QObject::tr("Programmable")};
 
@@ -467,21 +468,6 @@ void MainWidget::LoadLocale(const QString& sloc)
 }
 
 
-void FillLayoutWidgets(QVector<QCalcWidget*> *vecw, QGridLayout *l)
-{
-    QCalcWidget *w;
-
-    if(!l || !vecw)
-        return;
-    QVector<QCalcWidget*>::iterator it = vecw->begin();
-
-    for(; it != vecw->end(); ++it)
-    {
-        w = (QCalcWidget*)*it;
-        l->addWidget(w->widget, w->i, w->j, w->n_rows, w->n_cols);
-    }
-
-}
 
 bool MainWidget::InitLayouts()
 {
@@ -539,18 +525,37 @@ void MainWidget::FreeLayouts(void)
 }
 
 
-void FillLayoutModeWidgets(QVector<QCalcWidget*> *vecw, QBoxLayout *l)
+void MainWidget::FillLayoutWidgets(QGridLayout *l, pnl atype)
 {
     QCalcWidget *w;
 
-    if(!l || !vecw)
+    if(!l)
         return;
-    QVector<QCalcWidget*>::iterator it = vecw->begin();
+    std::vector<QCalcWidget*>::iterator it = vec_btns.begin();
 
-    for(; it != vecw->end(); ++it)
+    for(; it != vec_btns.end(); ++it)
     {
         w = (QCalcWidget*)*it;
-        l->addWidget(w->widget);
+        if(w->GetType() == atype)
+            l->addWidget(w->widget, w->i, w->j, w->n_rows, w->n_cols);
+    }
+
+}
+
+
+void MainWidget::FillLayoutModeWidgets(QBoxLayout *l, pnl atype)
+{
+    QCalcWidget *w;
+
+    if(!l)
+        return;
+    std::vector<QCalcWidget*>::iterator it = vec_btns.begin();
+
+    for(; it != vec_btns.end(); ++it)
+    {
+        w = (QCalcWidget*)*it;
+        if(w->GetType() == atype)
+            l->addWidget(w->widget);
     }
 
 }
@@ -585,17 +590,17 @@ void MainWidget::LayoutOriginal(void)
 
     lFuncs->setMargin(spacing);
     lFuncs->setSpacing(spacing);
-    FillLayoutWidgets(&vec_btn_Func, lFuncs);
+    FillLayoutWidgets(lFuncs, FUNC);
 
 
     lMem->setMargin(spacing);
     lMem->setSpacing(spacing);
-    FillLayoutWidgets(&vec_btn_Mem, lMem);
+    FillLayoutWidgets(lMem, MEM);
 
 
     lAbc->setMargin(spacing);
     lAbc->setSpacing(spacing);
-    FillLayoutWidgets(&vec_btn_Abc, lAbc);
+    FillLayoutWidgets(lAbc, ABC);
 
 
     lMemAbc->setMargin(0);
@@ -615,11 +620,11 @@ void MainWidget::LayoutOriginal(void)
 
     lDigits->setMargin(spacing);
     lDigits->setSpacing(spacing);
-    FillLayoutWidgets(&vec_btn_Digits, lDigits);
+    FillLayoutWidgets(lDigits, DIG);
 
     lOps->setMargin(spacing);
     lOps->setSpacing(spacing);
-    FillLayoutWidgets(&vec_btn_Ops, lOps);
+    FillLayoutWidgets(lOps, OP);
 
 
     InitModesLayouts();
@@ -672,11 +677,11 @@ void MainWidget::LayoutSimple(void)
 
     lDigits->setMargin(spacing);
     lDigits->setSpacing(spacing);
-    FillLayoutWidgets(&vec_btn_Digits, lDigits);
+    FillLayoutWidgets(lDigits, DIG);
 
     lOps->setMargin(spacing);
     lOps->setSpacing(spacing);
-    FillLayoutWidgets(&vec_btn_Ops, lOps);
+    FillLayoutWidgets(lOps, OP);
 
     lDisplay->setMargin(0);
     lDisplay->setSpacing(0);
@@ -686,7 +691,7 @@ void MainWidget::LayoutSimple(void)
     lMode->setMargin(0);
     lMode->setSpacing(spacing);
     lMode->addStretch();
-    FillLayoutModeWidgets(&vec_btn_ServButtons, lMode);
+    FillLayoutModeWidgets(lMode, SERVBUTTONS);
 
     wBottom->setLayout(lBottom);
     wDigits->setLayout(lDigits);
@@ -725,23 +730,23 @@ void MainWidget::InitModesLayouts()
 
     lScale->setContentsMargins(spacing, 0, 0, 0);
     lScale->setSpacing(0);
-    FillLayoutModeWidgets(&vec_btn_Scale, lScale);
+    FillLayoutModeWidgets(lScale, SCALE);
 
     lDrg->setContentsMargins(0, 0, 0, 0);
     lDrg->setSpacing(0);
-    FillLayoutModeWidgets(&vec_btn_DRG, lDrg);
+    FillLayoutModeWidgets(lDrg, DRG);
 
 
     lModeTop->setMargin(0);
     lModeTop->setSpacing(spacing);
     lModeTop->addWidget(wFuncModes);
     lModeTop->addStretch();
-    FillLayoutModeWidgets(&vec_btn_ServButtons, lModeTop);
+    FillLayoutModeWidgets(lModeTop, SERVBUTTONS);
 
 
     lFuncModes->setContentsMargins(spacing, 0, 0, 0);
     lFuncModes->setSpacing(0);
-    FillLayoutModeWidgets(&vec_btn_FuncModes, lFuncModes);
+    FillLayoutModeWidgets(lFuncModes, FUNCMODES);
 
     wScale->setLayout(lScale);
     wDRG->setLayout(lDrg);
@@ -803,7 +808,7 @@ void MainWidget::CreateWidgets()
     CreateButtons(SERVBUTTONS);
 }
 
-void MainWidget::CreateButtons(int ePnl)
+void MainWidget::CreateButtons(pnl atype)
 {
     QString *s;
     QString *s_v;
@@ -813,11 +818,10 @@ void MainWidget::CreateButtons(int ePnl)
     unsigned max_i;
     unsigned max_j;
 
-    QVector<QCalcWidget*> *btns;
     QColor *color;
-    QVector<QCalcWidget*>::iterator it;
+    std::vector<QCalcWidget*>::iterator it;
 
-    switch(ePnl)
+    switch(atype)
     {
     case DIG:
     {
@@ -825,7 +829,6 @@ void MainWidget::CreateButtons(int ePnl)
         max_j = 3;
         s = sDigits;
         s_v = svDigits;
-        btns = &vec_btn_Digits;
         color = &colorDigits;
         break;
     }
@@ -835,7 +838,6 @@ void MainWidget::CreateButtons(int ePnl)
         max_j = 3;
         s = sOperators;
         s_v = svOperators;
-        btns = &vec_btn_Ops;
         color = &colorOps;
         break;
     }
@@ -845,7 +847,6 @@ void MainWidget::CreateButtons(int ePnl)
         max_j = 3;
         s = sAbc;
         s_v = sAbc;
-        btns = &vec_btn_Abc;
         color = &colorAbc;
         break;
     }
@@ -859,8 +860,7 @@ void MainWidget::CreateButtons(int ePnl)
         lblMem = new QLabel();
         lblMem->setFrameStyle(QFrame::WinPanel);
         lblMem->setAlignment(Qt::AlignCenter);
-        vec_btn_Mem.append(new QCalcWidget(lblMem, 1, 0, "", "", 1, 3, true));
-        btns = &vec_btn_Mem;
+        vec_btns.push_back(new QCalcWidget(lblMem, 1, 0, atype, "", "", 1, 3, true));
         color = &colorMem;
         break;
     }
@@ -870,48 +870,48 @@ void MainWidget::CreateButtons(int ePnl)
         max_j = 7;
         s = sFunc;
         s_v = svFunc;
-        btns = &vec_btn_Func;
         color = &colorFunc;
         break;
     }
     case SCALE:
-        vec_btn_Scale.append(new QCalcWidget(new QRadioButton(sScales[SHEX]), 0, 0));
-        vec_btn_Scale.append(new QCalcWidget(new QRadioButton(sScales[SDEC]), 0, 1));
-        vec_btn_Scale.append(new QCalcWidget(new QRadioButton(sScales[SOCT]), 0, 2));
-        vec_btn_Scale.append(new QCalcWidget(new QRadioButton(sScales[SBIN]), 0, 3));
-        it = vec_btn_Scale.begin();
-        for(; it != vec_btn_Scale.end(); ++it)
+        vec_btns.push_back(new QCalcWidget(new QRadioButton(sScales[SHEX]), 0, 0, atype));
+        vec_btns.push_back(new QCalcWidget(new QRadioButton(sScales[SDEC]), 0, 1, atype));
+        vec_btns.push_back(new QCalcWidget(new QRadioButton(sScales[SOCT]), 0, 2, atype));
+        vec_btns.push_back(new QCalcWidget(new QRadioButton(sScales[SBIN]), 0, 3, atype));
+        it = vec_btns.begin();
+        for(; it != vec_btns.end(); ++it)
         {
             cw = *it;
-            connect(cw, SIGNAL(ClickServButton(QString)), SLOT(ProcessClickScale(QString)));
+            if(cw->GetType() == atype)
+                connect(cw, SIGNAL(ClickServButton(QString)), SLOT(ProcessClickScale(QString)));
         }
         return;
     case DRG:
-        vec_btn_DRG.append(new QCalcWidget(new QRadioButton(sDrg[DDEG]), 0, 0));
-        connect(vec_btn_DRG.last(), SIGNAL(ClickServButton(QString)), SLOT(ProcessClickDRG(QString)));
+        vec_btns.push_back(new QCalcWidget(new QRadioButton(sDrg[DDEG]), 0, 0, atype));
+        connect(vec_btns.back(), SIGNAL(ClickServButton(QString)), SLOT(ProcessClickDRG(QString)));
 
-        vec_btn_DRG.append(new QCalcWidget(new QRadioButton(sDrg[DRAD]), 0, 1));
-        connect(vec_btn_DRG.last(), SIGNAL(ClickServButton(QString)), SLOT(ProcessClickDRG(QString)));
+        vec_btns.push_back(new QCalcWidget(new QRadioButton(sDrg[DRAD]), 0, 1, atype));
+        connect(vec_btns.back(), SIGNAL(ClickServButton(QString)), SLOT(ProcessClickDRG(QString)));
 
-        vec_btn_DRG.append(new QCalcWidget(new QRadioButton(sDrg[DGRAD]), 0, 2));
-        connect(vec_btn_DRG.last(), SIGNAL(ClickServButton(QString)), SLOT(ProcessClickDRG(QString)));
+        vec_btns.push_back(new QCalcWidget(new QRadioButton(sDrg[DGRAD]), 0, 2, atype));
+        connect(vec_btns.back(), SIGNAL(ClickServButton(QString)), SLOT(ProcessClickDRG(QString)));
         return;
     case FUNCMODES:
-        vec_btn_FuncModes.append(new QCalcWidget(new QCheckBox(sModes[INV]), 0, 0));
-        connect(vec_btn_FuncModes.last(), SIGNAL(ClickServButton(QString)), SLOT(ProcessClickFuncModes(QString)));
+        vec_btns.push_back(new QCalcWidget(new QCheckBox(sModes[INV]), 0, 0, atype));
+        connect(vec_btns.back(), SIGNAL(ClickServButton(QString)), SLOT(ProcessClickFuncModes(QString)));
 
-        vec_btn_FuncModes.append(new QCalcWidget(new QCheckBox(sModes[HYP]), 0, 0));
-        connect(vec_btn_FuncModes.last(), SIGNAL(ClickServButton(QString)), SLOT(ProcessClickFuncModes(QString)));
+        vec_btns.push_back(new QCalcWidget(new QCheckBox(sModes[HYP]), 0, 0, atype));
+        connect(vec_btns.back(), SIGNAL(ClickServButton(QString)), SLOT(ProcessClickFuncModes(QString)));
         return;
     case SERVBUTTONS:
-        vec_btn_ServButtons.append(new QCalcWidget(new QPushButton(), 0, 0, sServ[BACKSPACE]));
-        connect(vec_btn_ServButtons.last(), SIGNAL(ClickButton(QString)), SLOT(ProcessClickServ(QString)));
+        vec_btns.push_back(new QCalcWidget(new QPushButton(), 0, 0, atype, sServ[BACKSPACE]));
+        connect(vec_btns.back(), SIGNAL(ClickButton(QString)), SLOT(ProcessClickServ(QString)));
 
-        vec_btn_ServButtons.append(new QCalcWidget(new QPushButton(), 0, 0, sServ[CE]));
-        connect(vec_btn_ServButtons.last(), SIGNAL(ClickButton(QString)), SLOT(ProcessClickServ(QString)));
+        vec_btns.push_back(new QCalcWidget(new QPushButton(), 0, 0, atype, sServ[CE]));
+        connect(vec_btns.back(), SIGNAL(ClickButton(QString)), SLOT(ProcessClickServ(QString)));
 
-        vec_btn_ServButtons.append(new QCalcWidget(new QPushButton(), 0, 0, "C", sServ[ESC]));
-        connect(vec_btn_ServButtons.last(), SIGNAL(ClickButton(QString)), SLOT(ProcessClickServ(QString)));
+        vec_btns.push_back(new QCalcWidget(new QPushButton(), 0, 0, atype, "C", sServ[ESC]));
+        connect(vec_btns.back(), SIGNAL(ClickButton(QString)), SLOT(ProcessClickServ(QString)));
         return;
     default:
         return;
@@ -923,13 +923,14 @@ void MainWidget::CreateButtons(int ePnl)
             index = max_j * i + j;            
             cw = new QCalcWidget(new QPushButton(), i, j, s[index], s_v[index]);
             cw->SetTextColor(color);
+            cw->SetType(atype);
 
-            if(ePnl == MEM)
+            if(atype == MEM)
                 connect(cw, SIGNAL(ClickButton(QString)), SLOT(ProcessClickMem(QString)));
             else
                 connect(cw, SIGNAL(ClickButton(QString)), SLOT(ProcessClick(QString)));
 
-            if(ePnl == FUNC)
+            if(atype == FUNC)
             {
                 cw->SetAltTexts(svAltFunc[index], sAltFunc[index]);
                 if(sHypInv[index] == "h")
@@ -938,21 +939,22 @@ void MainWidget::CreateButtons(int ePnl)
                     cw->inv = true;
             }
 
-            btns->append(cw);
+            vec_btns.push_back(cw);
         }
 }
 
 
 
-void ResizeWidgetsInVectors(QVector<QCalcWidget*> *vec, unsigned w, unsigned h)
+void ResizeWidgetsInVectors(std::vector<QCalcWidget*> *vec, unsigned w, unsigned h, pnl atype)
 {
     if(!vec) return;
-    QVector<QCalcWidget*>::iterator it = vec->begin();
+    std::vector<QCalcWidget*>::iterator it = vec->begin();
     QCalcWidget *wi;
     for(; it != vec->end(); ++it)
     {
         wi = (QCalcWidget*)(*it);
-        wi->SetSize(w, h);
+        if(wi->GetType() == atype)
+            wi->SetSize(w, h);
     }
 }
 
@@ -991,7 +993,7 @@ void MainWidget::SetSizeOfWidgets()
 
 
         wFuncModes->setFixedSize(button_func_w * 2 + spacing * 3, wScale->height());
-        ResizeWidgetsInVectors(&vec_btn_ServButtons, button_w, wFuncModes->height());
+        ResizeWidgetsInVectors(&vec_btns, button_w, wFuncModes->height(), SERVBUTTONS);
         wMode->setFixedSize(wBottom->width(), wScale->height() + wFuncModes->height() + spacing);
 
         this->setFixedSize(wBottom->width() + i_left + i_right,
@@ -1002,7 +1004,7 @@ void MainWidget::SetSizeOfWidgets()
         wBottom->setFixedSize(wDigits->width() + wOps->width() + spacing, wDigits->height());
         wDisplay->setFixedSize(wBottom->width(), button_h + h_bord);
         wMode->setFixedSize(wBottom->width(), GetHFButton(button_h) + h_bord);
-        ResizeWidgetsInVectors(&vec_btn_ServButtons, button_w, wMode->height());
+        ResizeWidgetsInVectors(&vec_btns, button_w, wMode->height(), SERVBUTTONS);
 
         this->setFixedSize(wBottom->width() + i_left + i_right,
                            wBottom->height() + wMode->height() +
@@ -1022,17 +1024,17 @@ void MainWidget::ResizeAll(unsigned new_button_w, unsigned new_button_h)
 {
     button_w = new_button_w;
     button_h = new_button_h;
-    ResizeWidgetsInVectors(&vec_btn_Digits, new_button_w, new_button_h);
-    ResizeWidgetsInVectors(&vec_btn_Ops, new_button_w, new_button_h);
-    ResizeWidgetsInVectors(&vec_btn_Mem, new_button_w, new_button_h);
-    ResizeWidgetsInVectors(&vec_btn_Abc, new_button_w, new_button_h);
+    ResizeWidgetsInVectors(&vec_btns, new_button_w, new_button_h, DIG);
+    ResizeWidgetsInVectors(&vec_btns, new_button_w, new_button_h, OP);
+    ResizeWidgetsInVectors(&vec_btns, new_button_w, new_button_h, MEM);
+    ResizeWidgetsInVectors(&vec_btns, new_button_w, new_button_h, ABC);
 
     SetSizeOfWidgets();
 
-    ResizeWidgetsInVectors(&vec_btn_Func, button_func_w, GetHFButton(button_h));
-    ResizeWidgetsInVectors(&vec_btn_Scale, button_func_w + 2, GetHFButton(button_h));
-    ResizeWidgetsInVectors(&vec_btn_DRG, button_func_w + 2, GetHFButton(button_h));
-    ResizeWidgetsInVectors(&vec_btn_FuncModes, button_func_w + 2, GetHFButton(button_h));
+    ResizeWidgetsInVectors(&vec_btns, button_func_w, GetHFButton(button_h), FUNC);
+    ResizeWidgetsInVectors(&vec_btns, button_func_w + 2, GetHFButton(button_h), SCALE);
+    ResizeWidgetsInVectors(&vec_btns, button_func_w + 2, GetHFButton(button_h), DRG);
+    ResizeWidgetsInVectors(&vec_btns, button_func_w + 2, GetHFButton(button_h), FUNCMODES);
 
     posMousePress.setX(button_w / 2);
     posMousePress.setY(button_h / 3);
@@ -1173,25 +1175,40 @@ void MainWidget::ProcessClickDRG(const QString& sButtonValue)
 
 void MainWidget::ProcessClickFuncModes(const QString& sModeValue)
 {
-    QVector<QCalcWidget*>::iterator it = vec_btn_Func.begin();
+    std::vector<QCalcWidget*> btns_fm;
+    std::vector<QCalcWidget*> btns_func;
 
-    for(; it != vec_btn_Func.end(); ++it)
+    btns_fm.resize(std::count_if(vec_btns.begin(), vec_btns.end(), bind2nd(checkBtnType(), FUNCMODES)));
+    copy_if(vec_btns.begin(), vec_btns.end(), btns_fm.begin(), bind2nd(checkBtnType(), FUNCMODES));
+
+    btns_func.resize(std::count_if(vec_btns.begin(), vec_btns.end(), bind2nd(checkBtnType(), FUNC)));
+    copy_if(vec_btns.begin(), vec_btns.end(), btns_func.begin(), bind2nd(checkBtnType(), FUNC));
+
+
+    std::vector<QCalcWidget*>::iterator it = btns_func.begin();
+
+    for(; it != btns_func.end(); ++it)
     {
         if(sModeValue == "Inv")
-            ((QCalcWidget*)(*it))->SetInvMode(((QCheckBox*)((QCalcWidget*)vec_btn_FuncModes.at(0)->widget))->isChecked());
+            ((QCalcWidget*)(*it))->SetInvMode(((QCheckBox*)((QCalcWidget*)btns_fm.at(0)->widget))->isChecked());
 
         if(sModeValue == "Hyp")
-            ((QCalcWidget*)(*it))->SetHypMode(((QCheckBox*)((QCalcWidget*)vec_btn_FuncModes.at(1)->widget))->isChecked());
+            ((QCalcWidget*)(*it))->SetHypMode(((QCheckBox*)((QCalcWidget*)btns_fm.at(1)->widget))->isChecked());
     }
+
 }
 
 
 void MainWidget::SetMode(SMODES mode, bool on)
 {
+    std::vector<QCalcWidget*> btns_fm;
+    btns_fm.resize(std::count_if(vec_btns.begin(), vec_btns.end(), bind2nd(checkBtnType(), FUNCMODES)));
+    copy_if(vec_btns.begin(), vec_btns.end(), btns_fm.begin(), bind2nd(checkBtnType(), FUNCMODES));
+
     if(mode < INV || mode > HYP) return;
-    QCheckBox *cb = ((QCheckBox*)((QCalcWidget*)vec_btn_FuncModes.at(mode)->widget));
+    QCheckBox *cb = ((QCheckBox*)((QCalcWidget*)btns_fm.at(mode)->widget));
     if(cb->isChecked() != on)
-        cb->click();
+        cb->click();        
 }
 
 
@@ -1245,46 +1262,11 @@ void MainWidget::Alert(void)
 }
 
 
-QCalcWidget* MainWidget::FindButtonInVector(QVector<QCalcWidget*> *vecw, QString value)
-{
-    QCalcWidget *w;
-
-    if(!vecw)
-        return NULL;
-    QVector<QCalcWidget*>::iterator it = vecw->begin();
-
-    for(; it != vecw->end(); ++it)
-    {
-        w = (QCalcWidget*)*it;
-        if(w->Value() == value)
-            return w;
-    }
-    return NULL;
-}
-
 
 QCalcWidget* MainWidget::FindButtonByValue(QString value)
 {
-    QCalcWidget *w = NULL;
-
-    w = FindButtonInVector(&vec_btn_Digits, value);
-    if(!w)
-        w = FindButtonInVector(&vec_btn_Ops, value);
-    if(!w)
-        w = FindButtonInVector(&vec_btn_Mem, value);
-    if(!w)
-        w = FindButtonInVector(&vec_btn_Abc, value);
-    if(!w)
-        w = FindButtonInVector(&vec_btn_Func, value);
-    if(!w)
-        w = FindButtonInVector(&vec_btn_Scale, value);
-    if(!w)
-        w = FindButtonInVector(&vec_btn_DRG, value);
-    if(!w)
-        w = FindButtonInVector(&vec_btn_FuncModes, value);
-    if(!w)
-        w = FindButtonInVector(&vec_btn_ServButtons, value);
-    return w;
+    std::vector<QCalcWidget*>::iterator it = std::find_if(vec_btns.begin(), vec_btns.end(), bind2nd(buttonIsValue(), value));
+    return *it;
 }
 
 

@@ -49,6 +49,7 @@ class QCalcWidget: public QObject
     Q_OBJECT
 public:
     QCalcWidget(QWidget *widget, unsigned i, unsigned j, QString key = "", QString value = "", unsigned n_rows = 1, unsigned n_cols = 1, bool bsoftsize = false);
+    QCalcWidget(QWidget *widget, unsigned i, unsigned j, pnl atype, QString key = "", QString value = "", unsigned n_rows = 1, unsigned n_cols = 1, bool bsoftsize = false);
     void SetTextColor(QColor *color);
     void SetSize(unsigned w, unsigned h);
     void SetAltTexts(QString altval, QString altkey);
@@ -59,6 +60,8 @@ public:
     bool Hypable(void) {return hyp;}
     bool Invable(void) {return inv;}
     void SetText(const QString& text);
+    void SetType(pnl atype) {type_btn = atype;}
+    pnl GetType(void) {return type_btn;}
 
     unsigned i;
     unsigned j;
@@ -76,6 +79,7 @@ private:
     bool bsoftsize;
     bool hyp_mode;
     bool inv_mode;
+    pnl type_btn;
 
     QString sValueText;
     QString sKeyText;

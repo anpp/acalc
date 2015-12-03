@@ -30,7 +30,8 @@ HEADERS  += mainwidget.h \
     ../CalcIt/token.h \
     ../CalcIt/def.h \
     buttexts.h \
-    dialogsettings.h
+    dialogsettings.h \
+    functors.h
 
 FORMS    += mainwidget.ui
 
