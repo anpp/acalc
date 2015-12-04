@@ -70,7 +70,7 @@ private:
     void InitLocale(const QString& sloc = "ru");
     void LoadLocale(const QString& sloc);
     void CreateMenus(void);
-    void SetMenuTexts(void);
+    void SetLocaleTexts(void);
     bool InitLayouts();
     void FillLayoutWidgets(QLayout *l, pnl atype, bool bGrid = true);
     void LayoutOriginal(void);

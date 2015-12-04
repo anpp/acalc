@@ -62,6 +62,7 @@ public:
     void SetText(const QString& text);
     void SetType(pnl atype) {type_btn = atype;}
     pnl GetType(void) {return type_btn;}
+    void LoadWhatIsText();
 
     unsigned i;
     unsigned j;

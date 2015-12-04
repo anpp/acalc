@@ -28,13 +28,10 @@ MainWidget::MainWidget(QWidget *parent) :
     curr_widget = NULL;
     bPasting = false;
 
+    parser = new CalcParser();
+
     //QApplication::setStyle("plastique");
     QApplication::setStyle("fusion");
-
-
-    CreateMenus();
-    InitLocale("ru");
-
     shape = QFrame::WinPanel | QFrame::Sunken;
     colorDigits = Qt::blue;
     colorOps = Qt::red;
@@ -42,9 +39,9 @@ MainWidget::MainWidget(QWidget *parent) :
     colorMem.setRgb(128, 0, 128);
     colorFunc = Qt::black;
 
-    parser = new CalcParser();
+    CreateMenus();    
     CreateWidgets();
-
+    InitLocale("ru");
     DefaultKeysMap();
 
 
@@ -130,7 +127,7 @@ void MainWidget::CreateMenus(void)
 }
 
 
-void MainWidget::SetMenuTexts()
+void MainWidget::SetLocaleTexts()
 {
     setWindowTitle(tr("Calculator"));
 
@@ -158,6 +155,7 @@ void MainWidget::SetMenuTexts()
     }
     */
 
+    std::for_each(vec_btns.begin(), vec_btns.end(), LoadWhatIsText);
 }
 
 
@@ -464,7 +462,7 @@ void MainWidget::LoadLocale(const QString& sloc)
     qApp->installTranslator(qtTrans);
     qApp->installTranslator(qtTransPopup);
     qApp->installTranslator(qtTransErrors);
-    SetMenuTexts();
+    SetLocaleTexts();
 }
 
 
@@ -1140,22 +1138,11 @@ void MainWidget::ProcessClickDRG(const QString& sButtonValue)
 
 void MainWidget::ProcessClickFuncModes(const QString& sModeValue)
 {
-    std::vector<QCalcWidget*> btns_fm;
-    std::vector<QCalcWidget*> btns_func;
+    QCalcWidget* w = FindButtonByValue(sModeValue);
+    if(!w) return;
 
-    btns_fm.resize(std::count_if(vec_btns.begin(), vec_btns.end(), bind2nd(checkBtnType(), FUNCMODES)));
-    copy_if(vec_btns.begin(), vec_btns.end(), btns_fm.begin(), bind2nd(checkBtnType(), FUNCMODES));
-
-    btns_func.resize(std::count_if(vec_btns.begin(), vec_btns.end(), bind2nd(checkBtnType(), FUNC)));
-    copy_if(vec_btns.begin(), vec_btns.end(), btns_func.begin(), bind2nd(checkBtnType(), FUNC));
-
-
-    std::vector<QCalcWidget*>::iterator it = btns_func.begin();
-
-    if(sModeValue == "Inv")
-        std::for_each(btns_func.begin(), btns_func.end(), bind2nd(setInv(), ((QCheckBox*)((QCalcWidget*)btns_fm.at(0)->widget))->isChecked()));
-    if(sModeValue == "Hyp")
-        std::for_each(btns_func.begin(), btns_func.end(), bind2nd(setHyp(), ((QCheckBox*)((QCalcWidget*)btns_fm.at(1)->widget))->isChecked()));
+    stFuncMode FM = {sModeValue, ((QCheckBox*)((QCalcWidget*)w->widget))->isChecked()};
+    std::for_each(vec_btns.begin(), vec_btns.end(), bind2nd(setHypInv(), FM));
 }
 
 

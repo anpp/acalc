@@ -50,8 +50,6 @@ void QCalcWidget::Init(QWidget *widget, unsigned i, unsigned j, unsigned n_rows,
                 lblW->setAlignment(Qt::AlignCenter);
                 layout->addWidget(lblW);
                 this->widget->setLayout(layout);
-                if(!Value().isEmpty())
-                    lblW->setWhatsThis("<B></B>" + QObject::tr(Value().toStdString().c_str()));
 
             }
             SetText(key);
@@ -64,8 +62,6 @@ void QCalcWidget::Init(QWidget *widget, unsigned i, unsigned j, unsigned n_rows,
                 sKeyText = ((QAbstractButton*)(this->widget))->text();
                 connect(widget, SIGNAL(clicked()), SLOT(sendSignalServClick()));
             }
-        if(!Value().isEmpty())
-            this->widget->setWhatsThis("<B></B>" + QObject::tr(Value().toStdString().c_str()));
     }
 }
 
@@ -79,6 +75,18 @@ void QCalcWidget::SetText(const QString& text)
         else
             ((QAbstractButton*)(this->widget))->setText(text);
     }
+}
+
+void QCalcWidget::LoadWhatIsText()
+{
+    if(!this->widget) return;
+    if(!Value().isEmpty())
+    {
+        widget->setWhatsThis("<B></B>" + QObject::tr(Value().toStdString().c_str()));
+        if(lblW)
+            lblW->setWhatsThis("<B></B>" + QObject::tr(Value().toStdString().c_str()));
+    }
+
 }
 
 
