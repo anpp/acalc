@@ -3,6 +3,7 @@
 #include "buttexts.h"
 #include "dialogsettings.h"
 #include "functors.h"
+#include <qlocale.h>
 
 QString sViews[] = {QObject::tr("Original"), QObject::tr("Simple"), QObject::tr("Programmable")};
 QString sLanguages[] = {QObject::tr("English"), QObject::tr("Russian")};
@@ -43,7 +44,13 @@ MainWidget::MainWidget(QWidget *parent) :
 
     CreateMenus();    
     CreateWidgets();
-    InitLocale();
+
+    elangs lang = EN;
+    QLocale locale;
+    if(locale.language() == QLocale::Russian)
+        lang = RU;
+    InitLocale(lang);
+
     DefaultKeysMap();
 
 
@@ -446,6 +453,7 @@ void MainWidget::InitLocale(elangs indexLang)
     qtTrans = new QTranslator(this);
     qtTransPopup = new QTranslator(this);
     qtTransErrors = new QTranslator(this);
+
     SetLocale(indexLang);
 }
 
