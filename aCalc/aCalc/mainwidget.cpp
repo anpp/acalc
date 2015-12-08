@@ -5,6 +5,8 @@
 #include "functors.h"
 
 QString sViews[] = {QObject::tr("Original"), QObject::tr("Simple"), QObject::tr("Programmable")};
+QString sLanguages[] = {QObject::tr("English"), QObject::tr("Russian")};
+QString sShortLanguages[] = {"en", "ru"};
 
 inline unsigned GetHFButton(unsigned h)
 {
@@ -41,7 +43,7 @@ MainWidget::MainWidget(QWidget *parent) :
 
     CreateMenus();    
     CreateWidgets();
-    InitLocale("ru");
+    InitLocale();
     DefaultKeysMap();
 
 
@@ -95,23 +97,21 @@ void MainWidget::CreateMenus(void)
     MenuBar->addMenu(MenuEdit);
     MenuBar->addMenu(MenuHelp);
 
-    for(int i = ORIGINAL; i <= PROGRAMMABLE; ++i)
-        MenuView->addAction(QObject::tr(sViews[i].toStdString().c_str()))->setCheckable(true);
-
-    MenuView->actions().last()->setEnabled(false);
-
+    for(unsigned int i = 0; i < sizeof(sViews) / sizeof(QString); ++i)
+    {
+        ActionViews.append(MenuView->addAction(""));
+        ActionViews.last()->setCheckable(true);
+    }
+    ActionViews.last()->setEnabled(false);
     connect(MenuView, SIGNAL(triggered(QAction*)), SLOT(slotView(QAction*)));
 
-    ActionEnglish = new QAction(this);
-    ActionRussian = new QAction(this);
-
-    ActionEnglish->setCheckable(true);
-    ActionRussian->setCheckable(true);
-
-    MenuLanguages->addAction(ActionEnglish);
-    MenuLanguages->addAction(ActionRussian);
-
+    for(unsigned int i = 0; i < sizeof(sLanguages) / sizeof(QString); ++i)
+    {
+        ActionLanguages.append(MenuLanguages->addAction(""));
+        ActionLanguages.last()->setCheckable(true);
+    }
     connect(MenuLanguages, SIGNAL(triggered(QAction*)), SLOT(slotLanguage(QAction*)));
+
 
     ActionCopy = MenuEdit->addAction("", this, SLOT(slotCopy(void)), Qt::CTRL + Qt::Key_Insert);
     ActionPaste = MenuEdit->addAction("", this, SLOT(slotPaste(void)), Qt::SHIFT + Qt::Key_Insert);
@@ -135,25 +135,27 @@ void MainWidget::SetLocaleTexts()
     MenuEdit->setTitle(tr("Edit"));
     MenuHelp->setTitle(tr("Help"));
     MenuLanguages->setTitle(tr("Languages"));
-    ActionEnglish->setText(tr("English"));
-    ActionRussian->setText(tr("Russian"));
     ActionCopy->setText(tr("&Copy"));
     ActionPaste->setText(tr("&Paste"));
     ActionSettings->setText(tr("Settings"));
     ActionContextHelp->setText(tr("Contex help"));
     ActionWhatIs->setText(tr("What is this?"));
     ActionAbout->setText(tr("About..."));
-/*
-    int i = ORIGINAL;
+
+
     QAction *action;
-    QList<QAction*>::iterator ait = MenuView->actions().begin();
-    for(; ait != MenuView->actions().end(); ++ait)
+    QVector<QAction*>::iterator ait = ActionViews.begin();
+    for(; ait != ActionViews.end(); ++ait)
     {
         action = *ait;
-        action->setText("");//tr(sViews[i].toStdString().c_str()));
-
+        action->setText(QObject::tr(sViews[ActionViews.indexOf(action)].toStdString().c_str()));
     }
-    */
+    QVector<QAction*>::iterator lit = ActionLanguages.begin();
+    for(; lit != ActionLanguages.end(); ++lit)
+    {
+        action = *lit;
+        action->setText(tr(sLanguages[ActionLanguages.indexOf(action)].toStdString().c_str()));
+    }
 
     std::for_each(vec_btns.begin(), vec_btns.end(), LoadWhatIsText);
 }
@@ -164,8 +166,8 @@ void MainWidget::slotView(QAction* menu_action)
     if(menu_action == NULL) return;
     QAction *ac;
     int vc = ORIGINAL;
-    QList<QAction*>::iterator ait = MenuView->actions().begin();
-    for(; ait != MenuView->actions().end(); ++ait)
+    QVector<QAction*>::iterator ait = ActionViews.begin();
+    for(; ait != ActionViews.end(); ++ait)
     {
         ac = *ait;
         if(ac == menu_action)
@@ -179,17 +181,14 @@ void MainWidget::slotView(QAction* menu_action)
         vc++;
     }
     if(!InitLayouts())
-        QApplication::exit(-1);        
+        QApplication::exit(-1);
 }
 
 
 void MainWidget::slotLanguage(QAction* action)
 {
     if(action == NULL) return;
-    if(action->text() == "English")
-        LoadLocale("en");
-    else
-        LoadLocale("ru");
+    SetLocale(ActionLanguages.indexOf(action));
 }
 
 
@@ -430,7 +429,7 @@ bool MainWidget::event(QEvent *e)
 }
 
 
-void MainWidget::InitLocale(const QString& sloc)
+void MainWidget::InitLocale(elangs indexLang)
 {
 
 #ifndef _QT4 // для парсера, если он собирается с gettext, а не с Qt
@@ -447,9 +446,22 @@ void MainWidget::InitLocale(const QString& sloc)
     qtTrans = new QTranslator(this);
     qtTransPopup = new QTranslator(this);
     qtTransErrors = new QTranslator(this);
-    LoadLocale(sloc);
+    SetLocale(indexLang);
 }
 
+void MainWidget::SetLocale(int indexLang)
+{
+    LoadLocale(sShortLanguages[indexLang]);
+
+    QAction *action;
+    int index = 0;
+    for(QVector<QAction*>::iterator ait = ActionLanguages.begin(); ait != ActionLanguages.end(); ++ait)
+    {
+        action = *ait;
+        action->setChecked(indexLang == index++);
+    }
+
+}
 
 void MainWidget::LoadLocale(const QString& sloc)
 {
@@ -499,25 +511,31 @@ void MainWidget::FreeLayouts(void)
     wFuncModes->setVisible(viewCalc == ORIGINAL);
 
     QWidget *w = NULL;
-    QLayout *layout;
+    QLayout *layout, *l;
     QString classname;
 
     for(QList<QWidget*>::const_iterator it =  QApplication::allWidgets().begin(); it != QApplication::allWidgets().end(); ++it)
     {
         w = *it;
+        if(!w) continue;
 
         classname = w->metaObject()->className();
-        if("QPushButton" == classname)
+        if("QFrame" != classname)
             continue;
         layout = w->layout();
         if(layout != 0)
         {
             QLayoutItem *item;
-            while ((item = layout->takeAt(0)) != 0)
+            while ((item = layout->takeAt(0)))
             {
+                if (l = item->layout() )
+                {
+                    delete l;
+                }
+                //layout->removeWidget(item->widget());
                 layout->removeItem (item);
             }
-            delete layout;
+            delete w->layout();
         }
     }
 }

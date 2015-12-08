@@ -67,8 +67,9 @@ protected:
     void mousePressEvent(QMouseEvent *mpe);
     bool event(QEvent *e);
 private:
-    void InitLocale(const QString& sloc = "ru");
+    void InitLocale(elangs indexLang = EN);
     void LoadLocale(const QString& sloc);
+    void SetLocale(int indexLang);
     void CreateMenus(void);
     void SetLocaleTexts(void);
     bool InitLayouts();
@@ -132,15 +133,14 @@ private:
     QMenu *MenuEdit;
     QMenu *MenuHelp;
     QMenu *MenuLanguages;
-    QAction *ActionEnglish;
-    QAction *ActionRussian;
     QAction *ActionCopy;
     QAction *ActionPaste;
     QAction *ActionSettings;
     QAction *ActionContextHelp;
     QAction *ActionAbout;
     QAction *ActionWhatIs;
-
+    QVector<QAction*> ActionViews;
+    QVector<QAction*> ActionLanguages;
 
     QMenu *MenuOnButton;
 
