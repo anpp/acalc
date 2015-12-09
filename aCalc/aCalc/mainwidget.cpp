@@ -44,13 +44,7 @@ MainWidget::MainWidget(QWidget *parent) :
 
     CreateMenus();    
     CreateWidgets();
-
-    elangs lang = EN;
-    QLocale locale;
-    if(locale.language() == QLocale::Russian)
-        lang = RU;
-    InitLocale(lang);
-
+    InitLocale();
     DefaultKeysMap();
 
 
@@ -150,20 +144,13 @@ void MainWidget::SetLocaleTexts()
     ActionAbout->setText(tr("About..."));
 
 
-    QAction *action;
-    QVector<QAction*>::iterator ait = ActionViews.begin();
-    for(; ait != ActionViews.end(); ++ait)
-    {
-        action = *ait;
+    foreach (QAction *action, ActionViews) {
         action->setText(QObject::tr(sViews[ActionViews.indexOf(action)].toStdString().c_str()));
     }
-    QVector<QAction*>::iterator lit = ActionLanguages.begin();
-    for(; lit != ActionLanguages.end(); ++lit)
-    {
-        action = *lit;
+
+    foreach (QAction *action, ActionLanguages) {
         action->setText(tr(sLanguages[ActionLanguages.indexOf(action)].toStdString().c_str()));
     }
-
     std::for_each(vec_btns.begin(), vec_btns.end(), LoadWhatIsText);
 }
 
@@ -436,7 +423,7 @@ bool MainWidget::event(QEvent *e)
 }
 
 
-void MainWidget::InitLocale(elangs indexLang)
+void MainWidget::InitLocale()
 {
 
 #ifndef _QT4 // для парсера, если он собирается с gettext, а не с Qt
@@ -454,21 +441,22 @@ void MainWidget::InitLocale(elangs indexLang)
     qtTransPopup = new QTranslator(this);
     qtTransErrors = new QTranslator(this);
 
-    SetLocale(indexLang);
+    elangs lang = EN;
+    QLocale locale;
+    if(locale.language() == QLocale::Russian)
+        lang = RU;
+
+    SetLocale(lang);
 }
 
 void MainWidget::SetLocale(int indexLang)
 {
     LoadLocale(sShortLanguages[indexLang]);
 
-    QAction *action;
     int index = 0;
-    for(QVector<QAction*>::iterator ait = ActionLanguages.begin(); ait != ActionLanguages.end(); ++ait)
-    {
-        action = *ait;
+    foreach(QAction *action, ActionLanguages){
         action->setChecked(indexLang == index++);
     }
-
 }
 
 void MainWidget::LoadLocale(const QString& sloc)

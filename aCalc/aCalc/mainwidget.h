@@ -67,7 +67,7 @@ protected:
     void mousePressEvent(QMouseEvent *mpe);
     bool event(QEvent *e);
 private:
-    void InitLocale(elangs indexLang = EN);
+    void InitLocale();
     void LoadLocale(const QString& sloc);
     void SetLocale(int indexLang);
     void CreateMenus(void);
