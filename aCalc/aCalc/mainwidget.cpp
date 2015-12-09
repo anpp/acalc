@@ -55,7 +55,8 @@ MainWidget::MainWidget(QWidget *parent) :
 
     SendKey(Qt::Key_F3); //Rad
     SendKey(Qt::Key_F6); //Dec
-    MenuView->actions()[ORIGINAL]->activate(QAction::Trigger);
+
+    SetView(ORIGINAL);
 
     UpdateDisplay();
     this->setFocus();
@@ -147,35 +148,17 @@ void MainWidget::SetLocaleTexts()
     foreach (QAction *action, ActionViews) {
         action->setText(QObject::tr(sViews[ActionViews.indexOf(action)].toStdString().c_str()));
     }
-
     foreach (QAction *action, ActionLanguages) {
         action->setText(tr(sLanguages[ActionLanguages.indexOf(action)].toStdString().c_str()));
     }
-    std::for_each(vec_btns.begin(), vec_btns.end(), LoadWhatIsText);
+    foreach (QCalcWidget *w, vec_btns) {w->LoadWhatIsText();}
 }
 
 
-void MainWidget::slotView(QAction* menu_action)
+void MainWidget::slotView(QAction* action)
 {
-    if(menu_action == NULL) return;
-    QAction *ac;
-    int vc = ORIGINAL;
-    QVector<QAction*>::iterator ait = ActionViews.begin();
-    for(; ait != ActionViews.end(); ++ait)
-    {
-        ac = *ait;
-        if(ac == menu_action)
-        {
-            if(!menu_action->isChecked())
-                ac->setChecked(true);
-            viewCalc = (VIEWCALC)vc;
-        }
-        else
-            ac->setChecked(false);
-        vc++;
-    }
-    if(!InitLayouts())
-        QApplication::exit(-1);
+    if(action == NULL) return;
+    SetView(ActionViews.indexOf(action));
 }
 
 
@@ -224,12 +207,12 @@ void MainWidget::slotPaste(void)
 
     TokenList Tokens;
     Token tok;
-    CalcParser *tempParser = new CalcParser();
+    CalcParser tempParser;
     sKeyMod km = {0, 0};
     QCalcWidget *w = NULL;
 
-    tempParser->SetParams(&pasteString, 0, parser->DRG());
-    Tokens = tempParser->RefTokens();
+    tempParser.SetParams(&pasteString, 0, parser->DRG());
+    Tokens = tempParser.RefTokens();
 
     bPasting = true;
     for(TokenList::iterator it = Tokens.begin(); it != Tokens.end(); ++it)
@@ -299,7 +282,6 @@ void MainWidget::slotPaste(void)
         }
     }
     bPasting = false;
-    delete tempParser;
 }
 
 
@@ -459,6 +441,18 @@ void MainWidget::SetLocale(int indexLang)
     }
 }
 
+void MainWidget::SetView(int indexView)
+{
+    viewCalc = (VIEWCALC)indexView;
+    if(!InitLayouts())
+        QApplication::exit(-1);
+
+    int index = 0;
+    foreach(QAction *action, ActionViews){
+        action->setChecked(indexView == index++);
+    }
+}
+
 void MainWidget::LoadLocale(const QString& sloc)
 {
     QString localePath = ":/locales";
@@ -506,33 +500,18 @@ void MainWidget::FreeLayouts(void)
     wDRG->setVisible(viewCalc == ORIGINAL);
     wFuncModes->setVisible(viewCalc == ORIGINAL);
 
-    QWidget *w = NULL;
-    QLayout *layout, *l;
+    QLayout *layout;
     QString classname;
 
-    for(QList<QWidget*>::const_iterator it =  QApplication::allWidgets().begin(); it != QApplication::allWidgets().end(); ++it)
+    foreach(QWidget* w, QApplication::allWidgets())
     {
-        w = *it;
-        if(!w) continue;
-
         classname = w->metaObject()->className();
-        if("QFrame" != classname)
-            continue;
-        layout = w->layout();
-        if(layout != 0)
+        if("QPushButton" != classname)
         {
-            QLayoutItem *item;
-            while ((item = layout->takeAt(0)))
-            {
-                if (l = item->layout() )
-                {
-                    delete l;
-                }
-                //layout->removeWidget(item->widget());
-                layout->removeItem (item);
-            }
-            delete w->layout();
+            layout = w->layout();
+            delete layout;
         }
+
     }
 }
 
@@ -931,8 +910,7 @@ void MainWidget::CreateButtons(pnl atype)
 
 void MainWidget::ResizeWidgets(unsigned w, unsigned h, pnl atype)
 {
-    stTypeSize TS = {atype, w, h};
-    std::for_each(vec_btns.begin(), vec_btns.end(), bind2nd(setBtnSize(), TS));
+    foreach (QCalcWidget* widget, vec_btns) { if(widget->GetType() == atype) widget->SetSize(w, h);}
 }
 
 

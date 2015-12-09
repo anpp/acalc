@@ -17,12 +17,6 @@ OutputIterator copy_if(InputIterator begin, InputIterator end, OutputIterator de
 }
 
 
-void LoadWhatIsText(QCalcWidget* w)
-{
-    if(!w) return;
-    w->LoadWhatIsText();
-}
-
 
 //FUNCTORS
 
@@ -55,19 +49,6 @@ public:
         if(btn->Invable() && FM.mode == "Inv")
             btn->SetInvMode(FM.on);
 
-    }
-};
-
-
-
-struct stTypeSize {pnl atype; unsigned int w; unsigned int h;};
-
-class setBtnSize: public std::binary_function<QCalcWidget*, stTypeSize, void>{
-public:
-    void operator()(QCalcWidget* btn, const stTypeSize& TS) const
-    {
-        if(btn->GetType() == TS.atype)
-            btn->SetSize(TS.w, TS.h);
     }
 };
 
