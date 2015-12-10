@@ -60,8 +60,17 @@ public:
     bool Hypable(void) {return hyp;}
     bool Invable(void) {return inv;}
     void SetText(const QString& text);
-    void SetType(pnl atype) {type_btn = atype;}
+    void SetType(pnl atype);
     pnl GetType(void) {return type_btn;}
+    pnl GetSavedType(void) {return saved_type;}
+    void SetNopable(bool anop) {nopable = anop;}
+    bool IsNopable(void) {return nopable;}
+    void SetReplaceValue(const QString& s) {sReplaceValue = s;}
+    QString& GetReplaceValue(void) {return sReplaceValue;}
+    bool IsReplace(void) {return wasReplace;}
+    void Replace(QCalcWidget* prev_widget);
+    void UnReplace();
+
     void LoadWhatIsText();
 
     unsigned i;
@@ -81,6 +90,12 @@ private:
     bool hyp_mode;
     bool inv_mode;
     pnl type_btn;
+    pnl saved_type;
+    bool nopable;
+    QString sReplaceValue;
+    bool wasReplace;
+    unsigned saved_i;
+    unsigned saved_j;
 
     QString sValueText;
     QString sKeyText;

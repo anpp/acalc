@@ -1,7 +1,7 @@
 #include "qcalcwidget.h"
 
 QCalcWidget::QCalcWidget(QWidget *widget, unsigned i, unsigned j, QString key, QString value, unsigned n_rows, unsigned n_cols, bool bsoftsize)
-    :QObject(widget)
+    :QObject(widget), widget(NULL), nopable(false), sReplaceValue(""), wasReplace(false)
 {
     Init(widget, i, j, n_rows, n_cols, key, value);
     this->bsoftsize = bsoftsize;
@@ -9,9 +9,10 @@ QCalcWidget::QCalcWidget(QWidget *widget, unsigned i, unsigned j, QString key, Q
 }
 
 QCalcWidget::QCalcWidget(QWidget *widget, unsigned i, unsigned j, pnl atype, QString key, QString value, unsigned n_rows, unsigned n_cols, bool bsoftsize)
-{
+    :QObject(widget), widget(NULL), nopable(false), sReplaceValue(""), wasReplace(false)
+{    
     SetType(atype);
-    Init(widget, i, j, n_rows, n_cols, key, value);
+    Init(widget, i, j, n_rows, n_cols, key, value);    
     this->bsoftsize = bsoftsize;
     SetSize(WIDTH_BUT, HEIGHT_BUT);
 }
@@ -139,4 +140,34 @@ void QCalcWidget::SetInvMode(bool mode)
         SetText(sAltKeyText);
     else
         SetText(sKeyText);
+}
+
+void QCalcWidget::SetType(pnl atype)
+{
+    type_btn = atype;
+    if(atype != NOP) saved_type = atype;
+    if(widget)
+        widget->setVisible(atype != NOP);
+}
+
+
+void QCalcWidget::Replace(QCalcWidget* prev_widget)
+{
+    if(!prev_widget) return;
+    wasReplace = true;
+    saved_i = i;
+    saved_j = j;
+    saved_type = GetType();
+    type_btn = prev_widget->GetType();
+    i = prev_widget->i;
+    j = prev_widget->j;
+}
+
+void QCalcWidget::UnReplace()
+{
+    if(!wasReplace) return;
+    wasReplace = false;
+    i = saved_i;
+    j = saved_j;
+    SetType(saved_type);
 }

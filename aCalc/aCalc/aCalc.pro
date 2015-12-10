@@ -5,7 +5,7 @@
 #-------------------------------------------------
 
 QT       += core gui widgets
-DEFINES -= HAVE_QT5
+DEFINES += HAVE_QT5
 
 TARGET = aCalc
 TEMPLATE = app

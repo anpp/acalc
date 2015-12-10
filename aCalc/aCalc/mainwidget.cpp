@@ -471,13 +471,30 @@ void MainWidget::LoadLocale(const QString& sloc)
 
 bool MainWidget::InitLayouts()
 {
+    QCalcWidget* rw;
+    QString rv;
+
     FreeLayouts();
     switch(viewCalc)
     {
     case ORIGINAL:
+        foreach (QCalcWidget* widget, vec_btns) {
+            if(widget->GetType() == NOP) widget->SetType(widget->GetSavedType());
+            if(widget->IsReplace()) widget->UnReplace();
+        }
         LayoutOriginal();
         break;
     case SIMPLE:
+        foreach (QCalcWidget* widget, vec_btns) {
+            rv = widget->GetReplaceValue();
+            if("" != rv)
+            {
+                rw = FindButtonByValue(rv);
+                if(rw) rw->Replace(widget);
+            }
+
+            if(widget->IsNopable()) widget->SetType(NOP);
+        }
         LayoutSimple();
         break;
     case PROGRAMMABLE:
@@ -500,18 +517,13 @@ void MainWidget::FreeLayouts(void)
     wDRG->setVisible(viewCalc == ORIGINAL);
     wFuncModes->setVisible(viewCalc == ORIGINAL);
 
-    QLayout *layout;
     QString classname;
 
     foreach(QWidget* w, QApplication::allWidgets())
     {
         classname = w->metaObject()->className();
         if("QPushButton" != classname)
-        {
-            layout = w->layout();
-            delete layout;
-        }
-
+            delete w->layout();
     }
 }
 
@@ -884,9 +896,8 @@ void MainWidget::CreateButtons(pnl atype)
         for(unsigned j = 0; j < max_j; ++j)
         {
             index = max_j * i + j;            
-            cw = new QCalcWidget(new QPushButton(), i, j, s[index], s_v[index]);
+            cw = new QCalcWidget(new QPushButton(), i, j, atype, s[index], s_v[index]);
             cw->SetTextColor(color);
-            cw->SetType(atype);
 
             if(atype == MEM)
                 connect(cw, SIGNAL(ClickButton(QString)), SLOT(ProcessClickMem(QString)));
@@ -896,11 +907,15 @@ void MainWidget::CreateButtons(pnl atype)
             if(atype == FUNC)
             {
                 cw->SetAltTexts(svAltFunc[index], sAltFunc[index]);
-                if(sHypInv[index] == "h")
-                    cw->hyp = true;
-                if(sHypInv[index] == "i")
-                    cw->inv = true;
+                cw->hyp = sHypInv[index] == "h";
+                cw->inv = sHypInv[index] == "i";
             }
+            if(atype == OP)
+            {
+                cw->SetNopable(bOpNops[index]);
+                cw->SetReplaceValue(sOpReps[index]);
+            }
+
 
             vec_btns.push_back(cw);
         }
@@ -928,11 +943,11 @@ void MainWidget::SetSizeOfWidgets()
     this->getContentsMargins(&i_left, &i_top, &i_right, &i_bottom);
 
     wDigits->setFixedSize(button_w * 3 + spacing * 4 + w_bord, button_h * 4 + spacing * 5 + h_bord);
-    wOps->setFixedSize(button_w * 3 + spacing * 4 + w_bord, button_h * 4 + spacing * 5 + h_bord);
 
     switch(viewCalc)
     {
     case ORIGINAL:
+        wOps->setFixedSize(button_w * 3 + spacing * 4 + w_bord, button_h * 4 + spacing * 5 + h_bord);
         wAbc->setFixedSize(button_w * 3 + spacing * 4 + w_bord, button_h * 2 + spacing * 3 + h_bord);
         wMem->setFixedSize(wAbc->width(), wOps->height() - wAbc->height() - spacing);
         wBottom->setFixedSize(wDigits->width() + wOps->width() + wMem->width() + spacing * 2, wDigits->height());
@@ -956,6 +971,7 @@ void MainWidget::SetSizeOfWidgets()
                            wDisplay->height() +  spacing * 4 + MenuBar->height() + i_top + i_bottom);
         break;
     case SIMPLE:
+        wOps->setFixedSize(button_w * 2 + spacing * 3 + w_bord, button_h * 4 + spacing * 5 + h_bord);
         wBottom->setFixedSize(wDigits->width() + wOps->width() + spacing, wDigits->height());
         wDisplay->setFixedSize(wBottom->width(), button_h + h_bord);
         wMode->setFixedSize(wBottom->width(), GetHFButton(button_h) + h_bord);

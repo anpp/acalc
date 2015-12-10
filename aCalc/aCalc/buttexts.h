@@ -12,8 +12,10 @@ QString sServ[] = {QObject::tr("Back"), QObject::tr("CE"), QObject::tr("ESC")};
 QString sDigits[] = {"7", "8", "9", "4", "5", "6", "1", "2", "3", "0", ",", "+/-"};
 QString svDigits[] = {QObject::tr("7"), QObject::tr("8"), QObject::tr("9"), QObject::tr("4"), QObject::tr("5"), QObject::tr("6"), QObject::tr("1"), QObject::tr("2"), QObject::tr("3"), QObject::tr("0"), QObject::tr("."), QObject::tr("+/-")};
 
-QString sOperators[] = {"/", "Mod", "And", "*", "Or", "Xor", "-", "Lsh", "Rsh", "+", "=", "Not"};
+QString sOperators[] = {"/", "mod", "and", "*", "or", "xor", "-", "lsh", "rsh", "+", "=", "not"};
 QString svOperators[] = {QObject::tr("/"), QObject::tr("%"), QObject::tr("&"), QObject::tr("*"), QObject::tr("|"), QObject::tr("!"), QObject::tr("-"), QObject::tr("<<"), QObject::tr(">>"), QObject::tr("+"), QObject::tr("="), QObject::tr("~")};
+bool bOpNops[] = {false, false, true, false, true, true, false, true, true, false, false, true};
+QString sOpReps[] = {"(", ")", "", "", "/", "", "", "%", "", "", "", ""};
 
 QString sAbc[] = {QObject::tr("A"), QObject::tr("B"), QObject::tr("C"), QObject::tr("D"), QObject::tr("E"), QObject::tr("F")};
 

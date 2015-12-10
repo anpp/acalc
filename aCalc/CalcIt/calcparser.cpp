@@ -1578,6 +1578,7 @@ void CalcParser::InitMapToksHtml()
     ToksHtml["<<"] = "&laquo;";
     ToksHtml["sqrt"] = "&radic;";
     ToksHtml["terrt"] = "&sup3;&radic;";
+    ToksHtml["%"] = "mod";
 }
 
 

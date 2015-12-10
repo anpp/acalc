@@ -33,7 +33,7 @@ class buttonIsValue: public std::binary_function<QCalcWidget*, QString, bool>{
 public:
     bool operator()(QCalcWidget* btn, const QString& value) const
     {
-        return btn->Value() == value;
+        return btn->Value() == value && value != "";
     }
 };
 
