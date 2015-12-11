@@ -4,6 +4,7 @@
 #define WIDTH_BUT  35
 #define HEIGHT_BUT 35
 #define SPACING 5
+#define DEFAULT_DPI 96
 
 
 enum pnl{DIG = 0, OP, ABC, MEM, FUNC, SCALE, DRG, FUNCMODES, SERVBUTTONS, NOP};

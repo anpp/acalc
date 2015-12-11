@@ -25,6 +25,7 @@
 #include <QTime>
 #include <QMessageBox>
 #include <algorithm>
+#include <QSettings>
 
 #include "qcalcwidget.h"
 #include "common.h"
@@ -82,7 +83,7 @@ private:
     void FreeLayouts(void);
     void CreateWidgets();
     void CreateButtons(pnl atype);
-    void SetSizeOfWidgets();
+    void SetSizeOfWidgets(unsigned button_w, unsigned button_h);
     void ResizeWidgets(unsigned w, unsigned h, pnl atype);
     void UpdateDisplay(ud how_update = RESEMPTY);
     bool AddToken(const QString& stok);
@@ -172,6 +173,8 @@ private:
     bool bPasting;
 
     VIEWCALC viewCalc;
+
+    QSettings settings;
 
 public slots:
     void ProcessClick(const QString& sButtonValue);

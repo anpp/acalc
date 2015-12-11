@@ -18,14 +18,20 @@ inline unsigned GetHFButton(unsigned h)
 
 MainWidget::MainWidget(QWidget *parent) :
         QWidget(parent, Qt::WindowMinimizeButtonHint | Qt::WindowCloseButtonHint),
-    ui(new Ui::MainWidget)
+    ui(new Ui::MainWidget), settings("anp", "acalc")
 {
     ui->setupUi(this);
+
     mePress = NULL;
     meRelease = NULL;
-    button_w = WIDTH_BUT;
-    button_h = HEIGHT_BUT;
+
+    settings.beginGroup("/appearance");
+    button_w = settings.value("/button_width", WIDTH_BUT).toInt();
+    button_h = settings.value("/button_height", HEIGHT_BUT).toInt();
+    viewCalc = (VIEWCALC)settings.value("/view", ORIGINAL).toInt();
     spacing = SPACING;
+    settings.endGroup();
+
     this->setContentsMargins(spacing / 2, 0, spacing / 2, spacing / 2);
 
     curr_widget = NULL;
@@ -56,7 +62,7 @@ MainWidget::MainWidget(QWidget *parent) :
     SendKey(Qt::Key_F3); //Rad
     SendKey(Qt::Key_F6); //Dec
 
-    SetView(ORIGINAL);
+    SetView(viewCalc);
 
     UpdateDisplay();
     this->setFocus();
@@ -64,6 +70,12 @@ MainWidget::MainWidget(QWidget *parent) :
 
 MainWidget::~MainWidget()
 {
+    settings.beginGroup("/appearance");
+    settings.setValue("/button_width", button_w);
+    settings.setValue("/button_height", button_h);
+    settings.setValue("/view", viewCalc);
+    settings.endGroup();
+
     delete ui;
     delete parser;
     delete mePress;
@@ -929,7 +941,7 @@ void MainWidget::ResizeWidgets(unsigned w, unsigned h, pnl atype)
 }
 
 
-void MainWidget::SetSizeOfWidgets()
+void MainWidget::SetSizeOfWidgets(unsigned button_w, unsigned button_h)
 {
     int i_left, i_top, i_right, i_bottom;
     unsigned w_bord, h_bord;
@@ -995,20 +1007,24 @@ void MainWidget::ResizeAll(unsigned new_button_w, unsigned new_button_h)
 {
     button_w = new_button_w;
     button_h = new_button_h;
-    ResizeWidgets(new_button_w, new_button_h, DIG);
-    ResizeWidgets(new_button_w, new_button_h, OP);
-    ResizeWidgets(new_button_w, new_button_h, MEM);
-    ResizeWidgets(new_button_w, new_button_h, ABC);
 
-    SetSizeOfWidgets();
+    int logical_w = (QPaintDevice::logicalDpiX() * button_w) / DEFAULT_DPI;
+    int logical_h = (QPaintDevice::logicalDpiY() * button_h) / DEFAULT_DPI;
 
-    ResizeWidgets(button_func_w, GetHFButton(button_h), FUNC);
-    ResizeWidgets(button_func_w + 2, GetHFButton(button_h), SCALE);
-    ResizeWidgets(button_func_w + 2, GetHFButton(button_h), DRG);
-    ResizeWidgets(button_func_w + 2, GetHFButton(button_h), FUNCMODES);
+    ResizeWidgets(logical_w, logical_h, DIG);
+    ResizeWidgets(logical_w, logical_h, OP);
+    ResizeWidgets(logical_w, logical_h, MEM);
+    ResizeWidgets(logical_w, logical_h, ABC);
 
-    posMousePress.setX(button_w / 2);
-    posMousePress.setY(button_h / 3);
+    SetSizeOfWidgets(logical_w, logical_h);
+
+    ResizeWidgets(button_func_w, GetHFButton(logical_h), FUNC);
+    ResizeWidgets(button_func_w + 2, GetHFButton(logical_h), SCALE);
+    ResizeWidgets(button_func_w + 2, GetHFButton(logical_h), DRG);
+    ResizeWidgets(button_func_w + 2, GetHFButton(logical_h), FUNCMODES);
+
+    posMousePress.setX(logical_w / 2);
+    posMousePress.setY(logical_h / 3);
     ReCreateMouseEvents();
 }
 
@@ -1200,7 +1216,7 @@ void MainWidget::UpdateDisplay(ud how_update)
         wResult->setText(errors);
     else
         if(how_update == RES)
-            wResult->setText(tr("Result: ") + NumberToString(parser->GetResult(), 16));
+            wResult->setText("= " + NumberToString(parser->GetResult(), 16));
     else
             if(how_update == RESEMPTY)
 
