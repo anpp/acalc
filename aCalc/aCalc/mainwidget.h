@@ -60,7 +60,7 @@ class MainWidget : public QWidget
 public:
     explicit MainWidget(QWidget *parent = 0);
     ~MainWidget();
-    void ResizeAll(unsigned new_button_w = WIDTH_BUT, unsigned new_button_h = HEIGHT_BUT);
+    void ResizeAll(unsigned new_button_w, unsigned new_button_h);
     
 protected:
     void focusOutEvent(QFocusEvent* fe);

@@ -515,7 +515,7 @@ bool MainWidget::InitLayouts()
     default:
         return false;
     }
-    ResizeAll();
+    ResizeAll(button_w, button_h);
     return true;
 }
 
