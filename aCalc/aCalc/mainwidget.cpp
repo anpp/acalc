@@ -18,19 +18,15 @@ inline unsigned GetHFButton(unsigned h)
 
 MainWidget::MainWidget(QWidget *parent) :
         QWidget(parent, Qt::WindowMinimizeButtonHint | Qt::WindowCloseButtonHint),
-    ui(new Ui::MainWidget), settings("anp", "acalc")
+    ui(new Ui::MainWidget), settings(this, "anp", "acalc")
 {
     ui->setupUi(this);
 
     mePress = NULL;
     meRelease = NULL;
 
-    settings.beginGroup("/appearance");
-    button_w = settings.value("/button_width", WIDTH_BUT).toInt();
-    button_h = settings.value("/button_height", HEIGHT_BUT).toInt();
-    viewCalc = (VIEWCALC)settings.value("/view", ORIGINAL).toInt();
+    settings.loadSettings("/appearance");
     spacing = SPACING;
-    settings.endGroup();
 
     this->setContentsMargins(spacing / 2, 0, spacing / 2, spacing / 2);
 
@@ -62,7 +58,7 @@ MainWidget::MainWidget(QWidget *parent) :
     SendKey(Qt::Key_F3); //Rad
     SendKey(Qt::Key_F6); //Dec
 
-    SetView(viewCalc);
+    SetView(settings.viewCalc);
 
     UpdateDisplay();
     this->setFocus();
@@ -70,11 +66,7 @@ MainWidget::MainWidget(QWidget *parent) :
 
 MainWidget::~MainWidget()
 {
-    settings.beginGroup("/appearance");
-    settings.setValue("/button_width", button_w);
-    settings.setValue("/button_height", button_h);
-    settings.setValue("/view", viewCalc);
-    settings.endGroup();
+    settings.saveSettings("/appearance");
 
     delete ui;
     delete parser;
@@ -455,7 +447,7 @@ void MainWidget::SetLocale(int indexLang)
 
 void MainWidget::SetView(int indexView)
 {
-    viewCalc = (VIEWCALC)indexView;
+    settings.viewCalc = indexView;
     if(!InitLayouts())
         QApplication::exit(-1);
 
@@ -487,7 +479,7 @@ bool MainWidget::InitLayouts()
     QString rv;
 
     FreeLayouts();
-    switch(viewCalc)
+    switch(settings.viewCalc)
     {
     case ORIGINAL:
         foreach (QCalcWidget* widget, vec_btns) {
@@ -515,19 +507,19 @@ bool MainWidget::InitLayouts()
     default:
         return false;
     }
-    ResizeAll(button_w, button_h);
+    ResizeAll(settings.button_size.width(), settings.button_size.height());
     return true;
 }
 
 
 void MainWidget::FreeLayouts(void)
 {
-    wAbc->setVisible(viewCalc == ORIGINAL);
-    wMem->setVisible(viewCalc == ORIGINAL);
-    wCentral->setVisible(viewCalc == ORIGINAL);
-    wScale->setVisible(viewCalc == ORIGINAL);
-    wDRG->setVisible(viewCalc == ORIGINAL);
-    wFuncModes->setVisible(viewCalc == ORIGINAL);
+    wAbc->setVisible(settings.viewCalc == ORIGINAL);
+    wMem->setVisible(settings.viewCalc == ORIGINAL);
+    wCentral->setVisible(settings.viewCalc == ORIGINAL);
+    wScale->setVisible(settings.viewCalc == ORIGINAL);
+    wDRG->setVisible(settings.viewCalc == ORIGINAL);
+    wFuncModes->setVisible(settings.viewCalc == ORIGINAL);
 
     QString classname;
 
@@ -956,7 +948,7 @@ void MainWidget::SetSizeOfWidgets(unsigned button_w, unsigned button_h)
 
     wDigits->setFixedSize(button_w * 3 + spacing * 4 + w_bord, button_h * 4 + spacing * 5 + h_bord);
 
-    switch(viewCalc)
+    switch(settings.viewCalc)
     {
     case ORIGINAL:
         wOps->setFixedSize(button_w * 3 + spacing * 4 + w_bord, button_h * 4 + spacing * 5 + h_bord);
@@ -1005,11 +997,11 @@ void MainWidget::SetSizeOfWidgets(unsigned button_w, unsigned button_h)
 
 void MainWidget::ResizeAll(unsigned new_button_w, unsigned new_button_h)
 {
-    button_w = new_button_w;
-    button_h = new_button_h;
+    settings.button_size.setWidth(new_button_w);
+    settings.button_size.setHeight(new_button_h);
 
-    int logical_w = (QPaintDevice::logicalDpiX() * button_w) / DEFAULT_DPI;
-    int logical_h = (QPaintDevice::logicalDpiY() * button_h) / DEFAULT_DPI;
+    int logical_w = (QPaintDevice::logicalDpiX() * settings.button_size.width()) / DEFAULT_DPI;
+    int logical_h = (QPaintDevice::logicalDpiY() * settings.button_size.height()) / DEFAULT_DPI;
 
     ResizeWidgets(logical_w, logical_h, DIG);
     ResizeWidgets(logical_w, logical_h, OP);

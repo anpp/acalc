@@ -25,11 +25,11 @@
 #include <QTime>
 #include <QMessageBox>
 #include <algorithm>
-#include <QSettings>
 
 #include "qcalcwidget.h"
 #include "common.h"
 #include "../CalcIt/calcparser.h"
+#include "settings.h"
 
 #ifndef _QT4
     #define PACKAGE "aCalc"
@@ -154,8 +154,6 @@ private:
 
     int shape;
 
-    unsigned button_w;
-    unsigned button_h;
     unsigned button_func_w;
     unsigned spacing;
 
@@ -172,9 +170,7 @@ private:
 
     bool bPasting;
 
-    VIEWCALC viewCalc;
-
-    QSettings settings;
+    Settings settings;
 
 public slots:
     void ProcessClick(const QString& sButtonValue);

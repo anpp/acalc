@@ -5,7 +5,7 @@
 #-------------------------------------------------
 
 QT       += core gui widgets
-DEFINES -= HAVE_QT5
+DEFINES += HAVE_QT5
 
 TARGET = aCalc
 TEMPLATE = app
@@ -31,7 +31,8 @@ HEADERS  += mainwidget.h \
     ../CalcIt/def.h \
     buttexts.h \
     dialogsettings.h \
-    functors.h
+    functors.h \
+    settings.h
 
 FORMS    += mainwidget.ui
 
