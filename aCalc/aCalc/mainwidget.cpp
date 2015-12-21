@@ -25,7 +25,7 @@ MainWidget::MainWidget(QWidget *parent) :
     mePress = NULL;
     meRelease = NULL;
 
-    settings.loadSettings("/appearance");
+    settings.loadSettings();
     spacing = SPACING;
 
     this->setContentsMargins(spacing / 2, 0, spacing / 2, spacing / 2);
@@ -66,7 +66,7 @@ MainWidget::MainWidget(QWidget *parent) :
 
 MainWidget::~MainWidget()
 {
-    settings.saveSettings("/appearance");
+    settings.saveSettings();
 
     delete ui;
     delete parser;
