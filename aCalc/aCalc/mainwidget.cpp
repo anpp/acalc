@@ -291,10 +291,15 @@ void MainWidget::slotPaste(void)
 
 void MainWidget::slotSettings(void)
 {
-  DialogSettings settings;
-  settings.adjustSize();
-  settings.setFixedSize(settings.width(), settings.height());
-  settings.exec();
+  DialogSettings* dialog_settings = new DialogSettings(&settings, this);
+  dialog_settings->adjustSize();
+  //dialog_settings.setFixedSize(dialog_settings.width(), dialog_settings.height());
+  if (dialog_settings->exec() == QDialog::Accepted)
+  {
+      ResizeAll(settings.button_size.width(), settings.button_size.height());
+      settings.saveSettingsAppearance();
+  }
+  delete dialog_settings;
 }
 
 
