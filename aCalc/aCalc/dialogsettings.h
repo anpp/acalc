@@ -11,6 +11,10 @@
 #include "settings.h"
 
 
+
+//QString sTitles[] = {QObject::tr("Appearance")};
+
+
 class DialogSettings : public QDialog
 {
     Q_OBJECT

@@ -15,7 +15,7 @@ inline unsigned GetHFButton(unsigned h)
 }
 
 
-
+//----------------------------------------------------------------------------------------------------------------------
 MainWidget::MainWidget(QWidget *parent) :
         QWidget(parent, Qt::WindowMinimizeButtonHint | Qt::WindowCloseButtonHint),
     ui(new Ui::MainWidget), settings(this, "anp", "acalc")
@@ -58,12 +58,14 @@ MainWidget::MainWidget(QWidget *parent) :
     SendKey(Qt::Key_F3); //Rad
     SendKey(Qt::Key_F6); //Dec
 
-    SetView(settings.viewCalc);
+    SetView(settings.getSettingInt("appview"));
 
     UpdateDisplay();
     this->setFocus();
 }
 
+
+//----------------------------------------------------------------------------------------------------------------------
 MainWidget::~MainWidget()
 {
     settings.saveSettings();
@@ -75,7 +77,7 @@ MainWidget::~MainWidget()
 }
 
 
-
+//----------------------------------------------------------------------------------------------------------------------
 void MainWidget::ReCreateMouseEvents()
 {
     delete mePress;
@@ -88,7 +90,7 @@ void MainWidget::ReCreateMouseEvents()
 }
 
 
-
+//----------------------------------------------------------------------------------------------------------------------
 void MainWidget::CreateMenus(void)
 {
     MenuBar = new QMenuBar(this);
@@ -133,6 +135,7 @@ void MainWidget::CreateMenus(void)
 }
 
 
+//----------------------------------------------------------------------------------------------------------------------
 void MainWidget::SetLocaleTexts()
 {
     setWindowTitle(tr("Calculator"));
@@ -158,14 +161,14 @@ void MainWidget::SetLocaleTexts()
     foreach (QCalcWidget *w, vec_btns) {w->LoadWhatIsText();}
 }
 
-
+//----------------------------------------------------------------------------------------------------------------------
 void MainWidget::slotView(QAction* action)
 {
     if(action == NULL) return;
     SetView(ActionViews.indexOf(action));
 }
 
-
+//----------------------------------------------------------------------------------------------------------------------
 void MainWidget::slotLanguage(QAction* action)
 {
     if(action == NULL) return;
@@ -173,13 +176,14 @@ void MainWidget::slotLanguage(QAction* action)
 }
 
 
-
+//----------------------------------------------------------------------------------------------------------------------
 void MainWidget::slotAbout(void)
 {
     QMessageBox::about(this, tr("About"), tr("AboutProgram"));
 }
 
 
+//----------------------------------------------------------------------------------------------------------------------
 void MainWidget::slotCopy(void)
 {
   QString s = GetExpression();
@@ -193,7 +197,7 @@ void MainWidget::slotCopy(void)
   QApplication::clipboard()->setText(s);
 }
 
-
+//----------------------------------------------------------------------------------------------------------------------
 void MainWidget::slotPaste(void)
 {
 #ifndef _QT4
@@ -289,6 +293,7 @@ void MainWidget::slotPaste(void)
 }
 
 
+//----------------------------------------------------------------------------------------------------------------------
 void MainWidget::slotSettings(void)
 {
   DialogSettings* dialog_settings = new DialogSettings(&settings, this);
@@ -296,16 +301,15 @@ void MainWidget::slotSettings(void)
   //dialog_settings.setFixedSize(dialog_settings.width(), dialog_settings.height());
   if (dialog_settings->exec() == QDialog::Accepted)
   {
-      ResizeAll(settings.button_size.width(), settings.button_size.height());
-      settings.saveSettingsAppearance();
+      ResizeAll(settings.getSettingInt("button_width"), settings.getSettingInt("button_height"));
+      settings.saveSettingsByKind(appearance);
   }
   delete dialog_settings;
 }
 
 
-
-void
-MainWidget::SendKey(int Key, int Mod)
+//----------------------------------------------------------------------------------------------------------------------
+void MainWidget::SendKey(int Key, int Mod)
 {
     QKeyEvent *ke = new QKeyEvent(QEvent::KeyPress, Key, (Qt::KeyboardModifiers)Mod);
     QApplication::sendEvent(this, ke);
@@ -313,6 +317,7 @@ MainWidget::SendKey(int Key, int Mod)
 }
 
 
+//----------------------------------------------------------------------------------------------------------------------
 void MainWidget::ClickToWidget(QWidget *widget, int msec)
 {
     QTime time;
@@ -332,6 +337,7 @@ void MainWidget::ClickToWidget(QWidget *widget, int msec)
 }
 
 
+//----------------------------------------------------------------------------------------------------------------------
 void MainWidget::focusOutEvent(QFocusEvent * fe)
 {
     this->setFocus();
@@ -339,6 +345,7 @@ void MainWidget::focusOutEvent(QFocusEvent * fe)
 }
 
 
+//----------------------------------------------------------------------------------------------------------------------
 sKeyMod MainWidget::FindKeyByValue(QString value)
 {
     sKeyMod km = {0, 0};
@@ -349,7 +356,7 @@ sKeyMod MainWidget::FindKeyByValue(QString value)
 }
 
 
-
+//----------------------------------------------------------------------------------------------------------------------
 QCalcWidget* MainWidget::FindWidgetByKey(sKeyMod km)
 {
     QMap<sKeyMod, QCalcWidget*>::iterator mit = map_keys.find(km);
@@ -359,6 +366,7 @@ QCalcWidget* MainWidget::FindWidgetByKey(sKeyMod km)
 }
 
 
+//----------------------------------------------------------------------------------------------------------------------
 void MainWidget::keyPressEvent(QKeyEvent* pe)
 {
     QCalcWidget *cw;
@@ -378,6 +386,7 @@ void MainWidget::keyPressEvent(QKeyEvent* pe)
 }
 
 
+//----------------------------------------------------------------------------------------------------------------------
 void MainWidget::mousePressEvent(QMouseEvent *mpe)
 {
     mpe->accept();
@@ -392,6 +401,8 @@ void MainWidget::mousePressEvent(QMouseEvent *mpe)
 
 }
 
+
+//----------------------------------------------------------------------------------------------------------------------
 void MainWidget::slotMenuWhatIsThis(void)
 {
     if(curr_widget)
@@ -399,12 +410,14 @@ void MainWidget::slotMenuWhatIsThis(void)
 }
 
 
+//----------------------------------------------------------------------------------------------------------------------
 void MainWidget::slotEnterWhatIsThis(void)
 {
     QWhatsThis::enterWhatsThisMode();
 }
 
 
+//----------------------------------------------------------------------------------------------------------------------
 bool MainWidget::event(QEvent *e)
 {
     if((e->type() == QEvent::Leave || e->type() == QEvent::LeaveWhatsThisMode) && curr_widget)
@@ -414,6 +427,7 @@ bool MainWidget::event(QEvent *e)
 }
 
 
+//----------------------------------------------------------------------------------------------------------------------
 void MainWidget::InitLocale()
 {
 
@@ -440,6 +454,8 @@ void MainWidget::InitLocale()
     SetLocale(lang);
 }
 
+
+//----------------------------------------------------------------------------------------------------------------------
 void MainWidget::SetLocale(int indexLang)
 {
     LoadLocale(sShortLanguages[indexLang]);
@@ -450,9 +466,11 @@ void MainWidget::SetLocale(int indexLang)
     }
 }
 
+
+//----------------------------------------------------------------------------------------------------------------------
 void MainWidget::SetView(int indexView)
 {
-    settings.viewCalc = indexView;
+    settings.setSettingInt("appview", indexView);
     if(!InitLayouts())
         QApplication::exit(-1);
 
@@ -462,6 +480,8 @@ void MainWidget::SetView(int indexView)
     }
 }
 
+
+//----------------------------------------------------------------------------------------------------------------------
 void MainWidget::LoadLocale(const QString& sloc)
 {
     QString localePath = ":/locales";
@@ -477,14 +497,14 @@ void MainWidget::LoadLocale(const QString& sloc)
 }
 
 
-
+//----------------------------------------------------------------------------------------------------------------------
 bool MainWidget::InitLayouts()
 {
     QCalcWidget* rw;
     QString rv;
 
     FreeLayouts();
-    switch(settings.viewCalc)
+    switch(settings.getSettingInt("appview"))
     {
     case ORIGINAL:
         foreach (QCalcWidget* widget, vec_btns) {
@@ -512,19 +532,20 @@ bool MainWidget::InitLayouts()
     default:
         return false;
     }
-    ResizeAll(settings.button_size.width(), settings.button_size.height());
+    ResizeAll(settings.getSettingInt("button_width"), settings.getSettingInt("button_height"));
     return true;
 }
 
 
+//----------------------------------------------------------------------------------------------------------------------
 void MainWidget::FreeLayouts(void)
 {
-    wAbc->setVisible(settings.viewCalc == ORIGINAL);
-    wMem->setVisible(settings.viewCalc == ORIGINAL);
-    wCentral->setVisible(settings.viewCalc == ORIGINAL);
-    wScale->setVisible(settings.viewCalc == ORIGINAL);
-    wDRG->setVisible(settings.viewCalc == ORIGINAL);
-    wFuncModes->setVisible(settings.viewCalc == ORIGINAL);
+    wAbc->setVisible(settings.getSettingInt("appview") == ORIGINAL);
+    wMem->setVisible(settings.getSettingInt("appview") == ORIGINAL);
+    wCentral->setVisible(settings.getSettingInt("appview") == ORIGINAL);
+    wScale->setVisible(settings.getSettingInt("appview") == ORIGINAL);
+    wDRG->setVisible(settings.getSettingInt("appview") == ORIGINAL);
+    wFuncModes->setVisible(settings.getSettingInt("appview") == ORIGINAL);
 
     QString classname;
 
@@ -537,6 +558,7 @@ void MainWidget::FreeLayouts(void)
 }
 
 
+//----------------------------------------------------------------------------------------------------------------------
 void MainWidget::FillLayoutWidgets(QLayout *l, pnl atype, bool bGrid)
 {
     stTypeLayout TL = {l, atype, bGrid};
@@ -544,6 +566,7 @@ void MainWidget::FillLayoutWidgets(QLayout *l, pnl atype, bool bGrid)
 }
 
 
+//----------------------------------------------------------------------------------------------------------------------
 void MainWidget::LayoutOriginal(void)
 {
     QGridLayout *lFuncs = new QGridLayout();
@@ -630,7 +653,7 @@ void MainWidget::LayoutOriginal(void)
 }
 
 
-
+//----------------------------------------------------------------------------------------------------------------------
 void MainWidget::LayoutSimple(void)
 {
     QGridLayout *lDisplay = new QGridLayout();
@@ -686,13 +709,14 @@ void MainWidget::LayoutSimple(void)
 }
 
 
+//----------------------------------------------------------------------------------------------------------------------
 void MainWidget::LayoutProgrammable(void)
 {
 //
 }
 
 
-
+//----------------------------------------------------------------------------------------------------------------------
 void MainWidget::InitModesLayouts()
 {
     QHBoxLayout *lModeBottom = new QHBoxLayout();
@@ -740,7 +764,7 @@ void MainWidget::InitModesLayouts()
 
 
 
-
+//----------------------------------------------------------------------------------------------------------------------
 void MainWidget::CreateWidgets()
 {
     wDisplay = new QFrame(this);
@@ -792,6 +816,8 @@ void MainWidget::CreateWidgets()
     CreateButtons(SERVBUTTONS);
 }
 
+
+//----------------------------------------------------------------------------------------------------------------------
 void MainWidget::CreateButtons(pnl atype)
 {
     QString *s;
@@ -931,13 +957,14 @@ void MainWidget::CreateButtons(pnl atype)
 }
 
 
-
+//----------------------------------------------------------------------------------------------------------------------
 void MainWidget::ResizeWidgets(unsigned w, unsigned h, pnl atype)
 {
     foreach (QCalcWidget* widget, vec_btns) { if(widget->GetType() == atype) widget->SetSize(w, h);}
 }
 
 
+//----------------------------------------------------------------------------------------------------------------------
 void MainWidget::SetSizeOfWidgets(unsigned button_w, unsigned button_h)
 {
     int i_left, i_top, i_right, i_bottom;
@@ -953,7 +980,7 @@ void MainWidget::SetSizeOfWidgets(unsigned button_w, unsigned button_h)
 
     wDigits->setFixedSize(button_w * 3 + spacing * 4 + w_bord, button_h * 4 + spacing * 5 + h_bord);
 
-    switch(settings.viewCalc)
+    switch(settings.getSettingInt("appview"))
     {
     case ORIGINAL:
         wOps->setFixedSize(button_w * 3 + spacing * 4 + w_bord, button_h * 4 + spacing * 5 + h_bord);
@@ -1000,13 +1027,15 @@ void MainWidget::SetSizeOfWidgets(unsigned button_w, unsigned button_h)
 }
 
 
+//----------------------------------------------------------------------------------------------------------------------
 void MainWidget::ResizeAll(unsigned new_button_w, unsigned new_button_h)
 {
-    settings.button_size.setWidth(new_button_w);
-    settings.button_size.setHeight(new_button_h);
+    settings.setSettingInt("button_width", new_button_w);
+    settings.setSettingInt("button_height", new_button_h);
 
-    int logical_w = (QPaintDevice::logicalDpiX() * settings.button_size.width()) / DEFAULT_DPI;
-    int logical_h = (QPaintDevice::logicalDpiY() * settings.button_size.height()) / DEFAULT_DPI;
+
+    int logical_w = (QPaintDevice::logicalDpiX() * settings.getSettingInt("button_width")) / DEFAULT_DPI;
+    int logical_h = (QPaintDevice::logicalDpiY() * settings.getSettingInt("button_height")) / DEFAULT_DPI;
 
     ResizeWidgets(logical_w, logical_h, DIG);
     ResizeWidgets(logical_w, logical_h, OP);
@@ -1025,6 +1054,8 @@ void MainWidget::ResizeAll(unsigned new_button_w, unsigned new_button_h)
     ReCreateMouseEvents();
 }
 
+
+//----------------------------------------------------------------------------------------------------------------------
 bool MainWidget::AddToken(const QString& stok)
 {
     bool res;
@@ -1041,6 +1072,7 @@ bool MainWidget::AddToken(const QString& stok)
 }
 
 
+//----------------------------------------------------------------------------------------------------------------------
 QString MainWidget::NumberToString(double n, int precision)
 {
 #ifdef _QT4
@@ -1050,6 +1082,8 @@ QString MainWidget::NumberToString(double n, int precision)
 #endif
 }
 
+
+//----------------------------------------------------------------------------------------------------------------------
 void MainWidget::ProcessClick(const QString& sButtonValue)
 {
     if(sButtonValue == "=")
@@ -1073,6 +1107,7 @@ void MainWidget::ProcessClick(const QString& sButtonValue)
 }
 
 
+//----------------------------------------------------------------------------------------------------------------------
 void MainWidget::ProcessClickMem(const QString& sButtonValue)
 {
     QString stok = sButtonValue;
@@ -1111,6 +1146,7 @@ void MainWidget::ProcessClickMem(const QString& sButtonValue)
 }
 
 
+//----------------------------------------------------------------------------------------------------------------------
 void MainWidget::ProcessClickScale(const QString& sButtonValue)
 {
     QString scale = sButtonValue;
@@ -1127,6 +1163,7 @@ void MainWidget::ProcessClickScale(const QString& sButtonValue)
 }
 
 
+//----------------------------------------------------------------------------------------------------------------------
 void MainWidget::ProcessClickServ(const QString& sButtonValue)
 {
     if(sButtonValue == "Back")
@@ -1140,6 +1177,7 @@ void MainWidget::ProcessClickServ(const QString& sButtonValue)
 }
 
 
+//----------------------------------------------------------------------------------------------------------------------
 void MainWidget::ProcessClickDRG(const QString& sButtonValue)
 {
 
@@ -1157,6 +1195,7 @@ void MainWidget::ProcessClickDRG(const QString& sButtonValue)
 }
 
 
+//----------------------------------------------------------------------------------------------------------------------
 void MainWidget::ProcessClickFuncModes(const QString& sModeValue)
 {
     QCalcWidget* w = FindButtonByValue(sModeValue);
@@ -1167,6 +1206,7 @@ void MainWidget::ProcessClickFuncModes(const QString& sModeValue)
 }
 
 
+//----------------------------------------------------------------------------------------------------------------------
 void MainWidget::SetMode(SMODES mode, bool on)
 {
     std::vector<QCalcWidget*> btns_fm;
@@ -1180,6 +1220,7 @@ void MainWidget::SetMode(SMODES mode, bool on)
 }
 
 
+//----------------------------------------------------------------------------------------------------------------------
 QString MainWidget::GetExpression(bool bHtml)
 {
 #ifdef _QT4
@@ -1190,6 +1231,7 @@ QString MainWidget::GetExpression(bool bHtml)
 }
 
 
+//----------------------------------------------------------------------------------------------------------------------
 QString MainWidget::GetErrors(void)
 {
 #ifdef _QT4
@@ -1200,6 +1242,7 @@ QString MainWidget::GetErrors(void)
 }
 
 
+//----------------------------------------------------------------------------------------------------------------------
 void MainWidget::UpdateDisplay(ud how_update)
 {
     QString expression;
@@ -1223,6 +1266,7 @@ void MainWidget::UpdateDisplay(ud how_update)
 }
 
 
+//----------------------------------------------------------------------------------------------------------------------
 void MainWidget::Alert(void)
 {
     if(!bPasting)
@@ -1230,7 +1274,7 @@ void MainWidget::Alert(void)
 }
 
 
-
+//----------------------------------------------------------------------------------------------------------------------
 QCalcWidget* MainWidget::FindButtonByValue(QString value)
 {
     std::vector<QCalcWidget*>::iterator it = std::find_if(vec_btns.begin(), vec_btns.end(), bind2nd(buttonIsValue(), value));
@@ -1238,6 +1282,7 @@ QCalcWidget* MainWidget::FindButtonByValue(QString value)
 }
 
 
+//----------------------------------------------------------------------------------------------------------------------
 void MainWidget::AssignKeyToButton(QString button_value, int key, int mod)
 {
     QCalcWidget *calcwidget = NULL;
@@ -1255,6 +1300,7 @@ void MainWidget::AssignKeyToButton(QString button_value, int key, int mod)
 }
 
 
+//----------------------------------------------------------------------------------------------------------------------
 void MainWidget::DefaultKeysMap(void)
 {
     AssignKeyToButton("0", Qt::Key_0);

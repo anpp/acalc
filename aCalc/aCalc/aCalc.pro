@@ -18,7 +18,8 @@ SOURCES += main.cpp\
     ../CalcIt/token.cpp \
     ../CalcIt/variable.cpp \
     ../CalcIt/calcparser.cpp \
-    dialogsettings.cpp
+    dialogsettings.cpp \
+    settings.cpp
 
 HEADERS  += mainwidget.h \
     common.h \

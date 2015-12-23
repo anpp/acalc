@@ -5,70 +5,52 @@
 #include <QWidget>
 #include <QSize>
 #include <QPoint>
+#include <QVector>
+#include <QMap>
 #include "common.h"
 
-struct Settings {
-    Settings(QWidget* widget_owner, const QString &organization, const QString &application) :
-        owner(widget_owner), qsettings(organization, application)
-    {
-        button_size.setWidth(WIDTH_BUT);
-        button_size.setHeight(HEIGHT_BUT);
-        viewCalc = ORIGINAL;
-    }
-    void loadSettingsAppearance(){
-        qsettings.beginGroup("/appearance");
-        button_size.setWidth(qsettings.value("/button_width", WIDTH_BUT).toInt());
-        button_size.setHeight(qsettings.value("/button_height", HEIGHT_BUT).toInt());
-        viewCalc = qsettings.value("/view", ORIGINAL).toInt();
-        qsettings.endGroup();
-    }
 
-    void saveSettingsAppearance(){
-        qsettings.beginGroup("/appearance");
-        qsettings.setValue("/button_width", button_size.width());
-        qsettings.setValue("/button_height", button_size.height());
-        qsettings.setValue("/view", viewCalc);
-        qsettings.endGroup();
-    }
+enum kindset {appearance = 0, misc, screen};
+enum typeset {integer = 0, string};
 
-    void loadSettingsScreen(){
-        qsettings.beginGroup("/screen");
-        if(owner)
-        {
-            screen_position.setX(qsettings.value("/posx", screen_position.x()).toInt());
-            screen_position.setY(qsettings.value("/posy", screen_position.y()).toInt());
-            owner->move(screen_position);
-        }
-        qsettings.endGroup();
-    }
+struct Setting
+{
+    QString title;
+    kindset kind;
+    typeset type;
+    QString default_value;
+    QString value;
+};
 
-    void saveSettingsScreen(){
-        qsettings.beginGroup("/screen");
-        if(owner)
-        {
-            qsettings.setValue("/posx", owner->geometry().x());
-            qsettings.setValue("/posy", owner->geometry().y());
-        }
-        qsettings.endGroup();
-    }
+
+class Settings {
+    QWidget* owner;
+    QSettings qsettings;
+    QVector<Setting*> vec_settings;
+    QMap<QString, Setting*> mapset;
+
+public:
+    Settings(QWidget* widget_owner, const QString &organization, const QString &application);
+
+    void loadSettingsByKind(kindset ks);
+    void saveSettingsByKind(kindset ks);
+
+    void loadSettingsScreen();
+    void saveSettingsScreen();
+
+    int getSettingInt(const QString& title);
+    void setSettingInt(const QString& title, int value);
+
 
     void loadSettings(){
-        loadSettingsAppearance();
+        loadSettingsByKind(appearance);
         loadSettingsScreen();
     }
 
     void saveSettings(){
-        saveSettingsAppearance();
+        saveSettingsByKind(appearance);
         saveSettingsScreen();
     }
-
-    QSize button_size;
-    QPoint screen_position;
-    int viewCalc;
-
-private:
-    QWidget* owner;
-    QSettings qsettings;
 };
 
 #endif // SETTINGS

@@ -15,8 +15,8 @@ DialogSettings::DialogSettings(Settings* app_settings, QWidget *parent) :
     tblSize.setCellWidget(1, 0, new QSpinBox(this));
     if(settings)
     {
-        ((QSpinBox*)tblSize.cellWidget(0, 0))->setValue(settings->button_size.width());
-        ((QSpinBox*)tblSize.cellWidget(1, 0))->setValue(settings->button_size.height());
+        ((QSpinBox*)tblSize.cellWidget(0, 0))->setValue(settings->getSettingInt("button_width"));
+        ((QSpinBox*)tblSize.cellWidget(1, 0))->setValue(settings->getSettingInt("button_height"));
     }
 
     tblSize.horizontalHeader()->resizeContentsPrecision();
@@ -40,8 +40,8 @@ void DialogSettings::slotOk()
 {
     if(settings)
     {
-        settings->button_size.setWidth(((QSpinBox*)tblSize.cellWidget(0, 0))->value());
-        settings->button_size.setHeight(((QSpinBox*)tblSize.cellWidget(1, 0))->value());
+        settings->setSettingInt("button_width",((QSpinBox*)tblSize.cellWidget(0, 0))->value());
+        settings->setSettingInt("button_height",((QSpinBox*)tblSize.cellWidget(1, 0))->value());
     }
     accept();
 }
