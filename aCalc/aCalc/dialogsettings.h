@@ -44,6 +44,7 @@ private:
 
     QVector<DSGrid*> vec_tbl;
     QSet<kindset> set_kindset;
+    QMap<QString, QWidget*> mapSetControl;
 
 public slots:
     void slotOk();

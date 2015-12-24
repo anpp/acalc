@@ -63,6 +63,10 @@ void DialogSettings::loadSettingsGrids()
         sl_labels_horz << settings->getSettingsName(ks);
         dsg->tblSettings.setVerticalHeaderLabels(sl_labels_vert);
         dsg->tblSettings.setHorizontalHeaderLabels(sl_labels_horz);
+        dsg->tblSettings.verticalHeader()->setFixedWidth(100);
+        dsg->tblSettings.horizontalHeader()->setDefaultAlignment(Qt::AlignLeft);
+        dsg->tblSettings.horizontalHeader()->setSectionResizeMode(QHeaderView::ResizeToContents);
+
     }
 }
 
@@ -78,11 +82,13 @@ void DialogSettings::setEditor(QTableWidget* tblSettings, Setting* s, int row)
         spinbox = new QSpinBox(this);
         tblSettings->setCellWidget(row, 0, spinbox);
         spinbox->setValue(settings->getSetting(s->title).toInt());
+        mapSetControl[s->title] = spinbox;
         break;
     case text:
         edit = new QLineEdit(this);
         tblSettings->setCellWidget(row, 0, edit);
         edit->setText(settings->getSetting(s->title).toString());
+        mapSetControl[s->title] = edit;
         break;
     default:
         break;
@@ -91,12 +97,17 @@ void DialogSettings::setEditor(QTableWidget* tblSettings, Setting* s, int row)
 
 //----------------------------------------------------------------------------------------------------------------------
 void DialogSettings::slotOk()
-{/*
+{
     if(settings)
     {
-        settings->setSetting("button_width",((QSpinBox*)tblSize.cellWidget(0, 0))->value());
-        settings->setSetting("button_height",((QSpinBox*)tblSize.cellWidget(1, 0))->value());
+        foreach(QString s, mapSetControl.keys())
+        {
+            QString classname = mapSetControl[s]->metaObject()->className();
+            if(classname == "QSpinBox")
+                settings->setSetting(s, ((QSpinBox*)mapSetControl[s])->value());
+            if(classname == "QLineEdit")
+                settings->setSetting(s, ((QLineEdit*)mapSetControl[s])->text().toInt());
+        }
     }
-    */
     accept();
 }

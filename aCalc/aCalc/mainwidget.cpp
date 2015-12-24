@@ -297,8 +297,6 @@ void MainWidget::slotPaste(void)
 void MainWidget::slotSettings(void)
 {
   DialogSettings* dialog_settings = new DialogSettings(&settings, this);
-  dialog_settings->adjustSize();
-  //dialog_settings.setFixedSize(dialog_settings.width(), dialog_settings.height());
   if (dialog_settings->exec() == QDialog::Accepted)
   {
       ResizeAll(settings.getSetting("button_width").toInt(), settings.getSetting("button_height").toInt());
