@@ -58,7 +58,7 @@ MainWidget::MainWidget(QWidget *parent) :
     SendKey(Qt::Key_F3); //Rad
     SendKey(Qt::Key_F6); //Dec
 
-    SetView(settings.getSettingInt("appview"));
+    SetView(settings.getSetting("appview").toInt());
 
     UpdateDisplay();
     this->setFocus();
@@ -301,7 +301,7 @@ void MainWidget::slotSettings(void)
   //dialog_settings.setFixedSize(dialog_settings.width(), dialog_settings.height());
   if (dialog_settings->exec() == QDialog::Accepted)
   {
-      ResizeAll(settings.getSettingInt("button_width"), settings.getSettingInt("button_height"));
+      ResizeAll(settings.getSetting("button_width").toInt(), settings.getSetting("button_height").toInt());
       settings.saveSettingsByKind(appearance);
   }
   delete dialog_settings;
@@ -470,7 +470,7 @@ void MainWidget::SetLocale(int indexLang)
 //----------------------------------------------------------------------------------------------------------------------
 void MainWidget::SetView(int indexView)
 {
-    settings.setSettingInt("appview", indexView);
+    settings.setSetting("appview", indexView);
     if(!InitLayouts())
         QApplication::exit(-1);
 
@@ -504,7 +504,7 @@ bool MainWidget::InitLayouts()
     QString rv;
 
     FreeLayouts();
-    switch(settings.getSettingInt("appview"))
+    switch(settings.getSetting("appview").toInt())
     {
     case ORIGINAL:
         foreach (QCalcWidget* widget, vec_btns) {
@@ -532,7 +532,7 @@ bool MainWidget::InitLayouts()
     default:
         return false;
     }
-    ResizeAll(settings.getSettingInt("button_width"), settings.getSettingInt("button_height"));
+    ResizeAll(settings.getSetting("button_width").toInt(), settings.getSetting("button_height").toInt());
     return true;
 }
 
@@ -540,12 +540,13 @@ bool MainWidget::InitLayouts()
 //----------------------------------------------------------------------------------------------------------------------
 void MainWidget::FreeLayouts(void)
 {
-    wAbc->setVisible(settings.getSettingInt("appview") == ORIGINAL);
-    wMem->setVisible(settings.getSettingInt("appview") == ORIGINAL);
-    wCentral->setVisible(settings.getSettingInt("appview") == ORIGINAL);
-    wScale->setVisible(settings.getSettingInt("appview") == ORIGINAL);
-    wDRG->setVisible(settings.getSettingInt("appview") == ORIGINAL);
-    wFuncModes->setVisible(settings.getSettingInt("appview") == ORIGINAL);
+    int appview = settings.getSetting("appview").toInt();
+    wAbc->setVisible(appview == ORIGINAL);
+    wMem->setVisible(appview == ORIGINAL);
+    wCentral->setVisible(appview == ORIGINAL);
+    wScale->setVisible(appview == ORIGINAL);
+    wDRG->setVisible(appview == ORIGINAL);
+    wFuncModes->setVisible(appview == ORIGINAL);
 
     QString classname;
 
@@ -980,7 +981,7 @@ void MainWidget::SetSizeOfWidgets(unsigned button_w, unsigned button_h)
 
     wDigits->setFixedSize(button_w * 3 + spacing * 4 + w_bord, button_h * 4 + spacing * 5 + h_bord);
 
-    switch(settings.getSettingInt("appview"))
+    switch(settings.getSetting("appview").toInt())
     {
     case ORIGINAL:
         wOps->setFixedSize(button_w * 3 + spacing * 4 + w_bord, button_h * 4 + spacing * 5 + h_bord);
@@ -1030,12 +1031,12 @@ void MainWidget::SetSizeOfWidgets(unsigned button_w, unsigned button_h)
 //----------------------------------------------------------------------------------------------------------------------
 void MainWidget::ResizeAll(unsigned new_button_w, unsigned new_button_h)
 {
-    settings.setSettingInt("button_width", new_button_w);
-    settings.setSettingInt("button_height", new_button_h);
+    settings.setSetting("button_width", new_button_w);
+    settings.setSetting("button_height", new_button_h);
 
 
-    int logical_w = (QPaintDevice::logicalDpiX() * settings.getSettingInt("button_width")) / DEFAULT_DPI;
-    int logical_h = (QPaintDevice::logicalDpiY() * settings.getSettingInt("button_height")) / DEFAULT_DPI;
+    int logical_w = (QPaintDevice::logicalDpiX() * settings.getSetting("button_width").toInt()) / DEFAULT_DPI;
+    int logical_h = (QPaintDevice::logicalDpiY() * settings.getSetting("button_height").toInt()) / DEFAULT_DPI;
 
     ResizeWidgets(logical_w, logical_h, DIG);
     ResizeWidgets(logical_w, logical_h, OP);

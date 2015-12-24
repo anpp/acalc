@@ -8,11 +8,18 @@
 #include <QTableWidget>
 #include <QHeaderView>
 #include <QSpinBox>
+#include <QVector>
+#include <QSet>
+#include <QLineEdit>
 #include "settings.h"
 
 
 
-//QString sTitles[] = {QObject::tr("Appearance")};
+struct DSGrid
+{
+    kindset kind;
+    QTableWidget tblSettings;
+};
 
 
 class DialogSettings : public QDialog
@@ -26,12 +33,17 @@ public:
 
 
 private:
+    void loadSettingsGrids();
+    void setEditor(QTableWidget* tblSettings, Setting* s, int row);
+
     QVBoxLayout vl;
     QHBoxLayout hl;
     QPushButton btnOk;
-    QPushButton btnCancel;
-    QTableWidget tblSize;
+    QPushButton btnCancel;    
     Settings* settings;
+
+    QVector<DSGrid*> vec_tbl;
+    QSet<kindset> set_kindset;
 
 public slots:
     void slotOk();

@@ -1,47 +1,102 @@
 #include "dialogsettings.h"
 
+
+//----------------------------------------------------------------------------------------------------------------------
 DialogSettings::DialogSettings(Settings* app_settings, QWidget *parent) :
-    QDialog(parent), btnOk("Ok", this), btnCancel("Cancel", this), tblSize(2, 1)
+    QDialog(parent), btnOk("Ok", this), btnCancel("Cancel", this)
 {
     this->settings = app_settings;
-    QStringList header_labels_vert, header_labels_horz;
-    header_labels_vert <<"Width"<<"Height";
-    header_labels_horz <<"";
 
-    tblSize.setHorizontalHeaderLabels(header_labels_horz);
-    tblSize.setVerticalHeaderLabels(header_labels_vert);
+    loadSettingsGrids();
 
-    tblSize.setCellWidget(0, 0, new QSpinBox(this));
-    tblSize.setCellWidget(1, 0, new QSpinBox(this));
-    if(settings)
-    {
-        ((QSpinBox*)tblSize.cellWidget(0, 0))->setValue(settings->getSettingInt("button_width"));
-        ((QSpinBox*)tblSize.cellWidget(1, 0))->setValue(settings->getSettingInt("button_height"));
-    }
+    foreach (DSGrid* dsg, vec_tbl) { vl.addWidget(&dsg->tblSettings);}
 
-    tblSize.horizontalHeader()->resizeContentsPrecision();
-
+    vl.setSpacing(SPACING);
+    vl.setMargin(SPACING);
     hl.addWidget(&btnOk);
     hl.addWidget(&btnCancel);
     this->setLayout(&vl);
-    vl.addWidget(&tblSize);
     vl.addLayout(&hl);
 
     connect(&btnOk, SIGNAL(clicked()), SLOT(slotOk()));
     connect(&btnCancel, SIGNAL(clicked()), SLOT(reject()));
 }
 
+
+//----------------------------------------------------------------------------------------------------------------------
 DialogSettings::~DialogSettings()
 {
 
 }
 
-void DialogSettings::slotOk()
+
+//----------------------------------------------------------------------------------------------------------------------
+void DialogSettings::loadSettingsGrids()
 {
+    if (!settings) return;
+
+    DSGrid* dsg;
+    QStringList sl_labels_vert, sl_labels_horz;
+    int n_rows;
+
+    foreach(Setting* s, settings->getListSettings()){ set_kindset << s->kind;}
+
+    foreach(kindset ks, set_kindset)
+    {
+        n_rows = 0;
+        sl_labels_vert.clear();
+        sl_labels_horz.clear();
+
+        dsg = new DSGrid;
+        dsg->kind = ks;
+        dsg->tblSettings.setColumnCount(1);
+        vec_tbl.append(dsg);
+        foreach(Setting* s, settings->getListSettings())
+        {
+            if (ks == s->kind)
+            {
+                sl_labels_vert << s->title;
+                dsg->tblSettings.setRowCount(++n_rows);
+                setEditor(&dsg->tblSettings, s, dsg->tblSettings.rowCount() - 1);
+            }
+        }
+        sl_labels_horz << settings->getSettingsName(ks);
+        dsg->tblSettings.setVerticalHeaderLabels(sl_labels_vert);
+        dsg->tblSettings.setHorizontalHeaderLabels(sl_labels_horz);
+    }
+}
+
+
+//----------------------------------------------------------------------------------------------------------------------
+void DialogSettings::setEditor(QTableWidget* tblSettings, Setting* s, int row)
+{
+    if(!tblSettings) return;
+    QSpinBox* spinbox = NULL;
+    QLineEdit* edit = NULL;
+    switch (s->editor) {
+    case spin:
+        spinbox = new QSpinBox(this);
+        tblSettings->setCellWidget(row, 0, spinbox);
+        spinbox->setValue(settings->getSetting(s->title).toInt());
+        break;
+    case text:
+        edit = new QLineEdit(this);
+        tblSettings->setCellWidget(row, 0, edit);
+        edit->setText(settings->getSetting(s->title).toString());
+        break;
+    default:
+        break;
+    }
+}
+
+//----------------------------------------------------------------------------------------------------------------------
+void DialogSettings::slotOk()
+{/*
     if(settings)
     {
-        settings->setSettingInt("button_width",((QSpinBox*)tblSize.cellWidget(0, 0))->value());
-        settings->setSettingInt("button_height",((QSpinBox*)tblSize.cellWidget(1, 0))->value());
+        settings->setSetting("button_width",((QSpinBox*)tblSize.cellWidget(0, 0))->value());
+        settings->setSetting("button_height",((QSpinBox*)tblSize.cellWidget(1, 0))->value());
     }
+    */
     accept();
 }

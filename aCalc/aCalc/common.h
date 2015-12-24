@@ -1,6 +1,7 @@
 #ifndef COMMON_H
 #define COMMON_H
 
+
 #define WIDTH_BUT  35
 #define HEIGHT_BUT 35
 #define SPACING 5
