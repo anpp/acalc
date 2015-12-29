@@ -43,6 +43,8 @@ void DialogSettings::loadSettingsGrids()
 
     foreach(kindset ks, set_kindset)
     {
+        if(ks == screen) continue;
+
         n_rows = 0;
         sl_labels_vert.clear();
         sl_labels_horz.clear();
@@ -66,6 +68,11 @@ void DialogSettings::loadSettingsGrids()
         dsg->tblSettings.verticalHeader()->setFixedWidth(100);
         dsg->tblSettings.horizontalHeader()->setDefaultAlignment(Qt::AlignLeft);
         dsg->tblSettings.horizontalHeader()->setSectionResizeMode(QHeaderView::ResizeToContents);
+
+        dsg->tblSettings.setFixedHeight(dsg->tblSettings.rowHeight(0) * dsg->tblSettings.rowCount() +
+                                        dsg->tblSettings.horizontalHeader()->height() +
+                                        dsg->tblSettings.contentsMargins().top() +
+                                        dsg->tblSettings.contentsMargins().bottom());
 
     }
 }
