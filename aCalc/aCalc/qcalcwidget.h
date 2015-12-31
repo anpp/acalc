@@ -49,7 +49,7 @@ class QCalcWidget: public QObject
     Q_OBJECT
 public:
     QCalcWidget(QWidget *widget, unsigned i, unsigned j, QString key = "", QString value = "", unsigned n_rows = 1, unsigned n_cols = 1, bool bsoftsize = false);
-    QCalcWidget(QWidget *widget, unsigned i, unsigned j, pnl atype, QString key = "", QString value = "", unsigned n_rows = 1, unsigned n_cols = 1, bool bsoftsize = false);
+    QCalcWidget(QWidget *widget, unsigned i, unsigned j, Pnl atype, QString key = "", QString value = "", unsigned n_rows = 1, unsigned n_cols = 1, bool bsoftsize = false);
     void SetTextColor(QColor *color);
     void SetSize(unsigned w, unsigned h);
     void SetAltTexts(QString altval, QString altkey);
@@ -60,9 +60,9 @@ public:
     bool Hypable(void) {return hyp;}
     bool Invable(void) {return inv;}
     void SetText(const QString& text);
-    void SetType(pnl atype);
-    pnl GetType(void) {return type_btn;}
-    pnl GetSavedType(void) {return saved_type;}
+    void SetType(Pnl atype);
+    Pnl GetType(void) {return type_btn;}
+    Pnl GetSavedType(void) {return saved_type;}
     void SetNopable(bool anop) {nopable = anop;}
     bool IsNopable(void) {return nopable;}
     void SetReplaceValue(const QString& s) {sReplaceValue = s;}
@@ -89,8 +89,8 @@ private:
     bool bsoftsize;
     bool hyp_mode;
     bool inv_mode;
-    pnl type_btn;
-    pnl saved_type;
+    Pnl type_btn;
+    Pnl saved_type;
     bool nopable;
     QString sReplaceValue;
     bool wasReplace;

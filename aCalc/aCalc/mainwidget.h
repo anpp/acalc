@@ -75,17 +75,17 @@ private:
     void CreateMenus(void);
     void SetLocaleTexts(void);
     bool InitLayouts();
-    void FillLayoutWidgets(QLayout *l, pnl atype, bool bGrid = true);
+    void FillLayoutWidgets(QLayout *l, Pnl atype, bool bGrid = true);
     void LayoutOriginal(void);
     void LayoutSimple(void);
     void LayoutProgrammable(void);
     void InitModesLayouts();
     void FreeLayouts(void);
     void CreateWidgets();
-    void CreateButtons(pnl atype);
+    void CreateButtons(Pnl atype);
     void SetSizeOfWidgets(unsigned button_w, unsigned button_h);
-    void ResizeWidgets(unsigned w, unsigned h, pnl atype);
-    void UpdateDisplay(ud how_update = RESEMPTY);
+    void ResizeWidgets(unsigned w, unsigned h, Pnl atype);
+    void UpdateDisplay(ud how_update = ud::Empty);
     bool AddToken(const QString& stok);
     QString GetExpression(bool bHtml = false);
     QString GetErrors(void);
@@ -97,7 +97,7 @@ private:
     sKeyMod FindKeyByValue(QString value);
     void SendKey(int Key, int Mod = 0);
     void ClickToWidget(QWidget *widget, int msec = 30);
-    void SetMode(SMODES mode, bool on);
+    void SetMode(SModes mode, bool on);
     void Alert(void);
     void ReCreateMouseEvents();
 

@@ -8,7 +8,7 @@ QCalcWidget::QCalcWidget(QWidget *widget, unsigned i, unsigned j, QString key, Q
     SetSize(WIDTH_BUT, HEIGHT_BUT);
 }
 
-QCalcWidget::QCalcWidget(QWidget *widget, unsigned i, unsigned j, pnl atype, QString key, QString value, unsigned n_rows, unsigned n_cols, bool bsoftsize)
+QCalcWidget::QCalcWidget(QWidget *widget, unsigned i, unsigned j, Pnl atype, QString key, QString value, unsigned n_rows, unsigned n_cols, bool bsoftsize)
     :QObject(widget), widget(NULL), nopable(false), sReplaceValue(""), wasReplace(false)
 {    
     SetType(atype);
@@ -142,12 +142,12 @@ void QCalcWidget::SetInvMode(bool mode)
         SetText(sKeyText);
 }
 
-void QCalcWidget::SetType(pnl atype)
+void QCalcWidget::SetType(Pnl atype)
 {
     type_btn = atype;
-    if(atype != NOP) saved_type = atype;
+    if(atype != Pnl::Nop) saved_type = atype;
     if(widget)
-        widget->setVisible(atype != NOP);
+        widget->setVisible(atype != Pnl::Nop);
 }
 
 

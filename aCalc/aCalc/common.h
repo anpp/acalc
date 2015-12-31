@@ -8,15 +8,16 @@
 #define DEFAULT_DPI 96
 
 
-enum pnl{DIG = 0, OP, ABC, MEM, FUNC, SCALE, DRG, FUNCMODES, SERVBUTTONS, NOP};
-enum ud {RES, RESEMPTY, ERRS};
+enum class Pnl {Dig, Op, Abc, Mem, Func, Scale, Drg, FuncModes, ServButtons, Nop};
 
-enum SMODES {INV = 0, HYP};
-enum SSCALES {SHEX = 0, SDEC, SOCT, SBIN};
-enum SDRG {DDEG = 0, DRAD, DGRAD};
-enum SSERV {BACKSPACE = 0, CE, ESC};
+enum class ud {Result, Empty, Errors};
 
-enum VIEWCALC {ORIGINAL = 0, SIMPLE, PROGRAMMABLE};
-enum elangs {EN = 0, RU};
+enum class SModes: int {Inv = 0, Hyp};
+enum class Scales: int {Hex = 0, Dec, Oct, Bin};
+enum class Drg: int {Deg = 0, Rad, Grad};
+enum class Serv: int {BackSpace = 0, CE, Esc};
+
+enum class CalcView: int {Original = 0, Simple, Programmable};
+enum class Langs: int {En = 0, Ru};
 
 #endif // COMMON_H

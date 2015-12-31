@@ -105,17 +105,17 @@ void MainWidget::CreateMenus(void)
     MenuBar->addMenu(MenuEdit);
     MenuBar->addMenu(MenuHelp);
 
-    for (auto i = std::begin(sViews); i < std::end(sViews); ++i)
+    for (auto& s: sViews)
     {
-        ActionViews.append(MenuView->addAction(""));
+        ActionViews.append(MenuView->addAction(s));
         ActionViews.last()->setCheckable(true);
     }
     ActionViews.last()->setEnabled(false);
     connect(MenuView, SIGNAL(triggered(QAction*)), SLOT(slotView(QAction*)));
 
-    for(auto i = std::begin(sLanguages); i < std::end(sLanguages); ++i)
+    for (auto& s: sLanguages)
     {
-        ActionLanguages.append(MenuLanguages->addAction(""));
+        ActionLanguages.append(MenuLanguages->addAction(s));
         ActionLanguages.last()->setCheckable(true);
     }
     connect(MenuLanguages, SIGNAL(triggered(QAction*)), SLOT(slotLanguage(QAction*)));
@@ -257,8 +257,8 @@ void MainWidget::slotPaste(void)
         }
         else
         {
-            SetMode(HYP, false);
-            SetMode(INV, false);
+            SetMode(SModes::Hyp, false);
+            SetMode(SModes::Inv, false);
 #ifndef _QT4
             km = FindKeyByValue(QString::fromStdString(value));
 #else
@@ -277,10 +277,10 @@ void MainWidget::slotPaste(void)
 #endif
                 {
                     if(w->Hypable())
-                        SetMode(HYP, true);
+                        SetMode(SModes::Hyp, true);
                     else
                         if(w->Invable())
-                            SetMode(INV, true);
+                            SetMode(SModes::Inv, true);
                 }
                 ClickToWidget(w->widget);
             }
@@ -347,7 +347,7 @@ void MainWidget::focusOutEvent(QFocusEvent * fe)
 sKeyMod MainWidget::FindKeyByValue(QString value)
 {
     sKeyMod km = {0, 0};
-    QMap<QString, sKeyMod>::iterator mit = map_val_key.find(value);
+    auto mit = map_val_key.find(value);
     if(mit != map_val_key.end())
         km = *mit;
     return km;
@@ -357,7 +357,7 @@ sKeyMod MainWidget::FindKeyByValue(QString value)
 //----------------------------------------------------------------------------------------------------------------------
 QCalcWidget* MainWidget::FindWidgetByKey(sKeyMod km)
 {
-    QMap<sKeyMod, QCalcWidget*>::iterator mit = map_keys.find(km);
+    auto mit = map_keys.find(km);
     if(mit != map_keys.end())
         return *mit;
     return nullptr;
@@ -444,12 +444,12 @@ void MainWidget::InitLocale()
     qtTransPopup = new QTranslator(this);
     qtTransErrors = new QTranslator(this);
 
-    elangs lang = EN;
+    Langs lang = Langs::En;
     QLocale locale;
     if(locale.language() == QLocale::Russian)
-        lang = RU;
+        lang = Langs::Ru;
 
-    SetLocale(lang);
+    SetLocale(static_cast<int>(lang));
 }
 
 
@@ -502,17 +502,17 @@ bool MainWidget::InitLayouts()
     QString rv;
 
     FreeLayouts();
-    switch(settings.getSetting("appview").toInt())
+    switch(static_cast<CalcView>(settings.getSetting("appview").toInt()))
     {
-    case ORIGINAL:
-        foreach (QCalcWidget* widget, vec_btns) {
-            if(widget->GetType() == NOP) widget->SetType(widget->GetSavedType());
+    case CalcView::Original:
+        for (QCalcWidget* widget: vec_btns) {
+            if(widget->GetType() == Pnl::Nop) widget->SetType(widget->GetSavedType());
             if(widget->IsReplace()) widget->UnReplace();
         }
         LayoutOriginal();
         break;
-    case SIMPLE:
-        foreach (QCalcWidget* widget, vec_btns) {
+    case CalcView::Simple:
+        for (QCalcWidget* widget: vec_btns) {
             rv = widget->GetReplaceValue();
             if("" != rv)
             {
@@ -520,11 +520,11 @@ bool MainWidget::InitLayouts()
                 if(rw) rw->Replace(widget);
             }
 
-            if(widget->IsNopable()) widget->SetType(NOP);
+            if(widget->IsNopable()) widget->SetType(Pnl::Nop);
         }
         LayoutSimple();
         break;
-    case PROGRAMMABLE:
+    case CalcView::Programmable:
         LayoutProgrammable();
         break;
     default:
@@ -538,13 +538,13 @@ bool MainWidget::InitLayouts()
 //----------------------------------------------------------------------------------------------------------------------
 void MainWidget::FreeLayouts(void)
 {
-    int appview = settings.getSetting("appview").toInt();
-    wAbc->setVisible(appview == ORIGINAL);
-    wMem->setVisible(appview == ORIGINAL);
-    wCentral->setVisible(appview == ORIGINAL);
-    wScale->setVisible(appview == ORIGINAL);
-    wDRG->setVisible(appview == ORIGINAL);
-    wFuncModes->setVisible(appview == ORIGINAL);
+    CalcView appview = static_cast<CalcView>(settings.getSetting("appview").toInt());
+    wAbc->setVisible(appview == CalcView::Original);
+    wMem->setVisible(appview == CalcView::Original);
+    wCentral->setVisible(appview == CalcView::Original);
+    wScale->setVisible(appview == CalcView::Original);
+    wDRG->setVisible(appview == CalcView::Original);
+    wFuncModes->setVisible(appview == CalcView::Original);
 
     QString classname;
 
@@ -558,10 +558,18 @@ void MainWidget::FreeLayouts(void)
 
 
 //----------------------------------------------------------------------------------------------------------------------
-void MainWidget::FillLayoutWidgets(QLayout *l, pnl atype, bool bGrid)
+void MainWidget::FillLayoutWidgets(QLayout *l, Pnl atype, bool bGrid)
 {
-    stTypeLayout TL = {l, atype, bGrid};
-    std::for_each(vec_btns.begin(), vec_btns.end(), bind2nd(setBtnLayout(), TL));
+    std::for_each(vec_btns.begin(), vec_btns.end(), [l, atype, bGrid] (QCalcWidget* w)
+    {
+        if(w->GetType() == atype)
+        {
+            if(bGrid)
+                ((QGridLayout*)(l))->addWidget(w->widget, w->i, w->j, w->n_rows, w->n_cols);
+            else
+                ((QBoxLayout*)(l))->addWidget(w->widget);
+        }
+    });
 }
 
 
@@ -596,17 +604,17 @@ void MainWidget::LayoutOriginal(void)
 
     lFuncs->setMargin(spacing);
     lFuncs->setSpacing(spacing);
-    FillLayoutWidgets(lFuncs, FUNC);
+    FillLayoutWidgets(lFuncs, Pnl::Func);
 
 
     lMem->setMargin(spacing);
     lMem->setSpacing(spacing);
-    FillLayoutWidgets(lMem, MEM);
+    FillLayoutWidgets(lMem, Pnl::Mem);
 
 
     lAbc->setMargin(spacing);
     lAbc->setSpacing(spacing);
-    FillLayoutWidgets(lAbc, ABC);
+    FillLayoutWidgets(lAbc, Pnl::Abc);
 
 
     lMemAbc->setMargin(0);
@@ -626,11 +634,11 @@ void MainWidget::LayoutOriginal(void)
 
     lDigits->setMargin(spacing);
     lDigits->setSpacing(spacing);
-    FillLayoutWidgets(lDigits, DIG);
+    FillLayoutWidgets(lDigits, Pnl::Dig);
 
     lOps->setMargin(spacing);
     lOps->setSpacing(spacing);
-    FillLayoutWidgets(lOps, OP);
+    FillLayoutWidgets(lOps, Pnl::Op);
 
 
     InitModesLayouts();
@@ -683,11 +691,11 @@ void MainWidget::LayoutSimple(void)
 
     lDigits->setMargin(spacing);
     lDigits->setSpacing(spacing);
-    FillLayoutWidgets(lDigits, DIG);
+    FillLayoutWidgets(lDigits, Pnl::Dig);
 
     lOps->setMargin(spacing);
     lOps->setSpacing(spacing);
-    FillLayoutWidgets(lOps, OP);
+    FillLayoutWidgets(lOps, Pnl::Op);
 
     lDisplay->setMargin(0);
     lDisplay->setSpacing(0);
@@ -697,7 +705,7 @@ void MainWidget::LayoutSimple(void)
     lMode->setMargin(0);
     lMode->setSpacing(spacing);
     lMode->addStretch();
-    FillLayoutWidgets(lMode, SERVBUTTONS, false);
+    FillLayoutWidgets(lMode, Pnl::ServButtons, false);
 
     wBottom->setLayout(lBottom);
     wDigits->setLayout(lDigits);
@@ -737,23 +745,23 @@ void MainWidget::InitModesLayouts()
 
     lScale->setContentsMargins(spacing, 0, 0, 0);
     lScale->setSpacing(0);
-    FillLayoutWidgets(lScale, SCALE, false);
+    FillLayoutWidgets(lScale, Pnl::Scale, false);
 
     lDrg->setContentsMargins(0, 0, 0, 0);
     lDrg->setSpacing(0);
-    FillLayoutWidgets(lDrg, DRG, false);
+    FillLayoutWidgets(lDrg, Pnl::Drg, false);
 
 
     lModeTop->setMargin(0);
     lModeTop->setSpacing(spacing);
     lModeTop->addWidget(wFuncModes);
     lModeTop->addStretch();
-    FillLayoutWidgets(lModeTop, SERVBUTTONS, false);
+    FillLayoutWidgets(lModeTop, Pnl::ServButtons, false);
 
 
     lFuncModes->setContentsMargins(spacing, 0, 0, 0);
     lFuncModes->setSpacing(0);
-    FillLayoutWidgets(lFuncModes, FUNCMODES, false);
+    FillLayoutWidgets(lFuncModes, Pnl::FuncModes, false);
 
     wScale->setLayout(lScale);
     wDRG->setLayout(lDrg);
@@ -804,20 +812,20 @@ void MainWidget::CreateWidgets()
     wFuncModes->setFrameStyle(shape);
     wDisplay->setFrameStyle(shape);
 
-    CreateButtons(DIG);
-    CreateButtons(OP);
-    CreateButtons(MEM);
-    CreateButtons(ABC);
-    CreateButtons(FUNC);
-    CreateButtons(SCALE);
-    CreateButtons(DRG);
-    CreateButtons(FUNCMODES);
-    CreateButtons(SERVBUTTONS);
+    CreateButtons(Pnl::Dig);
+    CreateButtons(Pnl::Op);
+    CreateButtons(Pnl::Mem);
+    CreateButtons(Pnl::Abc);
+    CreateButtons(Pnl::Func);
+    CreateButtons(Pnl::Scale);
+    CreateButtons(Pnl::Drg);
+    CreateButtons(Pnl::FuncModes);
+    CreateButtons(Pnl::ServButtons);
 }
 
 
 //----------------------------------------------------------------------------------------------------------------------
-void MainWidget::CreateButtons(pnl atype)
+void MainWidget::CreateButtons(Pnl atype)
 {
     QString *s;
     QString *s_v;
@@ -832,7 +840,7 @@ void MainWidget::CreateButtons(pnl atype)
 
     switch(atype)
     {
-    case DIG:
+    case Pnl::Dig:
     {
         max_i = 4;
         max_j = 3;
@@ -841,7 +849,7 @@ void MainWidget::CreateButtons(pnl atype)
         color = &colorDigits;
         break;
     }
-    case OP:
+    case Pnl::Op:
     {
         max_i = 4;
         max_j = 3;
@@ -850,7 +858,7 @@ void MainWidget::CreateButtons(pnl atype)
         color = &colorOps;
         break;
     }
-    case ABC:
+    case Pnl::Abc:
     {
         max_i = 2;
         max_j = 3;
@@ -859,7 +867,7 @@ void MainWidget::CreateButtons(pnl atype)
         color = &colorAbc;
         break;
     }
-    case MEM:
+    case Pnl::Mem:
     {
         max_i = 1;
         max_j = 3;
@@ -873,7 +881,7 @@ void MainWidget::CreateButtons(pnl atype)
         color = &colorMem;
         break;
     }
-    case FUNC:
+    case Pnl::Func:
     {
         max_i = 3;
         max_j = 7;
@@ -882,44 +890,43 @@ void MainWidget::CreateButtons(pnl atype)
         color = &colorFunc;
         break;
     }
-    case SCALE:
-        vec_btns.push_back(new QCalcWidget(new QRadioButton(sScales[SHEX]), 0, 0, atype));
-        vec_btns.push_back(new QCalcWidget(new QRadioButton(sScales[SDEC]), 0, 1, atype));
-        vec_btns.push_back(new QCalcWidget(new QRadioButton(sScales[SOCT]), 0, 2, atype));
-        vec_btns.push_back(new QCalcWidget(new QRadioButton(sScales[SBIN]), 0, 3, atype));
-        it = vec_btns.begin();
-        for(; it != vec_btns.end(); ++it)
+    case Pnl::Scale:
+        vec_btns.push_back(new QCalcWidget(new QRadioButton(sScales[static_cast<int>(Scales::Hex)]), 0, 0, atype));
+        vec_btns.push_back(new QCalcWidget(new QRadioButton(sScales[static_cast<int>(Scales::Dec)]), 0, 1, atype));
+        vec_btns.push_back(new QCalcWidget(new QRadioButton(sScales[static_cast<int>(Scales::Oct)]), 0, 2, atype));
+        vec_btns.push_back(new QCalcWidget(new QRadioButton(sScales[static_cast<int>(Scales::Bin)]), 0, 3, atype));
+        for (auto it: vec_btns)
         {
-            cw = *it;
+            cw = it;
             if(cw->GetType() == atype)
                 connect(cw, SIGNAL(ClickServButton(QString)), SLOT(ProcessClickScale(QString)));
         }
         return;
-    case DRG:
-        vec_btns.push_back(new QCalcWidget(new QRadioButton(sDrg[DDEG]), 0, 0, atype));
+    case Pnl::Drg:
+        vec_btns.push_back(new QCalcWidget(new QRadioButton(sDrg[static_cast<int>(Drg::Deg)]), 0, 0, atype));
         connect(vec_btns.back(), SIGNAL(ClickServButton(QString)), SLOT(ProcessClickDRG(QString)));
 
-        vec_btns.push_back(new QCalcWidget(new QRadioButton(sDrg[DRAD]), 0, 1, atype));
+        vec_btns.push_back(new QCalcWidget(new QRadioButton(sDrg[static_cast<int>(Drg::Rad)]), 0, 1, atype));
         connect(vec_btns.back(), SIGNAL(ClickServButton(QString)), SLOT(ProcessClickDRG(QString)));
 
-        vec_btns.push_back(new QCalcWidget(new QRadioButton(sDrg[DGRAD]), 0, 2, atype));
+        vec_btns.push_back(new QCalcWidget(new QRadioButton(sDrg[static_cast<int>(Drg::Grad)]), 0, 2, atype));
         connect(vec_btns.back(), SIGNAL(ClickServButton(QString)), SLOT(ProcessClickDRG(QString)));
         return;
-    case FUNCMODES:
-        vec_btns.push_back(new QCalcWidget(new QCheckBox(sModes[INV]), 0, 0, atype));
+    case Pnl::FuncModes:
+        vec_btns.push_back(new QCalcWidget(new QCheckBox(sModes[static_cast<int>(SModes::Inv)]), 0, 0, atype));
         connect(vec_btns.back(), SIGNAL(ClickServButton(QString)), SLOT(ProcessClickFuncModes(QString)));
 
-        vec_btns.push_back(new QCalcWidget(new QCheckBox(sModes[HYP]), 0, 0, atype));
+        vec_btns.push_back(new QCalcWidget(new QCheckBox(sModes[static_cast<int>(SModes::Hyp)]), 0, 0, atype));
         connect(vec_btns.back(), SIGNAL(ClickServButton(QString)), SLOT(ProcessClickFuncModes(QString)));
         return;
-    case SERVBUTTONS:
-        vec_btns.push_back(new QCalcWidget(new QPushButton(), 0, 0, atype, sServ[BACKSPACE]));
+    case Pnl::ServButtons:
+        vec_btns.push_back(new QCalcWidget(new QPushButton(), 0, 0, atype, sServ[static_cast<int>(Serv::BackSpace)]));
         connect(vec_btns.back(), SIGNAL(ClickButton(QString)), SLOT(ProcessClickServ(QString)));
 
-        vec_btns.push_back(new QCalcWidget(new QPushButton(), 0, 0, atype, sServ[CE]));
+        vec_btns.push_back(new QCalcWidget(new QPushButton(), 0, 0, atype, sServ[static_cast<int>(Serv::CE)]));
         connect(vec_btns.back(), SIGNAL(ClickButton(QString)), SLOT(ProcessClickServ(QString)));
 
-        vec_btns.push_back(new QCalcWidget(new QPushButton(), 0, 0, atype, "C", sServ[ESC]));
+        vec_btns.push_back(new QCalcWidget(new QPushButton(), 0, 0, atype, "C", sServ[static_cast<int>(Serv::Esc)]));
         connect(vec_btns.back(), SIGNAL(ClickButton(QString)), SLOT(ProcessClickServ(QString)));
         return;
     default:
@@ -933,18 +940,18 @@ void MainWidget::CreateButtons(pnl atype)
             cw = new QCalcWidget(new QPushButton(), i, j, atype, s[index], s_v[index]);
             cw->SetTextColor(color);
 
-            if(atype == MEM)
+            if(atype == Pnl::Mem)
                 connect(cw, SIGNAL(ClickButton(QString)), SLOT(ProcessClickMem(QString)));
             else
                 connect(cw, SIGNAL(ClickButton(QString)), SLOT(ProcessClick(QString)));
 
-            if(atype == FUNC)
+            if(atype == Pnl::Func)
             {
                 cw->SetAltTexts(svAltFunc[index], sAltFunc[index]);
                 cw->hyp = sHypInv[index] == "h";
                 cw->inv = sHypInv[index] == "i";
             }
-            if(atype == OP)
+            if(atype == Pnl::Op)
             {
                 cw->SetNopable(bOpNops[index]);
                 cw->SetReplaceValue(sOpReps[index]);
@@ -957,7 +964,7 @@ void MainWidget::CreateButtons(pnl atype)
 
 
 //----------------------------------------------------------------------------------------------------------------------
-void MainWidget::ResizeWidgets(unsigned w, unsigned h, pnl atype)
+void MainWidget::ResizeWidgets(unsigned w, unsigned h, Pnl atype)
 {
     for (QCalcWidget* widget: vec_btns) { if(widget->GetType() == atype) widget->SetSize(w, h);}
 }
@@ -979,9 +986,9 @@ void MainWidget::SetSizeOfWidgets(unsigned button_w, unsigned button_h)
 
     wDigits->setFixedSize(button_w * 3 + spacing * 4 + w_bord, button_h * 4 + spacing * 5 + h_bord);
 
-    switch(settings.getSetting("appview").toInt())
+    switch(static_cast<CalcView>(settings.getSetting("appview").toInt()))
     {
-    case ORIGINAL:
+    case CalcView::Original:
         wOps->setFixedSize(button_w * 3 + spacing * 4 + w_bord, button_h * 4 + spacing * 5 + h_bord);
         wAbc->setFixedSize(button_w * 3 + spacing * 4 + w_bord, button_h * 2 + spacing * 3 + h_bord);
         wMem->setFixedSize(wAbc->width(), wOps->height() - wAbc->height() - spacing);
@@ -998,26 +1005,26 @@ void MainWidget::SetSizeOfWidgets(unsigned button_w, unsigned button_h)
 
 
         wFuncModes->setFixedSize(button_func_w * 2 + spacing * 3, wScale->height());
-        ResizeWidgets(button_w, wFuncModes->height(), SERVBUTTONS);
+        ResizeWidgets(button_w, wFuncModes->height(), Pnl::ServButtons);
         wMode->setFixedSize(wBottom->width(), wScale->height() + wFuncModes->height() + spacing);
 
         this->setFixedSize(wBottom->width() + i_left + i_right,
                            wBottom->height() + wCentral->height() + wMode->height() +
                            wDisplay->height() +  spacing * 4 + MenuBar->height() + i_top + i_bottom);
         break;
-    case SIMPLE:
+    case CalcView::Simple:
         wOps->setFixedSize(button_w * 2 + spacing * 3 + w_bord, button_h * 4 + spacing * 5 + h_bord);
         wBottom->setFixedSize(wDigits->width() + wOps->width() + spacing, wDigits->height());
         wDisplay->setFixedSize(wBottom->width(), button_h + h_bord);
         wMode->setFixedSize(wBottom->width(), GetHFButton(button_h) + h_bord);
-        ResizeWidgets(button_w, wMode->height(), SERVBUTTONS);
+        ResizeWidgets(button_w, wMode->height(), Pnl::ServButtons);
 
         this->setFixedSize(wBottom->width() + i_left + i_right,
                            wBottom->height() + wMode->height() +
                            wDisplay->height() +  spacing * 3 + MenuBar->height() + i_top + i_bottom);
 
         break;
-    case PROGRAMMABLE:
+    case CalcView::Programmable:
         //
         break;
     default:
@@ -1036,17 +1043,17 @@ void MainWidget::ResizeAll(unsigned new_button_w, unsigned new_button_h)
     int logical_w = (QPaintDevice::logicalDpiX() * settings.getSetting("button_width").toInt()) / DEFAULT_DPI;
     int logical_h = (QPaintDevice::logicalDpiY() * settings.getSetting("button_height").toInt()) / DEFAULT_DPI;
 
-    ResizeWidgets(logical_w, logical_h, DIG);
-    ResizeWidgets(logical_w, logical_h, OP);
-    ResizeWidgets(logical_w, logical_h, MEM);
-    ResizeWidgets(logical_w, logical_h, ABC);
+    ResizeWidgets(logical_w, logical_h, Pnl::Dig);
+    ResizeWidgets(logical_w, logical_h, Pnl::Op);
+    ResizeWidgets(logical_w, logical_h, Pnl::Mem);
+    ResizeWidgets(logical_w, logical_h, Pnl::Abc);
 
     SetSizeOfWidgets(logical_w, logical_h);
 
-    ResizeWidgets(button_func_w, GetHFButton(logical_h), FUNC);
-    ResizeWidgets(button_func_w + 2, GetHFButton(logical_h), SCALE);
-    ResizeWidgets(button_func_w + 2, GetHFButton(logical_h), DRG);
-    ResizeWidgets(button_func_w + 2, GetHFButton(logical_h), FUNCMODES);
+    ResizeWidgets(button_func_w, GetHFButton(logical_h), Pnl::Func);
+    ResizeWidgets(button_func_w + 2, GetHFButton(logical_h), Pnl::Scale);
+    ResizeWidgets(button_func_w + 2, GetHFButton(logical_h), Pnl::Drg);
+    ResizeWidgets(button_func_w + 2, GetHFButton(logical_h), Pnl::FuncModes);
 
     posMousePress.setX(logical_w / 2);
     posMousePress.setY(logical_h / 3);
@@ -1088,9 +1095,9 @@ void MainWidget::ProcessClick(const QString& sButtonValue)
     if(sButtonValue == "=")
     {
         if(parser->Run())
-            UpdateDisplay(RES);
+            UpdateDisplay(ud::Result);
         else
-            UpdateDisplay(ERRS);
+            UpdateDisplay(ud::Errors);
     }
     else
     {
@@ -1119,7 +1126,7 @@ void MainWidget::ProcessClickMem(const QString& sButtonValue)
             lblMem->setText(NumberToString(inMemory, 6));
         }
         else
-            UpdateDisplay(ERRS);
+            UpdateDisplay(ud::Errors);
 
     }
     if(stok == sMem[1])
@@ -1206,14 +1213,14 @@ void MainWidget::ProcessClickFuncModes(const QString& sModeValue)
 
 
 //----------------------------------------------------------------------------------------------------------------------
-void MainWidget::SetMode(SMODES mode, bool on)
+void MainWidget::SetMode(SModes mode, bool on)
 {
     std::vector<QCalcWidget*> btns_fm;
-    btns_fm.resize(std::count_if(vec_btns.begin(), vec_btns.end(), bind2nd(checkBtnType(), FUNCMODES)));
-    std::copy_if(vec_btns.begin(), vec_btns.end(), btns_fm.begin(), bind2nd(checkBtnType(), FUNCMODES));
+    btns_fm.resize(std::count_if(vec_btns.begin(), vec_btns.end(), bind2nd(checkBtnType(), Pnl::FuncModes)));
+    std::copy_if(vec_btns.begin(), vec_btns.end(), btns_fm.begin(), bind2nd(checkBtnType(), Pnl::FuncModes));
 
-    if(mode < INV || mode > HYP) return;
-    QCheckBox *cb = ((QCheckBox*)((QCalcWidget*)btns_fm.at(mode)->widget));
+    if(static_cast<int>(mode) < static_cast<int>(SModes::Inv) || static_cast<int>(mode) > static_cast<int>(SModes::Hyp) ) return;
+    QCheckBox *cb = ((QCheckBox*)((QCalcWidget*)btns_fm.at(static_cast<int>(mode))->widget));
     if(cb->isChecked() != on)
         cb->click();        
 }
@@ -1251,13 +1258,13 @@ void MainWidget::UpdateDisplay(ud how_update)
     errors = GetErrors();
 
     Display->setText(expression);
-    if(how_update == ERRS)
+    if(how_update == ud::Errors)
         wResult->setText(errors);
     else
-        if(how_update == RES)
+        if(how_update == ud::Result)
             wResult->setText("= " + NumberToString(parser->GetResult(), 16));
     else
-            if(how_update == RESEMPTY)
+            if(how_update == ud::Empty)
 
                 wResult->setText("");
     if(!lblMem->text().isEmpty())

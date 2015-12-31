@@ -4,14 +4,14 @@ QString sSettingKind[] = {QObject::tr("appearance"), QObject::tr("misc"), QObjec
 
 Setting ini_settings[] = {{QObject::tr("button_width"), appearance, WIDTH_BUT, QVariant(QVariant::Int), spin},
                           {QObject::tr("button_height"), appearance, HEIGHT_BUT, QVariant(QVariant::Int), spin},
-                          {QObject::tr("appview"), appearance, ORIGINAL, QVariant(QVariant::Int), combo},
+                          {QObject::tr("appview"), appearance, static_cast<int>(CalcView::Original), QVariant(QVariant::Int), combo},
 
                           {QObject::tr("posx"), screen, 0, QVariant(QVariant::Int), text},
                           {QObject::tr("posy"), screen, 0, QVariant(QVariant::Int), text}};
 
 
 //----------------------------------------------------------------------------------------------------------------------
-Settings::Settings(QWidget* widget_owner, const QString &organization, const QString &application) :
+Settings::Settings(QWidget* widget_owner, const QString& organization, const QString& application) :
     owner(widget_owner), qsettings(organization, application), default_return(false)
 {
     for(auto i = std::begin(ini_settings); i < std::end(ini_settings); ++i)

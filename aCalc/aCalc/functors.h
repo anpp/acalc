@@ -7,9 +7,9 @@
 
 //FUNCTORS
 
-class checkBtnType: public std::binary_function<QCalcWidget*, pnl, bool>{
+class checkBtnType: public std::binary_function<QCalcWidget*, Pnl, bool>{
 public:
-    bool operator()(QCalcWidget* btn, const pnl& atype) const
+    bool operator()(QCalcWidget* btn, const Pnl& atype) const
     {
         return btn->GetType() == atype;
     }
@@ -39,24 +39,6 @@ public:
     }
 };
 
-
-struct stTypeLayout {QLayout* l; pnl atype; bool bGrid;};
-
-class setBtnLayout: public std::binary_function<QCalcWidget*, stTypeLayout, void>{
-public:
-    void operator()(QCalcWidget* btn, const stTypeLayout& TL) const
-    {
-        if(!TL.l) return;
-        if(btn->GetType() == TL.atype)
-        {
-            if(TL.bGrid)
-                ((QGridLayout*)(TL.l))->addWidget(btn->widget, btn->i, btn->j, btn->n_rows, btn->n_cols);
-            else
-                ((QBoxLayout*)(TL.l))->addWidget(btn->widget);
-        }
-    }
-
-};
 
 
 #endif // FUNCTORS
