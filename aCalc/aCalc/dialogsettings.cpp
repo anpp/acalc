@@ -9,7 +9,7 @@ DialogSettings::DialogSettings(Settings* app_settings, QWidget *parent) :
 
     loadSettingsGrids();
 
-    foreach (DSGrid* dsg, vec_tbl) { vl.addWidget(&dsg->tblSettings);}
+    for (DSGrid* dsg: vec_tbl) { vl.addWidget(&dsg->tblSettings);}
 
     vl.setSpacing(SPACING);
     vl.setMargin(SPACING);
@@ -39,9 +39,9 @@ void DialogSettings::loadSettingsGrids()
     QStringList sl_labels_vert, sl_labels_horz;
     int n_rows;
 
-    foreach(Setting* s, settings->getListSettings()){ set_kindset << s->kind;}
+    for (Setting* s: settings->getListSettings()){ set_kindset << s->kind;}
 
-    foreach(kindset ks, set_kindset)
+    for (kindset ks: set_kindset)
     {
         if(ks == screen) continue;
 
@@ -53,7 +53,7 @@ void DialogSettings::loadSettingsGrids()
         dsg->kind = ks;
         dsg->tblSettings.setColumnCount(1);
         vec_tbl.append(dsg);
-        foreach(Setting* s, settings->getListSettings())
+        for (Setting* s: settings->getListSettings())
         {
             if (ks == s->kind)
             {
@@ -82,8 +82,8 @@ void DialogSettings::loadSettingsGrids()
 void DialogSettings::setEditor(QTableWidget* tblSettings, Setting* s, int row)
 {
     if(!tblSettings) return;
-    QSpinBox* spinbox = NULL;
-    QLineEdit* edit = NULL;
+    QSpinBox* spinbox = nullptr;
+    QLineEdit* edit = nullptr;
     switch (s->editor) {
     case spin:
         spinbox = new QSpinBox(this);
@@ -107,7 +107,7 @@ void DialogSettings::slotOk()
 {
     if(settings)
     {
-        foreach(QString s, mapSetControl.keys())
+        for (QString s: mapSetControl.keys())
         {
             QString classname = mapSetControl[s]->metaObject()->className();
             if(classname == "QSpinBox")

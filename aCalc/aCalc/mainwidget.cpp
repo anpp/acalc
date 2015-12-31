@@ -22,15 +22,15 @@ MainWidget::MainWidget(QWidget *parent) :
 {
     ui->setupUi(this);
 
-    mePress = NULL;
-    meRelease = NULL;
+    mePress = nullptr;
+    meRelease = nullptr;
 
     settings.loadSettings();
     spacing = SPACING;
 
     this->setContentsMargins(spacing / 2, 0, spacing / 2, spacing / 2);
 
-    curr_widget = NULL;
+    curr_widget = nullptr;
     bPasting = false;
 
     parser = new CalcParser();
@@ -105,7 +105,6 @@ void MainWidget::CreateMenus(void)
     MenuBar->addMenu(MenuEdit);
     MenuBar->addMenu(MenuHelp);
 
-    //for(unsigned int i = 0; i < sizeof(sViews) / sizeof(QString); ++i)
     for (auto i = std::begin(sViews); i < std::end(sViews); ++i)
     {
         ActionViews.append(MenuView->addAction(""));
@@ -114,7 +113,6 @@ void MainWidget::CreateMenus(void)
     ActionViews.last()->setEnabled(false);
     connect(MenuView, SIGNAL(triggered(QAction*)), SLOT(slotView(QAction*)));
 
-    //for(unsigned int i = 0; i < sizeof(sLanguages) / sizeof(QString); ++i)
     for(auto i = std::begin(sLanguages); i < std::end(sLanguages); ++i)
     {
         ActionLanguages.append(MenuLanguages->addAction(""));
@@ -154,26 +152,26 @@ void MainWidget::SetLocaleTexts()
     ActionAbout->setText(tr("About..."));
 
 
-    foreach (QAction *action, ActionViews) {
+    for (QAction *action: ActionViews) {
         action->setText(QObject::tr(sViews[ActionViews.indexOf(action)].toStdString().c_str()));
     }
-    foreach (QAction *action, ActionLanguages) {
+    for (QAction *action: ActionLanguages) {
         action->setText(tr(sLanguages[ActionLanguages.indexOf(action)].toStdString().c_str()));
     }
-    foreach (QCalcWidget *w, vec_btns) {w->LoadWhatIsText();}
+    for (QCalcWidget *w: vec_btns) {w->LoadWhatIsText();}
 }
 
 //----------------------------------------------------------------------------------------------------------------------
 void MainWidget::slotView(QAction* action)
 {
-    if(action == NULL) return;
+    if(action == nullptr) return;
     SetView(ActionViews.indexOf(action));
 }
 
 //----------------------------------------------------------------------------------------------------------------------
 void MainWidget::slotLanguage(QAction* action)
 {
-    if(action == NULL) return;
+    if(action == nullptr) return;
     SetLocale(ActionLanguages.indexOf(action));
 }
 
@@ -219,13 +217,13 @@ void MainWidget::slotPaste(void)
     Token tok;
     CalcParser tempParser;
     sKeyMod km = {0, 0};
-    QCalcWidget *w = NULL;
+    QCalcWidget *w = nullptr;
 
     tempParser.SetParams(&pasteString, 0, parser->DRG());
     Tokens = tempParser.RefTokens();
 
     bPasting = true;
-    for(TokenList::iterator it = Tokens.begin(); it != Tokens.end(); ++it)
+    for(auto it = Tokens.begin(); it != Tokens.end(); ++it)
     {
         tok = *it;
         value = tok.Value();
@@ -362,7 +360,7 @@ QCalcWidget* MainWidget::FindWidgetByKey(sKeyMod km)
     QMap<sKeyMod, QCalcWidget*>::iterator mit = map_keys.find(km);
     if(mit != map_keys.end())
         return *mit;
-    return NULL;
+    return nullptr;
 }
 
 
@@ -390,7 +388,7 @@ void MainWidget::keyPressEvent(QKeyEvent* pe)
 void MainWidget::mousePressEvent(QMouseEvent *mpe)
 {
     mpe->accept();
-    curr_widget = NULL;
+    curr_widget = nullptr;
 
     curr_widget = this->childAt(mpe->pos());
 
@@ -550,7 +548,7 @@ void MainWidget::FreeLayouts(void)
 
     QString classname;
 
-    foreach(QWidget* w, QApplication::allWidgets())
+    for(QWidget* w: QApplication::allWidgets())
     {
         classname = w->metaObject()->className();
         if("QPushButton" != classname)
@@ -826,8 +824,8 @@ void MainWidget::CreateButtons(pnl atype)
     int index;
 
     QCalcWidget *cw;
-    unsigned max_i;
-    unsigned max_j;
+    auto max_i = 0;
+    auto max_j = 0;
 
     QColor *color;
     std::vector<QCalcWidget*>::iterator it;
@@ -928,8 +926,8 @@ void MainWidget::CreateButtons(pnl atype)
         return;
     }
 
-    for(unsigned i = 0; i < max_i; ++i)
-        for(unsigned j = 0; j < max_j; ++j)
+    for(auto i = 0; i < max_i; ++i)
+        for(auto j = 0; j < max_j; ++j)
         {
             index = max_j * i + j;            
             cw = new QCalcWidget(new QPushButton(), i, j, atype, s[index], s_v[index]);
@@ -961,7 +959,7 @@ void MainWidget::CreateButtons(pnl atype)
 //----------------------------------------------------------------------------------------------------------------------
 void MainWidget::ResizeWidgets(unsigned w, unsigned h, pnl atype)
 {
-    foreach (QCalcWidget* widget, vec_btns) { if(widget->GetType() == atype) widget->SetSize(w, h);}
+    for (QCalcWidget* widget: vec_btns) { if(widget->GetType() == atype) widget->SetSize(w, h);}
 }
 
 
@@ -1172,7 +1170,7 @@ void MainWidget::ProcessClickServ(const QString& sButtonValue)
     if(sButtonValue == "CE")
         parser->ToBack(false);
     if(sButtonValue == "ESC")
-        parser->SetParams(NULL, parser->Scale(), parser->DRG());
+        parser->SetParams(nullptr, parser->Scale(), parser->DRG());
 
     UpdateDisplay();
 }
@@ -1278,7 +1276,7 @@ void MainWidget::Alert(void)
 //----------------------------------------------------------------------------------------------------------------------
 QCalcWidget* MainWidget::FindButtonByValue(QString value)
 {
-    std::vector<QCalcWidget*>::iterator it = std::find_if(vec_btns.begin(), vec_btns.end(), bind2nd(buttonIsValue(), value));
+    auto it = std::find_if(vec_btns.begin(), vec_btns.end(), bind2nd(buttonIsValue(), value));
     return *it;
 }
 
@@ -1286,7 +1284,7 @@ QCalcWidget* MainWidget::FindButtonByValue(QString value)
 //----------------------------------------------------------------------------------------------------------------------
 void MainWidget::AssignKeyToButton(QString button_value, int key, int mod)
 {
-    QCalcWidget *calcwidget = NULL;
+    QCalcWidget *calcwidget = nullptr;
     sKeyMod keymod = {key, mod};
 
     calcwidget = FindButtonByValue(button_value);
