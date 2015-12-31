@@ -97,6 +97,8 @@ private:
     MapStrings ToksHtml;
     MapCharString Hex2Bin;
 
+    double M_PI;
+
 };
 
 #endif // CALCPARSER_H

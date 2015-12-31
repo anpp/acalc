@@ -7,6 +7,14 @@
 QT       += core gui widgets
 DEFINES += HAVE_QT5
 
+#CONFIG += release
+#CONFIG += static
+
+CONFIG += c++11
+
+#QMAKE_LFLAGS += -static -static-libgcc
+#LIBS += -static-libgcc
+
 TARGET = aCalc
 TEMPLATE = app
 

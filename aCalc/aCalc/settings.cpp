@@ -14,17 +14,17 @@ Setting ini_settings[] = {{QObject::tr("button_width"), appearance, WIDTH_BUT, Q
 Settings::Settings(QWidget* widget_owner, const QString &organization, const QString &application) :
     owner(widget_owner), qsettings(organization, application), default_return(false)
 {
-    for(unsigned int i = 0; i < sizeof(ini_settings) / sizeof(Setting); ++i)
-        vec_settings.append(&ini_settings[i]);
+    for(auto i = std::begin(ini_settings); i < std::end(ini_settings); ++i)
+        vec_settings.append(&(*i));
 
-    foreach (Setting* s, vec_settings) {mapset[s->title] = s;}
+    for(auto s: vec_settings) {mapset[s->title] = s;}
 }
 
 
 //----------------------------------------------------------------------------------------------------------------------
 void Settings::loadSettingsByKind(kindset ks){
     qsettings.beginGroup("/" + sSettingKind[ks]);
-    foreach (Setting* s, vec_settings){
+    for(Setting* s: vec_settings){
         if (s->kind == ks)
             s->value = qsettings.value("/" + s->title, s->default_value);
     }
@@ -35,7 +35,7 @@ void Settings::loadSettingsByKind(kindset ks){
 //----------------------------------------------------------------------------------------------------------------------
 void Settings::saveSettingsByKind(kindset ks){
     qsettings.beginGroup("/" + sSettingKind[ks]);
-    foreach (Setting* s, vec_settings){
+    for (Setting* s: vec_settings){
         if (s->kind == ks)
             qsettings.setValue("/" + s->title, s->value);
     }

@@ -41,9 +41,8 @@ String VarTypes[] = {"float", "string"};
 
 
 
-CalcParser::CalcParser(String *pexpr)
+CalcParser::CalcParser(String *pexpr): M_PI(acos(-1))
 {
-
     result = new CValue(FLOAT);
 
     dec_point = "";

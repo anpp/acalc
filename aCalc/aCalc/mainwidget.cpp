@@ -105,7 +105,8 @@ void MainWidget::CreateMenus(void)
     MenuBar->addMenu(MenuEdit);
     MenuBar->addMenu(MenuHelp);
 
-    for(unsigned int i = 0; i < sizeof(sViews) / sizeof(QString); ++i)
+    //for(unsigned int i = 0; i < sizeof(sViews) / sizeof(QString); ++i)
+    for (auto i = std::begin(sViews); i < std::end(sViews); ++i)
     {
         ActionViews.append(MenuView->addAction(""));
         ActionViews.last()->setCheckable(true);
@@ -113,7 +114,8 @@ void MainWidget::CreateMenus(void)
     ActionViews.last()->setEnabled(false);
     connect(MenuView, SIGNAL(triggered(QAction*)), SLOT(slotView(QAction*)));
 
-    for(unsigned int i = 0; i < sizeof(sLanguages) / sizeof(QString); ++i)
+    //for(unsigned int i = 0; i < sizeof(sLanguages) / sizeof(QString); ++i)
+    for(auto i = std::begin(sLanguages); i < std::end(sLanguages); ++i)
     {
         ActionLanguages.append(MenuLanguages->addAction(""));
         ActionLanguages.last()->setCheckable(true);
@@ -1210,7 +1212,7 @@ void MainWidget::SetMode(SMODES mode, bool on)
 {
     std::vector<QCalcWidget*> btns_fm;
     btns_fm.resize(std::count_if(vec_btns.begin(), vec_btns.end(), bind2nd(checkBtnType(), FUNCMODES)));
-    copy_if(vec_btns.begin(), vec_btns.end(), btns_fm.begin(), bind2nd(checkBtnType(), FUNCMODES));
+    std::copy_if(vec_btns.begin(), vec_btns.end(), btns_fm.begin(), bind2nd(checkBtnType(), FUNCMODES));
 
     if(mode < INV || mode > HYP) return;
     QCheckBox *cb = ((QCheckBox*)((QCalcWidget*)btns_fm.at(mode)->widget));
