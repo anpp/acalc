@@ -97,7 +97,7 @@ private:
     MapStrings ToksHtml;
     MapCharString Hex2Bin;
 
-    double M_PI;
+    double PI;
 
 };
 

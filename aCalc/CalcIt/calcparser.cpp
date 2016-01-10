@@ -41,7 +41,7 @@ String VarTypes[] = {"float", "string"};
 
 
 
-CalcParser::CalcParser(String *pexpr): M_PI(acos(-1))
+CalcParser::CalcParser(String *pexpr): PI(acos(-1))
 {
     result = new CValue(FLOAT);
 
@@ -52,7 +52,7 @@ CalcParser::CalcParser(String *pexpr): M_PI(acos(-1))
     SetParams(pexpr);
     InitMapToksHtml();
 
-    SetVariable("pi", DoubleToString(M_PI), FLOAT, true);
+    SetVariable("pi", DoubleToString(PI), FLOAT, true);
     SetVariable("e", DoubleToString(exp(1)), FLOAT, true);
 }
 
@@ -1483,7 +1483,7 @@ return Factorial(arg - 1) * arg;
 
 long double CalcParser::ChoiceArg(long double arg)
 {
-long double temp = arg / (180 / M_PI);
+long double temp = arg / (180 / PI);
 if(DRG_mode == RDEG)
     return temp;
 else
@@ -1495,7 +1495,7 @@ return arg;
 
 long double CalcParser::ChoiceRes(long double res)
 {
-long double temp = (180 / M_PI) * res;
+long double temp = (180 / PI) * res;
 
 if(DRG_mode == RDEG)
     return temp;
