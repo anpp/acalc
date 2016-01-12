@@ -171,7 +171,7 @@ bool CalcParser::InitVariableFromExpression()
 void CalcParser::InitExpr(String *pexpr)
 {
     binit_var = false;
-    if(pexpr == NULL)
+    if(pexpr == nullptr)
         expr = "";
     else
         expr = *pexpr;
@@ -587,7 +587,7 @@ void CalcParser::ToBack(bool lastdigit)
         {
             if(lastT->Value() == ")")
             {
-                TokenList::iterator itP = FindParentheses();
+                auto itP = FindParentheses();
                 if(itP == Tokens.begin() && ((Token*)&(*itP))->Type() !=FUNCTION)
                     Tokens.pop_front();
             }

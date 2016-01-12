@@ -459,7 +459,7 @@ void MainWidget::SetLocale(int indexLang)
     LoadLocale(sShortLanguages[indexLang]);
 
     int index = 0;
-    foreach(QAction *action, ActionLanguages){
+    for (QAction *action: ActionLanguages){
         action->setChecked(indexLang == index++);
     }
 }
@@ -473,7 +473,7 @@ void MainWidget::SetView(int indexView)
         QApplication::exit(-1);
 
     int index = 0;
-    foreach(QAction *action, ActionViews){
+    for (QAction *action: ActionViews){
         action->setChecked(indexView == index++);
     }
 }
@@ -560,7 +560,7 @@ void MainWidget::FreeLayouts(void)
 //----------------------------------------------------------------------------------------------------------------------
 void MainWidget::FillLayoutWidgets(QLayout *l, Pnl atype, bool bGrid)
 {
-    std::for_each(vec_btns.begin(), vec_btns.end(), [l, atype, bGrid] (QCalcWidget* w)
+    std::for_each(vec_btns.begin(), vec_btns.end(), [=] (QCalcWidget* w)
     {
         if(w->GetType() == atype)
         {
@@ -1265,8 +1265,8 @@ void MainWidget::UpdateDisplay(ud how_update)
             wResult->setText("= " + NumberToString(parser->GetResult(), 16));
     else
             if(how_update == ud::Empty)
-
                 wResult->setText("");
+
     if(!lblMem->text().isEmpty())
         lblMem->setText(NumberToString(inMemory, 6));
 }
