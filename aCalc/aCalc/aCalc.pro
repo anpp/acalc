@@ -5,17 +5,20 @@
 #-------------------------------------------------
 
 QT       += core gui widgets
-DEFINES += HAVE_QT5
+#DEFINES += HAVE_QT5
 
-#CONFIG += release
+
+CONFIG += release c++11
 #CONFIG += static
 
-CONFIG += c++11
+
+QMAKE_CFLAGS += -std=c++11
+QMAKE_CXXFLAGS += -std=c++11
 
 #QMAKE_LFLAGS += -static -static-libgcc
 #LIBS += -static-libgcc
 
-TARGET = aCalc
+TARGET = acalc
 TEMPLATE = app
 
 

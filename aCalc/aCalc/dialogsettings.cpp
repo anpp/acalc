@@ -67,7 +67,7 @@ void DialogSettings::loadSettingsGrids()
         dsg->tblSettings.setHorizontalHeaderLabels(sl_labels_horz);
         dsg->tblSettings.verticalHeader()->setFixedWidth(100);
         dsg->tblSettings.horizontalHeader()->setDefaultAlignment(Qt::AlignLeft);
-        dsg->tblSettings.horizontalHeader()->setSectionResizeMode(QHeaderView::ResizeToContents);
+        //dsg->tblSettings.horizontalHeader()->setSectionResizeMode(QHeaderView::ResizeToContents);
 
         dsg->tblSettings.setFixedHeight(dsg->tblSettings.rowHeight(0) * dsg->tblSettings.rowCount() +
                                         dsg->tblSettings.horizontalHeader()->height() +
