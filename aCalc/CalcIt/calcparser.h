@@ -7,13 +7,14 @@
 #include "token.h"
 #include "variable.h"
 #include "cvalue.h"
+#include "function.h"
 
 
 
 class CalcParser
 {
 public:
-    CalcParser(String *pexpr = NULL);
+    CalcParser(String *pexpr = nullptr);
     ~CalcParser();
     long double GetResult();
     String GetResultStr();
@@ -44,7 +45,7 @@ private:
     void GetToken();
     bool Space(Char c);
     bool strchr(String t, Char c);
-    void Error(int c_err, Token *current_token = NULL);
+    void Error(int c_err, Token *current_token = nullptr);
     bool isdigit(Char c);
     bool isalpha(Char c);
     void Add_exp(CValue *res);
@@ -59,7 +60,6 @@ private:
     long double ChoiceArg(long double arg);
     long double ChoiceRes(long double arg);
     long double Factorial(long int arg);
-    int IndexOf(const String* s, Char c);
     void ReadVariableToken(Token *loc_token);
     void LoadTokens();
     Token* LoadToken();
@@ -70,12 +70,11 @@ private:
     int CheckParentheses();
     TokenList::iterator FindParentheses();
     void InitMapToksHtml();
-    void InitHex2Bin();
-    String HexToBinString(String s);
     long double CheckNumberZero(long double n);
     long double Dms(long double arg, bool invert);
     bool InvExpInNumber(Token* tok);
     long double RoundS(long double arg, int precision);
+    void InitFuncs();
 
     CValue *result;
     String expr;
@@ -96,6 +95,8 @@ private:
     VarList Vars;
     MapStrings ToksHtml;
     MapCharString Hex2Bin;
+
+    std::map<QString, Function*> map_funcs;
 
     double PI;
 

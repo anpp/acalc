@@ -31,15 +31,6 @@
 #include "../CalcIt/calcparser.h"
 #include "settings.h"
 
-#ifndef _QT4
-    #define PACKAGE "aCalc"
-    #ifdef _UNIX
-    #include </usr/local/include/libintl.h>
-    #else
-    #include "../../gettext/gettext-runtime/include/libintl.h"
-    #endif
-#endif
-
 
 namespace Ui {
 class MainWidget;
@@ -87,9 +78,6 @@ private:
     void ResizeWidgets(unsigned w, unsigned h, Pnl atype);
     void UpdateDisplay(ud how_update = ud::Empty);
     bool AddToken(const QString& stok);
-    QString GetExpression(bool bHtml = false);
-    QString GetErrors(void);
-    QString NumberToString(double n, int precision = 34);
     void DefaultKeysMap(void);
     QCalcWidget* FindButtonByValue(QString value);
     void AssignKeyToButton(QString button_value, int key, int mod = 0);

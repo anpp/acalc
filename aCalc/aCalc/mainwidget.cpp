@@ -186,13 +186,13 @@ void MainWidget::slotAbout(void)
 //----------------------------------------------------------------------------------------------------------------------
 void MainWidget::slotCopy(void)
 {
-  QString s = GetExpression();
+  QString s = parser->GetExpression();
   if(!wResult->text().isEmpty())
   {
       if(parser->Run())
-          s = s + " = " + NumberToString(parser->GetResult());
+          s = s + " = " + parser->DoubleToString(parser->GetResult());
       else
-          s = s + " " + GetErrors();
+          s = s + " " + parser->listErrors();
   }
   QApplication::clipboard()->setText(s);
 }
@@ -200,15 +200,9 @@ void MainWidget::slotCopy(void)
 //----------------------------------------------------------------------------------------------------------------------
 void MainWidget::slotPaste(void)
 {
-#ifndef _QT4
-    std::string value, num_val;
-    std::string pasteString = QApplication::clipboard()->text().toStdString();
-    if(pasteString.empty() || "" == pasteString)
-#else
     QString value, num_val;
     QString pasteString = QApplication::clipboard()->text();
     if(pasteString.isEmpty() || "" == pasteString)
-#endif
         return;
 
     SendKey(Qt::Key_Escape);
@@ -245,12 +239,7 @@ void MainWidget::slotPaste(void)
 
                 if(num_val == "-")
                     num_val = "+/-";
-
-#ifndef _QT4
-                km = FindKeyByValue(QString::fromStdString(num_val));
-#else
                 km = FindKeyByValue(num_val);
-#endif
                 SendKey(km.key, km.mod);
             }
 
@@ -259,22 +248,14 @@ void MainWidget::slotPaste(void)
         {
             SetMode(SModes::Hyp, false);
             SetMode(SModes::Inv, false);
-#ifndef _QT4
-            km = FindKeyByValue(QString::fromStdString(value));
-#else
             km = FindKeyByValue(value);
-#endif
             if(km.key == 0 && km.mod == 0) //Если не найдено сочетание клавиш для функции
                 continue;
 
             w = FindWidgetByKey(km);
             if(w)
             {
-#ifndef _QT4
-                if(tok.Type() == FUNCTION && tok.Value() != w->Value().toStdString())
-#else
                 if(tok.Type() == FUNCTION && tok.Value() != w->Value())
-#endif
                 {
                     if(w->Hypable())
                         SetMode(SModes::Hyp, true);
@@ -428,18 +409,6 @@ bool MainWidget::event(QEvent *e)
 //----------------------------------------------------------------------------------------------------------------------
 void MainWidget::InitLocale()
 {
-
-#ifndef _QT4 // для парсера, если он собирается с gettext, а не с Qt
-    setlocale(LC_ALL, "");
-    #ifndef _UNIX
-        bind_textdomain_codeset(PACKAGE, "utf-8");
-        bindtextdomain(PACKAGE, QString(qApp->applicationDirPath() + "/locale").toStdString().c_str());
-    #else
-        bind_textdomain_codeset(PACKAGE, "utf-8");
-        bindtextdomain(PACKAGE, "./locale");
-    #endif
-        textdomain(PACKAGE);
-#endif
     qtTrans = new QTranslator(this);
     qtTransPopup = new QTranslator(this);
     qtTransErrors = new QTranslator(this);
@@ -1000,7 +969,7 @@ void MainWidget::SetSizeOfWidgets(unsigned button_w, unsigned button_h)
         wDisplay->setFixedSize(wBottom->width(), button_h + h_bord);
         //Display->setFixedSize(wDisplay->width() - w_bord, wDisplay->height() - h_bord);
 
-        wScale->setFixedSize(button_func_w * 4 + spacing * 4, GetHFButton(button_h) + h_bord);
+        wScale->setFixedSize(button_func_w * 4 + spacing * 4, func_button_h + h_bord);
         wDRG->setFixedSize(wBottom->width() - wScale->width() - spacing, wScale->height());
 
 
@@ -1016,7 +985,7 @@ void MainWidget::SetSizeOfWidgets(unsigned button_w, unsigned button_h)
         wOps->setFixedSize(button_w * 2 + spacing * 3 + w_bord, button_h * 4 + spacing * 5 + h_bord);
         wBottom->setFixedSize(wDigits->width() + wOps->width() + spacing, wDigits->height());
         wDisplay->setFixedSize(wBottom->width(), button_h + h_bord);
-        wMode->setFixedSize(wBottom->width(), GetHFButton(button_h) + h_bord);
+        wMode->setFixedSize(wBottom->width(), func_button_h + h_bord);
         ResizeWidgets(button_w, wMode->height(), Pnl::ServButtons);
 
         this->setFixedSize(wBottom->width() + i_left + i_right,
@@ -1065,27 +1034,11 @@ void MainWidget::ResizeAll(unsigned new_button_w, unsigned new_button_h)
 bool MainWidget::AddToken(const QString& stok)
 {
     bool res;
-#ifdef _QT4
     QString s = stok;
     res = parser->AddToken(&s);
-#else
-    std::string stdstring = stok.toStdString();
-    res = parser->AddToken(&stdstring);
-#endif
     if(!res)
         Alert();
     return res;
-}
-
-
-//----------------------------------------------------------------------------------------------------------------------
-QString MainWidget::NumberToString(double n, int precision)
-{
-#ifdef _QT4
-    return parser->DoubleToString(n, precision);
-#else
-    return QString::fromStdString(parser->DoubleToString(n, precision));
-#endif
 }
 
 
@@ -1103,9 +1056,9 @@ void MainWidget::ProcessClick(const QString& sButtonValue)
     {
         QString s = sButtonValue;
         if(s == "^2")                            //Для перевода степени в нужную систему счисления
-            s = "^" + NumberToString(2);
+            s = "^" + parser->DoubleToString(2);
         if(s == "^3")
-            s = "^" + NumberToString(3);
+            s = "^" + parser->DoubleToString(3);
 
         AddToken(s);
         UpdateDisplay();
@@ -1123,7 +1076,7 @@ void MainWidget::ProcessClickMem(const QString& sButtonValue)
         if(parser->Run())
         {
             inMemory = parser->GetResult();
-            lblMem->setText(NumberToString(inMemory, 6));
+            lblMem->setText(parser->DoubleToString(inMemory, 6));
         }
         else
             UpdateDisplay(ud::Errors);
@@ -1134,7 +1087,7 @@ void MainWidget::ProcessClickMem(const QString& sButtonValue)
         if(lblMem->text().isEmpty())
             return;
 
-        QString sMemory = NumberToString(fabs(inMemory), 16);
+        QString sMemory = parser->DoubleToString(fabs(inMemory), 16);
         if(AddToken(sMemory))
         {
             if(inMemory < 0)
@@ -1226,27 +1179,6 @@ void MainWidget::SetMode(SModes mode, bool on)
 }
 
 
-//----------------------------------------------------------------------------------------------------------------------
-QString MainWidget::GetExpression(bool bHtml)
-{
-#ifdef _QT4
-    return parser->GetExpression("", bHtml);
-#else
-    return QString::fromStdString(parser->GetExpression("", bHtml));
-#endif
-}
-
-
-//----------------------------------------------------------------------------------------------------------------------
-QString MainWidget::GetErrors(void)
-{
-#ifdef _QT4
-    return parser->listErrors();
-#else
-    return QString::fromUtf8(parser->listErrors().c_str());
-#endif
-}
-
 
 //----------------------------------------------------------------------------------------------------------------------
 void MainWidget::UpdateDisplay(ud how_update)
@@ -1254,21 +1186,21 @@ void MainWidget::UpdateDisplay(ud how_update)
     QString expression;
     QString errors;
 
-    expression = GetExpression(true);
-    errors = GetErrors();
+    expression = parser->GetExpression("", true);
+    errors = parser->listErrors();
 
     Display->setText(expression);
     if(how_update == ud::Errors)
         wResult->setText(errors);
     else
         if(how_update == ud::Result)
-            wResult->setText("= " + NumberToString(parser->GetResult(), 16));
+            wResult->setText("= " + parser->DoubleToString(parser->GetResult(), 16));
     else
             if(how_update == ud::Empty)
                 wResult->setText("");
 
     if(!lblMem->text().isEmpty())
-        lblMem->setText(NumberToString(inMemory, 6));
+        lblMem->setText(parser->DoubleToString(inMemory, 6));
 }
 
 

@@ -5,7 +5,7 @@
 #-------------------------------------------------
 
 QT       += core gui widgets
-#DEFINES += HAVE_QT5
+DEFINES += HAVE_QT5
 
 
 CONFIG += release c++11
@@ -30,7 +30,8 @@ SOURCES += main.cpp\
     ../CalcIt/variable.cpp \
     ../CalcIt/calcparser.cpp \
     dialogsettings.cpp \
-    settings.cpp
+    settings.cpp \
+    ../CalcIt/function.cpp
 
 HEADERS  += mainwidget.h \
     common.h \
@@ -44,7 +45,8 @@ HEADERS  += mainwidget.h \
     buttexts.h \
     dialogsettings.h \
     functors.h \
-    settings.h
+    settings.h \
+    ../CalcIt/function.h
 
 FORMS    += mainwidget.ui
 
@@ -54,8 +56,6 @@ TRANSLATIONS = acalc_en.ts \
                popup_ru.ts \
                errors_en.ts \
                errors_ru.ts
-
-#LIBS += "../../gettext/gettext-runtime/lib/intl.lib"
 
 RESOURCES += \
     aCalc.qrc

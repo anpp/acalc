@@ -59,21 +59,10 @@ bool Token::CutNumber()
 {
     if(token_type != NUMBER)
         return false;
-#ifdef _QT4
     if(value.isEmpty())
-#else
-    if(value.empty())
-#endif
         return false;
-
     value.resize(value.size() - 1);
-
-#ifdef _QT4
     return !value.isEmpty();
-#else
-    return !value.empty();
-#endif
-
 }
 
 

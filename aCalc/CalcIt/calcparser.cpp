@@ -1,25 +1,7 @@
 #include "calcparser.h"
+#include <QObject>
 
-#ifndef _QT4
-    #include <sstream>
-    #include <iomanip>
-
-  #ifndef _QT_INTERFACE
-    #define tr(text) gettext(text)
-    #ifdef _UNIX
-      #include </usr/local/include/libintl.h>
-    #else
-      #include "../../gettext/gettext-runtime/include/libintl.h"
-    #endif
-  #else
-    //#include <QObject>
-    //#define tr(text) QObject::tr(QString::fromStdString(text))
-    #define tr(text) (text)
-  #endif
-#else
-    #include <QObject>
-    #define tr(text) QObject::tr(text)
-#endif
+#define tr(text) QObject::tr(text)
 
 
 String _Errors[] = {tr("Unknown error!"), tr("Syntax error"), tr("Unclosed parenthesis")
@@ -39,8 +21,7 @@ String VarTypes[] = {"float", "string"};
 
 
 
-
-
+//----------------------------------------------------------------------------------------------------------------------
 CalcParser::CalcParser(String *pexpr): PI(acos(-1))
 {
     result = new CValue(FLOAT);
@@ -51,12 +32,13 @@ CalcParser::CalcParser(String *pexpr): PI(acos(-1))
     token_end.SetValue("END");
     SetParams(pexpr);
     InitMapToksHtml();
+    InitFuncs();
 
     SetVariable("pi", DoubleToString(PI), FLOAT, true);
     SetVariable("e", DoubleToString(exp(1)), FLOAT, true);
 }
 
-
+//----------------------------------------------------------------------------------------------------------------------
 CalcParser::~CalcParser()
 {
     Tokens.clear();
@@ -64,20 +46,18 @@ CalcParser::~CalcParser()
 }
 
 
+//----------------------------------------------------------------------------------------------------------------------
 void CalcParser::SetVariable(String name, String value, e_type_var type, bool readonly)
 {
-#ifdef _QT4
-    if(name.isEmpty() || name == "")
-#else
-    if(name.empty() || name == "")
-#endif
-        return;
+    if(name.isEmpty() || name == "") return;
+
     Variable var(name, value, type);
     var.read_only = readonly;
     Vars[var.name] = var;
 }
 
 
+//----------------------------------------------------------------------------------------------------------------------
 bool CalcParser::Run(void)
 {
     bool res = true;
@@ -90,6 +70,7 @@ bool CalcParser::Run(void)
     return res;
 }
 
+//----------------------------------------------------------------------------------------------------------------------
 bool CalcParser::Calculate(CValue *loc_result)
 {
     GetToken();
@@ -105,7 +86,7 @@ bool CalcParser::Calculate(CValue *loc_result)
     return !HasErr();
 }
 
-
+//----------------------------------------------------------------------------------------------------------------------
 bool CalcParser::InitVariableFromExpression()
 {
     Token t0, t1;
@@ -167,7 +148,7 @@ bool CalcParser::InitVariableFromExpression()
     return false;
 }
 
-
+//----------------------------------------------------------------------------------------------------------------------
 void CalcParser::InitExpr(String *pexpr)
 {
     binit_var = false;
@@ -183,6 +164,8 @@ void CalcParser::InitExpr(String *pexpr)
     token = &token_end;
 }
 
+
+//----------------------------------------------------------------------------------------------------------------------
 void CalcParser::SetParams(String *pexpr, int scale, int DRG_mode)
 {
     err = -1;
@@ -196,6 +179,8 @@ void CalcParser::SetParams(String *pexpr, int scale, int DRG_mode)
 
 }
 
+
+//----------------------------------------------------------------------------------------------------------------------
 void CalcParser::SetScale(int scale)
 {
     Token *t;
@@ -205,8 +190,7 @@ void CalcParser::SetScale(int scale)
 
     this->scale = scale;
 
-    TokenList::iterator i = Tokens.begin();
-    for(; i != Tokens.end(); ++i)
+    for(auto i = Tokens.begin(); i != Tokens.end(); ++i)
     {
         t = &(*i);
         if(t->Type() == NUMBER)
@@ -217,12 +201,15 @@ void CalcParser::SetScale(int scale)
     }
 }
 
+
+//----------------------------------------------------------------------------------------------------------------------
 int CalcParser::Scale()
 {
     return scale;
 }
 
 
+//----------------------------------------------------------------------------------------------------------------------
 void CalcParser::SetDRG(int drg_mode)
 {
     if(drg_mode == 0)
@@ -230,12 +217,15 @@ void CalcParser::SetDRG(int drg_mode)
     this->DRG_mode = drg_mode;
 }
 
+
+//----------------------------------------------------------------------------------------------------------------------
 int CalcParser::DRG()
 {
     return DRG_mode;
 }
 
 
+//----------------------------------------------------------------------------------------------------------------------
 void CalcParser::LoadTokens()
 {
     Token *nTok;
@@ -243,11 +233,11 @@ void CalcParser::LoadTokens()
     exp_p = expr.begin();
     Tokens.clear();
 
-    while((nTok = LoadToken()) != NULL)
+    while((nTok = LoadToken()) != nullptr)
     {
         if(nTok->Type() == VARIABLE)
         {
-            VarList::const_iterator var_it = Vars.find(nTok->Value());
+            auto var_it = Vars.find(nTok->Value());
             if(var_it != Vars.end())
             {
                 Variable v = VariableByIterator(var_it);
@@ -262,11 +252,11 @@ void CalcParser::LoadTokens()
 }
 
 
-
+//----------------------------------------------------------------------------------------------------------------------
 int CalcParser::CheckParentheses()
 {
    int res = 0;
-   TokenList::iterator i = Tokens.begin();
+   auto i = Tokens.begin();
    Token t;
 
    while(i != Tokens.end())
@@ -280,10 +270,12 @@ int CalcParser::CheckParentheses()
    return res;
 }
 
+
+//----------------------------------------------------------------------------------------------------------------------
 TokenList::iterator CalcParser::FindParentheses()
 {
     int res = 0;
-    TokenList::iterator i = Tokens.end();
+    auto i = Tokens.end();
     Token t;
 
     if(Tokens.empty())
@@ -306,6 +298,7 @@ TokenList::iterator CalcParser::FindParentheses()
 }
 
 
+//----------------------------------------------------------------------------------------------------------------------
 bool CalcParser::InvExpInNumber(Token* tok)
 {
     int index;
@@ -314,17 +307,17 @@ bool CalcParser::InvExpInNumber(Token* tok)
     if(!tok)
         return false;
     value = tok->Value();
-    if(IndexOf(&value, 'e') == -1)
+    if(value.indexOf('e') == -1)
         return false;
 
-    index = IndexOf(&value, '+');
+    index = value.indexOf('+');
     if(index != -1)
     {
         value[index] = '-';
         tok->SetValue(value);
         return true;
     }
-    index = IndexOf(&value, '-');
+    index = value.indexOf('-');
     if(index != -1)
     {
         value[index] = '+';
@@ -335,7 +328,7 @@ bool CalcParser::InvExpInNumber(Token* tok)
 }
 
 
-
+//----------------------------------------------------------------------------------------------------------------------
 bool CalcParser::AddPrefixInverse()
 {
     EraseErrors();
@@ -343,8 +336,8 @@ bool CalcParser::AddPrefixInverse()
     Token *ltok = LastToken();
     Token before_tok;
     Token before_before_tok;
-    TokenList::iterator i = Tokens.end();
-    TokenList::iterator before_i;
+    auto i = Tokens.end();
+    decltype(i) before_i;
 
         if(ltok->Type() == NUMBER || ltok->Value() == ")")
         {
@@ -383,15 +376,15 @@ bool CalcParser::AddPrefixInverse()
 }
 
 
-
+//----------------------------------------------------------------------------------------------------------------------
 bool CalcParser::AddPrefixOp(String op)
 {
     EraseErrors();
 
     Token *ltok = LastToken();
     Token before_tok;
-    TokenList::iterator i = Tokens.end();
-    TokenList::iterator before_i;
+    auto i = Tokens.end();
+    decltype(i) before_i;
 
     if(op == "1/")
         return AddPrefixInverse();
@@ -436,7 +429,7 @@ bool CalcParser::AddPrefixOp(String op)
 }
 
 
-
+//----------------------------------------------------------------------------------------------------------------------
 bool CalcParser::AddToken(String *pexpr)
 {
     if(*pexpr == "+/-")
@@ -454,7 +447,7 @@ bool CalcParser::AddToken(String *pexpr)
     EraseErrors();
     exp_p = expr.begin();
 
-    while((nTok = LoadToken()) != NULL)
+    while((nTok = LoadToken()) != nullptr)
     {
         if(nTok->Value() == "del") //для отладки
         {
@@ -471,14 +464,14 @@ bool CalcParser::AddToken(String *pexpr)
 
                 if(ltok->Type() == NUMBER)
                 {
-                    if(IndexOf(&ltok->Value(), '.') != -1 && nTok->Value() == ".e+")
+                    if(ltok->Value().indexOf('.') != -1 && nTok->Value() == ".e+")
                         nTok->SetValue("e+");
 
-                    if(IndexOf(&ltok->Value(), '.') != -1 && IndexOf(&nTok->Value(), '.') != -1)
+                    if(ltok->Value().indexOf('.') != -1 && nTok->Value().indexOf('.') != -1)
                         return false;
-                    if(IndexOf(&ltok->Value(), 'e') != -1 && IndexOf(&nTok->Value(), 'e') != -1)
+                    if(ltok->Value().indexOf('e') != -1 && nTok->Value().indexOf('e') != -1)
                         return false;
-                    if(IndexOf(&ltok->Value(), 'i') != -1 && IndexOf(&nTok->Value(), 'i') != -1)
+                    if(ltok->Value().indexOf('i') != -1 && nTok->Value().indexOf('i') != -1)
                         return false;
 
                     ltok->Add(nTok->Value());
@@ -557,21 +550,25 @@ bool CalcParser::AddToken(String *pexpr)
     return res;
 }
 
+//----------------------------------------------------------------------------------------------------------------------
 Token* CalcParser::LastToken()
 {
     if(Tokens.empty())
         return &token_end;
-    TokenList::iterator i = Tokens.end();
+    auto i = Tokens.end();
     Token *t = &(*--i);
     return t;
 }
 
+
+//----------------------------------------------------------------------------------------------------------------------
 String CalcParser::LastTokenValue()
 {
     return LastToken()->Value();
 }
 
 
+//----------------------------------------------------------------------------------------------------------------------
 void CalcParser::ToBack(bool lastdigit)
 {
     bool cutnumber = false;
@@ -588,40 +585,46 @@ void CalcParser::ToBack(bool lastdigit)
             if(lastT->Value() == ")")
             {
                 auto itP = FindParentheses();
-                if(itP == Tokens.begin() && ((Token*)&(*itP))->Type() !=FUNCTION)
+                if(itP == Tokens.begin() && ((Token*)&(*itP))->Type() != FUNCTION)
                     Tokens.pop_front();
             }
 
             Tokens.pop_back();
-#ifdef _QT4
-            i_toks = Tokens.end() - 1;
-#endif
+            //i_toks = Tokens.end() - 1;
         }
     }
 }
 
 
+//----------------------------------------------------------------------------------------------------------------------
 e_type_var CalcParser::TypeRes()
 {
     return result->Type();
 }
 
+
+//----------------------------------------------------------------------------------------------------------------------
 bool CalcParser::HasErr()
 {
     return err != -1;
 }
 
+
+//----------------------------------------------------------------------------------------------------------------------
 long double CalcParser::GetResult()
 {
     return result->ValueFloat();
 }
 
+
+//----------------------------------------------------------------------------------------------------------------------
 String CalcParser::GetResultStr()
 {
     return result->ValueString();
 }
 
 
+//----------------------------------------------------------------------------------------------------------------------
 void CalcParser::ReadVariableToken(Token *loc_token)
 {
     while(isalpha(*exp_p) || strchr("1234567890", *exp_p))
@@ -636,6 +639,8 @@ void CalcParser::ReadVariableToken(Token *loc_token)
 
 }
 
+
+//----------------------------------------------------------------------------------------------------------------------
 Token* CalcParser::LoadToken()
 {
     Token *loc_token;
@@ -644,7 +649,7 @@ Token* CalcParser::LoadToken()
         ++exp_p;
 
     if (exp_p >= expr.end())
-        return NULL;
+        return nullptr;
 
     loc_token = new Token();
 
@@ -739,6 +744,7 @@ Token* CalcParser::LoadToken()
 }
 
 
+//----------------------------------------------------------------------------------------------------------------------
 void CalcParser::GetToken()
 {
     token = &token_end;
@@ -748,6 +754,7 @@ void CalcParser::GetToken()
 }
 
 
+//----------------------------------------------------------------------------------------------------------------------
 String CalcParser::GetExpression(String eq, bool html)
 {
     if(binit_var)
@@ -766,7 +773,7 @@ String CalcParser::GetExpression(String eq, bool html)
     if(empty)
         AddToken(&def_expr);
 
-    TokenList::iterator tit = Tokens.begin();
+    auto tit = Tokens.begin();
 
     default_color = GetStrValueVariable("default_color");
     number_color = GetStrValueVariable("number_color");
@@ -804,20 +811,12 @@ String CalcParser::GetExpression(String eq, bool html)
                 e_tag = "</FONT>";
 
                 if(t.Type() == FUNCTION)
-#ifdef _QT4
                     tokVal.remove('(');
-#else
-                    tokVal.erase(tokVal.end() - 1);
-#endif
 
                 mit = ToksHtml.find(tokVal);
                 if(mit != ToksHtml.end())
                 {
-#ifdef _QT4
-                    tokVal = *mit;
-#else
                     tokVal = mit->second;
-#endif
                 }
                 if(t.Type() == FUNCTION)
                     tokVal += '(';
@@ -838,6 +837,7 @@ String CalcParser::GetExpression(String eq, bool html)
 }
 
 
+//----------------------------------------------------------------------------------------------------------------------
 bool CalcParser::Space(Char c)
 {
     if(c == ' ' || c == ' ' || c == '\n') //пробел или таб или перевод строки
@@ -846,14 +846,16 @@ bool CalcParser::Space(Char c)
 }
 
 
+//----------------------------------------------------------------------------------------------------------------------
 bool CalcParser::strchr(String t, Char c)
 {
-    if (IndexOf(&t, c) >= 0)
+    if (t.indexOf(c) >= 0)
         return true;
     return false;
     }
 
 
+//----------------------------------------------------------------------------------------------------------------------
 void CalcParser::Error(int c_err, Token *current_token)
 {
     Token t;
@@ -875,18 +877,20 @@ void CalcParser::Error(int c_err, Token *current_token)
         current_token->SetErr(err);
 }
 
+
+//----------------------------------------------------------------------------------------------------------------------
 const String CalcParser::listErrors()
 {
     String errs = "";
     Token *t;
 
-    for(TokenList::iterator it = Tokens.begin(); it != Tokens.end(); it++)
+    for(auto it = Tokens.begin(); it != Tokens.end(); it++)
     {
         t = &(*it);
         if(t->Err() != -1)
         {
-            if((unsigned int)t->Err() < sizeof(_Errors)/sizeof(String))
-                errs.append(tr(_Errors[t->Err()].toAscii()));
+            if((unsigned int)t->Err() < sizeof(_Errors) / sizeof(String))
+                errs.append(tr(_Errors[t->Err()].toStdString().c_str()));
             else
                 errs.append("?");
             errs += "\n";
@@ -896,6 +900,7 @@ const String CalcParser::listErrors()
 }
 
 
+//----------------------------------------------------------------------------------------------------------------------
 void CalcParser::EraseErrors()
 {
    // if(err == -1)
@@ -903,7 +908,7 @@ void CalcParser::EraseErrors()
 
     Token *t;
 
-    for(TokenList::iterator it = Tokens.begin(); it != Tokens.end(); ++it)
+    for(auto it = Tokens.begin(); it != Tokens.end(); ++it)
     {
         t = &(*it);
 
@@ -920,9 +925,7 @@ void CalcParser::EraseErrors()
 }
 
 
-
-
-
+//----------------------------------------------------------------------------------------------------------------------
 bool CalcParser::isdigit(Char c)
 {
     if((strchr("0123456789.ie", c) && scale == 10) || (((c >= 'A' && c <= 'F') || strchr("0123456789", c)) && scale == 16) ||
@@ -933,7 +936,7 @@ bool CalcParser::isdigit(Char c)
 }
 
 
-
+//----------------------------------------------------------------------------------------------------------------------
 bool CalcParser::isalpha(Char c)
 {
     if((c >= 'a' && c <= 'z') || c == '_')
@@ -942,6 +945,7 @@ bool CalcParser::isalpha(Char c)
 }
 
 
+//----------------------------------------------------------------------------------------------------------------------
 void CalcParser::Add_exp(CValue *res)
 {
     CValue temp;
@@ -971,6 +975,7 @@ void CalcParser::Add_exp(CValue *res)
 }
 
 
+//----------------------------------------------------------------------------------------------------------------------
 void CalcParser::Mul_exp(CValue *res)
 {
     CValue temp;
@@ -985,15 +990,11 @@ void CalcParser::Mul_exp(CValue *res)
     {
 
         op = token->Value()[0];
-#ifdef _QT4
     #ifdef HAVE_QT5
         c_op = (char)(op.toLatin1());
     #else
         c_op = (char)(op.toAscii());
     #endif
-#else
-        c_op = op;
-#endif
 
         GetToken();
         Step_exp(&temp);
@@ -1041,6 +1042,7 @@ void CalcParser::Mul_exp(CValue *res)
 }
 
 
+//----------------------------------------------------------------------------------------------------------------------
 void CalcParser::Step_exp(CValue *res)
 {
     CValue temp;
@@ -1060,6 +1062,8 @@ void CalcParser::Step_exp(CValue *res)
 }
 
 
+
+//----------------------------------------------------------------------------------------------------------------------
 void CalcParser::Sign_exp(CValue *res)
 {
     Char op = ' ';
@@ -1078,6 +1082,8 @@ void CalcParser::Sign_exp(CValue *res)
             res->SetValue(~(int)res->ValueFloat());
 }
 
+
+//----------------------------------------------------------------------------------------------------------------------
 void CalcParser::Scob_exp(CValue *res)
 {
     CValue temp;
@@ -1109,11 +1115,13 @@ void CalcParser::Scob_exp(CValue *res)
 }
 
 
+
+//----------------------------------------------------------------------------------------------------------------------
 void CalcParser::GetNumber(CValue *res)
 {
     CValue temp;
     CValue temp1;
-    unsigned f;
+    //unsigned f;
     unsigned f_n_par;
     String var;
     VarList::const_iterator var_it;
@@ -1129,6 +1137,43 @@ void CalcParser::GetNumber(CValue *res)
         }
     case FUNCTION:
         {
+        Function* f;
+        auto fi = map_funcs.find(token->Value());
+        if (fi != map_funcs.end())
+        {
+            f = fi->second;
+            f_n_par = f->getCountAgrs();
+            GetToken();
+            Add_exp(&temp);
+            switch(f_n_par)
+            {
+            case 1:
+                if(token->Value() != ")")
+                    Error(BKT);
+                res->SetValue(f->Calculate(temp.ValueFloat(), DRG_mode));
+                break;
+            case 2:
+                if(token->Type() != COMMA)
+                {
+                    Error(SYNTAX);
+                    break;
+                }
+                GetToken();
+                Add_exp(&temp1);
+                if(token->Value() != ")")
+                {
+                    Error(BKT);
+                    break;
+                }
+                res->SetValue(f->Calculate(temp.ValueFloat(), temp1.ValueFloat(), DRG_mode));
+                break;
+            default:
+                Error(UNKNOWN);
+            }
+            GetToken();
+            break;
+        }
+        /*
         f = FindFunction(&token->Value(), &f_n_par);
         GetToken();
         Add_exp(&temp);
@@ -1153,12 +1198,13 @@ void CalcParser::GetNumber(CValue *res)
                 break;
             }
             res->SetValue(CalcFunc(f, temp.ValueFloat(), f_n_par, temp1.ValueFloat()));
-            break;
+            break;               
         default:
             Error(UNKNOWN);
         }
         GetToken();
         break;
+        */
         }
     case VARIABLE:
         var = token->Value();
@@ -1192,9 +1238,10 @@ void CalcParser::GetNumber(CValue *res)
 }
 
 
+//----------------------------------------------------------------------------------------------------------------------
 String CalcParser::GetStrValueVariable(String varname)
 {
-    VarList::const_iterator var_it = Vars.find(varname);
+    auto var_it = Vars.find(varname);
     Variable v;
     if(var_it != Vars.end())
     {
@@ -1205,6 +1252,8 @@ String CalcParser::GetStrValueVariable(String varname)
 }
 
 
+
+//----------------------------------------------------------------------------------------------------------------------
 unsigned CalcParser::FindFunction(const String *func, unsigned *n)
 {
 int i;
@@ -1223,38 +1272,33 @@ return -1;
 
 
 
+//----------------------------------------------------------------------------------------------------------------------
 long double CalcParser::ScaleToVal(String s, int scale)
 {
     int len, i, j;
     long double res = 0;
     String tst = "";
     String::iterator val;
-#ifdef _QT4
     if(!dec_point.isEmpty())
-#else
-    if(!dec_point.empty())
-#endif
     {
-        String::iterator it = s.begin();
-        for(; it != s.end(); ++it)
+        for(auto it = s.begin(); it != s.end(); ++it)
             if(*it == '.' && dec_point != ".")
                 *it = dec_point[0];
     }
 
-
     if(10 == scale)
     {
-        if(IndexOf(&s, 'e') != -1)
+        if(s.indexOf('e') != -1)
         {
-            val = s.begin() + IndexOf(&s, 'e') + 1;
+            val = s.begin() + s.indexOf('e') + 1;
             for(; val != s.end(); val++)
                 tst += *val;
-            s.resize(IndexOf(&s, 'e'));
-            res = atof(s.toAscii()) * pow(10, atoi(tst.toAscii()));
+            s.resize(s.indexOf('e'));
+            res = atof(s.toStdString().c_str()) * pow(10, atoi(tst.toStdString().c_str()));
 
         }
         else
-            res = atof(s.toAscii());
+            res = atof(s.toStdString().c_str());
     }
     else
     {
@@ -1282,7 +1326,7 @@ long double CalcParser::ScaleToVal(String s, int scale)
             else
                 tst += *(s.begin() + i);
 
-            res += pow(scale, j) * atoi(tst.toAscii());
+            res += pow(scale, j) * atoi(tst.toStdString().c_str());
             j++;
         }
     }
@@ -1290,6 +1334,7 @@ long double CalcParser::ScaleToVal(String s, int scale)
 }
 
 
+//----------------------------------------------------------------------------------------------------------------------
 long double CalcParser::CalcFunc(unsigned f, long double arg, unsigned n, long double arg1)
 {
 long double res = 0;
@@ -1431,7 +1476,7 @@ long double res = 0;
 }
 
 
-
+//----------------------------------------------------------------------------------------------------------------------
 long double CalcParser::Dms(long double arg, bool invert)
 {
     long double m = 0, s = 0, res;
@@ -1463,6 +1508,7 @@ long double CalcParser::Dms(long double arg, bool invert)
 }
 
 
+//----------------------------------------------------------------------------------------------------------------------
 long double CalcParser::RoundS(long double arg, int precision)
 {
     if(-1 == precision)
@@ -1471,7 +1517,7 @@ long double CalcParser::RoundS(long double arg, int precision)
     return ScaleToVal(s, scale);
 }
 
-
+//----------------------------------------------------------------------------------------------------------------------
 long double CalcParser::Factorial(long int arg)
 {
 
@@ -1481,6 +1527,7 @@ return Factorial(arg - 1) * arg;
 }
 
 
+//----------------------------------------------------------------------------------------------------------------------
 long double CalcParser::ChoiceArg(long double arg)
 {
 long double temp = arg / (180 / PI);
@@ -1493,6 +1540,7 @@ return arg;
 }
 
 
+//----------------------------------------------------------------------------------------------------------------------
 long double CalcParser::ChoiceRes(long double res)
 {
 long double temp = (180 / PI) * res;
@@ -1506,23 +1554,14 @@ return res;
 }
 
 
-int CalcParser::IndexOf(const String* s, Char c)
-{
-    Char ch = c;
-#ifdef _QT4
-    return s->indexOf(ch);
-#else
-    return s->find(ch);
-#endif
-}
 
+//----------------------------------------------------------------------------------------------------------------------
 String CalcParser::DoubleToString(long double n, int precision)
 {
     String res;
 
     n = CheckNumberZero(n);
 
-#ifdef _QT4
     if(10 == scale)
         res = String::number(n, 'g', precision);
     else
@@ -1530,43 +1569,20 @@ String CalcParser::DoubleToString(long double n, int precision)
         res = String::number((ulong)n, scale);
         res = res.toUpper();
     }
-#else
-    std::stringstream str_stream;
-
-    if(10 == scale)
-        str_stream << std::setprecision(precision) << n;
-    if(16 == scale)
-        str_stream << std::hex << (unsigned int)n;
-    if(8 == scale)
-        str_stream << std::oct << (unsigned int)n;
-    if(2 == scale)
-    {
-        scale = 16;
-        str_stream << HexToBinString(DoubleToString(n));
-        scale = 2;
-    }
-
-    str_stream >> res;
-    for (size_t i = 0; i < res.length(); ++i)
-        res[i] = std::toupper(res[i]);
-
-#endif
     return res;
 }
 
 
-
+//----------------------------------------------------------------------------------------------------------------------
 Variable CalcParser::VariableByIterator(VarList::const_iterator vit)
 {
     Variable v;
-#ifdef _QT4
-    v = *vit;
-#else
     v = vit->second;
-#endif
     return v;
 }
 
+
+//----------------------------------------------------------------------------------------------------------------------
 void CalcParser::InitMapToksHtml()
 {
     ToksHtml["*"] = "&times;";
@@ -1581,48 +1597,7 @@ void CalcParser::InitMapToksHtml()
 }
 
 
-void CalcParser::InitHex2Bin()
-{
-    Char Hex[] = {'0', '1', '2', '3', '4', '5',
-                    '6', '7', '8', '9', 'A', 'B',
-                    'C', 'D', 'E', 'F'};
-    String Bin[] = {"0000", "0001", "0010", "0011", "0100", "0101",
-                    "0110", "0111", "1000", "1001", "1010", "1011",
-                    "1100", "1101", "1110", "1111"};
-    if(Hex2Bin.empty())
-    {
-        for(int i = 0; i < 16; ++i)
-            Hex2Bin[Hex[i]] = Bin[i];
-    }
-
-}
-
-
-String CalcParser::HexToBinString(String s)
-{
-    InitHex2Bin();
-    String result = "";
-    Char h;
-    String b;
-    MapCharString::iterator mit;
-    String::const_iterator it = s.begin();
-    for(; it != s.end(); it++)
-    {
-        h = *it;
-        mit = Hex2Bin.find(h);
-        if(mit != Hex2Bin.end())
-#ifdef _QT4
-            b = *mit;
-#else
-            b = mit->second;
-#endif
-        else
-            b = "";
-        result.append(b);
-    };
-    return result;
-}
-
+//----------------------------------------------------------------------------------------------------------------------
 long double CalcParser::CheckNumberZero(long double n)
 {
     if(fabs(n) < (1.0 * pow(10.0, -15)))
@@ -1630,7 +1605,22 @@ long double CalcParser::CheckNumberZero(long double n)
     return n;
 }
 
+
+//----------------------------------------------------------------------------------------------------------------------
 const TokenList& CalcParser::RefTokens(void)
 {
     return Tokens;
+}
+
+
+//----------------------------------------------------------------------------------------------------------------------
+void CalcParser::InitFuncs()
+{
+    Function* f;
+    for(auto i = 0; i < static_cast<int>(EFunc::exp); ++i)
+    {
+        EFunc ef = static_cast<EFunc>(i);
+        f = new Function(ef);
+        map_funcs[f->getStrFunc()] = f;
+    }
 }
