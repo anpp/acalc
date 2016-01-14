@@ -221,8 +221,8 @@ void MainWidget::slotPaste(void)
     {
         tok = *it;
         value = tok.Value();
-        if(tok.Type() == UNK || tok.Type() == ERR) continue;
-        if(tok.Type() == NUMBER)
+        if(tok.Type() == t_type::UNK || tok.Type() == t_type::ERR) continue;
+        if(tok.Type() == t_type::NUMBER)
         {
             for(String::iterator sit = value.begin(); sit != value.end(); ++sit)
             {
@@ -255,7 +255,7 @@ void MainWidget::slotPaste(void)
             w = FindWidgetByKey(km);
             if(w)
             {
-                if(tok.Type() == FUNCTION && tok.Value() != w->Value())
+                if(tok.Type() == t_type::FUNCTION && tok.Value() != w->Value())
                 {
                     if(w->Hypable())
                         SetMode(SModes::Hyp, true);

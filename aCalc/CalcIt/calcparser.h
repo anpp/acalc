@@ -45,7 +45,7 @@ private:
     void GetToken();
     bool Space(Char c);
     bool strchr(String t, Char c);
-    void Error(int c_err, Token *current_token = nullptr);
+    void Error(errors c_err, Token *current_token = nullptr);
     bool isdigit(Char c);
     bool isalpha(Char c);
     void Add_exp(CValue *res);
@@ -55,11 +55,6 @@ private:
     void Scob_exp(CValue *res);
     void GetNumber(CValue *res);
     long double ScaleToVal(String s, int scale = 10);
-    unsigned FindFunction(const String *func, unsigned *n);
-    long double CalcFunc(unsigned f, long double arg, unsigned n = 1, long double arg1 = 0);
-    long double ChoiceArg(long double arg);
-    long double ChoiceRes(long double arg);
-    long double Factorial(long int arg);
     void ReadVariableToken(Token *loc_token);
     void LoadTokens();
     Token* LoadToken();
@@ -81,7 +76,7 @@ private:
     Token *token;
     Token token_end;
     String::iterator exp_p;
-    int err;
+    errors err;
     int scale;
     int DRG_mode;
     lconv *lc;

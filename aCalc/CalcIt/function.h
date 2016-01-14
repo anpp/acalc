@@ -4,10 +4,11 @@
 #include <QString>
 #include <functional>
 #include "consts.h"
+#include "token.h"
 
 enum class EFunc: int {sin = 0, cos, tan, ctan, asin, acos, atan,
                   actan, sinh, cosh, tanh, ctanh, asinh, acosh, atanh, actanh,
-                  ln, log, fact, max, min, dms, deg, sqrt, terrt, exp};
+                  ln, log, fact, max, min, dms, deg, sqrt, terrt, exp, user};
 
 enum class ETypeFunc {trig, invtrig, regular};
 
@@ -23,14 +24,16 @@ class Function
     FuncOptions fo;
     std::function<long double (long double)> lfunc1;
     std::function<long double (long double, long double)> lfunc2;
+    errors error_code;
 
-    long double ChoiceArg(long double arg, int DRG_mode);
-    long double ChoiceRes(long double res, int DRG_mode);
+    long double ArgToRad(long double arg, int DRG_mode);
+    long double RadToRes(long double res, int DRG_mode);
+    long double Dms(long double arg, bool invert);
 public:
     Function(EFunc efunc);
     const QString& getStrFunc();
-    long double Calculate(long double arg, int drg);
-    long double Calculate(long double arg1, long double arg2, int drg);
+    long double Calculate(long double arg, int drg, Token* token = nullptr);
+    long double Calculate(long double arg1, long double arg2, Token* token = nullptr);
     int getCountAgrs() { return fo.n_arguments;}
 };
 

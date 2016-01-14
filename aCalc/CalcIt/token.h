@@ -8,25 +8,25 @@ class Token
 {
 public:
     Token();
-    Token(String Val, int token_type, bool prefix = false);
+    Token(String Val, t_type token_type, bool prefix = false);
     const String& Value();
     void Clear();
-    void SetType(int token_type);
-    void SetErr(int err);
+    void SetType(t_type token_type);
+    void SetErr(errors err);
     void SetValue(String s);
     void Add(Char ch);
     void Add(String s);
     bool CutNumber();
-    int Type();
-    int Err();
+    t_type Type();
+    errors Err();
     //Token& operator=(const Token& t);
 
     e_type_var type_var;
     bool prefix;
 private:
-    int token_type;
+    t_type token_type;
     String value;
-    int err;
+    errors err;
 };
 
 #endif // TOKEN_H

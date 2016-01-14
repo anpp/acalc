@@ -5,7 +5,7 @@ Token::Token()
     Clear();
 }
 
-Token::Token(String Val, int token_type, bool prefix)
+Token::Token(String Val, t_type token_type, bool prefix)
 {
     Clear();
     this->SetValue(Val);
@@ -21,19 +21,19 @@ const String& Token::Value()
 
 void Token::Clear()
 {
-    token_type = 0;
+    token_type = t_type::NOPE;
     value = "";
-    err = -1;
+    err = errors::SUCCESS;
     type_var = FLOAT;
     prefix = false;
 }
 
-void Token::SetType(int token_type)
+void Token::SetType(t_type token_type)
 {
     this->token_type = token_type;
 }
 
-void Token::SetErr(int err)
+void Token::SetErr(errors err)
 {
     this->err = err;
 }
@@ -57,7 +57,7 @@ void Token::Add(String s)
 
 bool Token::CutNumber()
 {
-    if(token_type != NUMBER)
+    if(token_type != t_type::NUMBER)
         return false;
     if(value.isEmpty())
         return false;
@@ -66,12 +66,12 @@ bool Token::CutNumber()
 }
 
 
-int Token::Type()
+t_type Token::Type()
 {
    return token_type;
 }
 
-int Token::Err()
+errors Token::Err()
 {
    return err;
 }

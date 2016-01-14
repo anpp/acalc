@@ -10,11 +10,6 @@ String _Errors[] = {tr("Unknown error!"), tr("Syntax error"), tr("Unclosed paren
                   tr("Empty parentheses"), tr("Type mismatch"), tr("Readonly variable")};
 
 
-String Func[] = {"sin(", "cos(", "tan(", "ctan(", "asin(", "acos(",
-        "atan(", "actan(", "sinh(", "cosh(", "tanh(", "ctanh(", "asinh(",
-        "acosh(", "atanh(", "actanh(",
-        "ln(", "log(", "fact(", "max(", "min(", "dms(", "deg(", "sqrt(", "terrt(", "exp("};
-
 
 String VarTypes[] = {"float", "string"};
 
@@ -28,7 +23,7 @@ CalcParser::CalcParser(String *pexpr): PI(acos(-1))
 
     dec_point = "";
     eq = "";
-    token_end.SetType(END);
+    token_end.SetType(t_type::END);
     token_end.SetValue("END");
     SetParams(pexpr);
     InitMapToksHtml();
@@ -66,7 +61,7 @@ bool CalcParser::Run(void)
     do
     {
         res &= Calculate(result);
-    }while(token->Type() == ENDLINE);
+    }while(token->Type() == t_type::ENDLINE);
     return res;
 }
 
@@ -74,15 +69,14 @@ bool CalcParser::Run(void)
 bool CalcParser::Calculate(CValue *loc_result)
 {
     GetToken();
-    while(token->Type() != ENDLINE && token->Type() != END)
+    while(token->Type() != t_type::ENDLINE && token->Type() != t_type::END)
     {
         result->SetType(FLOAT);
         Add_exp(loc_result);
-        if(token->Type() != ENDLINE && token->Type() != END)
-            Error(SYNTAX);
+        if(token->Type() != t_type::ENDLINE && token->Type() != t_type::END)
+            Error(errors::SYNTAX);
 
     }
-
     return !HasErr();
 }
 
@@ -97,7 +91,7 @@ bool CalcParser::InitVariableFromExpression()
     Variable v;
 
     t0 = *token;
-    if(t0.Type() == VARIABLE)
+    if(t0.Type() == t_type::VARIABLE)
     {
         GetToken();
         t1 = *token;
@@ -117,7 +111,7 @@ bool CalcParser::InitVariableFromExpression()
                     v = VariableByIterator(var_it);
                     if(v.read_only)
                     {
-                        Error(RO);
+                        Error(errors::RO);
                         return false;
                     }
 
@@ -126,7 +120,7 @@ bool CalcParser::InitVariableFromExpression()
                 v.type = t0.type_var;
                 if(v.type != res.Type())
                 {
-                    Error(TMS);
+                    Error(errors::TMS);
                     return false;
                 }
                 v.name = var;
@@ -168,7 +162,7 @@ void CalcParser::InitExpr(String *pexpr)
 //----------------------------------------------------------------------------------------------------------------------
 void CalcParser::SetParams(String *pexpr, int scale, int DRG_mode)
 {
-    err = -1;
+    err = errors::SUCCESS;
     result->SetType(FLOAT);
 
     InitExpr(pexpr);
@@ -176,7 +170,6 @@ void CalcParser::SetParams(String *pexpr, int scale, int DRG_mode)
     SetScale(scale);
     SetDRG(DRG_mode);
     LoadTokens();
-
 }
 
 
@@ -193,7 +186,7 @@ void CalcParser::SetScale(int scale)
     for(auto i = Tokens.begin(); i != Tokens.end(); ++i)
     {
         t = &(*i);
-        if(t->Type() == NUMBER)
+        if(t->Type() == t_type::NUMBER)
         {
             number = ScaleToVal(t->Value(), prev_scale);
             t->SetValue(DoubleToString(number));
@@ -235,7 +228,7 @@ void CalcParser::LoadTokens()
 
     while((nTok = LoadToken()) != nullptr)
     {
-        if(nTok->Type() == VARIABLE)
+        if(nTok->Type() == t_type::VARIABLE)
         {
             auto var_it = Vars.find(nTok->Value());
             if(var_it != Vars.end())
@@ -245,7 +238,7 @@ void CalcParser::LoadTokens()
             }
         }
         if(nTok->Value() == ",")
-            nTok->SetType(COMMA);
+            nTok->SetType(t_type::COMMA);
         Tokens.push_back(*nTok);
         delete nTok;
     }
@@ -262,7 +255,7 @@ int CalcParser::CheckParentheses()
    while(i != Tokens.end())
    {
        t = *i++;
-       if(t.Value() == "(" || t.Type() == FUNCTION)
+       if(t.Value() == "(" || t.Type() == t_type::FUNCTION)
            res++;
        if(t.Value() == ")")
            res--;
@@ -285,14 +278,14 @@ TokenList::iterator CalcParser::FindParentheses()
     {
         t = *i;
 
-        if(t.Value() == "(" || t.Type() == FUNCTION)
+        if(t.Value() == "(" || t.Type() == t_type::FUNCTION)
             res++;
         if(t.Value() == ")")
             res--;
         if(0 == res)
             break;
     }
-    if((t.Value() == "(" || t.Type() == FUNCTION) && res == 0)
+    if((t.Value() == "(" || t.Type() == t_type::FUNCTION) && res == 0)
         return i;
     return Tokens.end();
 }
@@ -339,9 +332,9 @@ bool CalcParser::AddPrefixInverse()
     auto i = Tokens.end();
     decltype(i) before_i;
 
-        if(ltok->Type() == NUMBER || ltok->Value() == ")")
+        if(ltok->Type() == t_type::NUMBER || ltok->Value() == ")")
         {
-            if(ltok->Type() == NUMBER)
+            if(ltok->Type() == t_type::NUMBER)
                 before_i = --i;
             else
                 before_i = i = FindParentheses();
@@ -367,8 +360,8 @@ bool CalcParser::AddPrefixInverse()
             }
             else
             {
-                before_i = Tokens.insert(before_i, *(new Token("/", DELIMITER)));
-                Tokens.insert(before_i, *(new Token("1", NUMBER)));
+                before_i = Tokens.insert(before_i, *(new Token("/", t_type::DELIMITER)));
+                Tokens.insert(before_i, *(new Token("1", t_type::NUMBER)));
             }
             return true;
         }
@@ -391,9 +384,9 @@ bool CalcParser::AddPrefixOp(String op)
 
     if(op == "-" || op == "~")
     {
-        if(ltok->Type() == NUMBER || ltok->Value() == ")")
+        if(ltok->Type() == t_type::NUMBER || ltok->Value() == ")")
         {
-            if(ltok->Type() == NUMBER)
+            if(ltok->Type() == t_type::NUMBER)
             {
                 if(InvExpInNumber(ltok))
                     return true;
@@ -420,7 +413,7 @@ bool CalcParser::AddPrefixOp(String op)
                 if(before_tok.Value() == "~" && before_tok.prefix && op == "-")
                     return false;
 
-                Tokens.insert(before_i, *(new Token(op, DELIMITER, true)));
+                Tokens.insert(before_i, *(new Token(op, t_type::DELIMITER, true)));
                 return true;
             }
         }
@@ -457,12 +450,12 @@ bool CalcParser::AddToken(String *pexpr)
         {
             ltok = LastToken();
 
-            if(nTok->Type() == NUMBER)
+            if(nTok->Type() == t_type::NUMBER)
             {
-                if(nTok->Value() == "." && (ltok->Type() == END || ltok->Type() != NUMBER))
+                if(nTok->Value() == "." && (ltok->Type() == t_type::END || ltok->Type() != t_type::NUMBER))
                     nTok->SetValue("0" + nTok->Value());
 
-                if(ltok->Type() == NUMBER)
+                if(ltok->Type() == t_type::NUMBER)
                 {
                     if(ltok->Value().indexOf('.') != -1 && nTok->Value() == ".e+")
                         nTok->SetValue("e+");
@@ -478,7 +471,7 @@ bool CalcParser::AddToken(String *pexpr)
                 }
                 else
                 {
-                    if(!(ltok->Value() == ")" || ltok->Type() == VARIABLE))
+                    if(!(ltok->Value() == ")" || ltok->Type() == t_type::VARIABLE))
                         Tokens.push_back(*nTok);
                     else
                         res = false;
@@ -487,7 +480,7 @@ bool CalcParser::AddToken(String *pexpr)
             else
                 if(nTok->Value() == "(")
                 {
-                    if(ltok->Type() != NUMBER && ltok->Type() != VARIABLE && ltok->Value() != ")")
+                    if(ltok->Type() != t_type::NUMBER && ltok->Type() != t_type::VARIABLE && ltok->Value() != ")")
                         Tokens.push_back(*nTok);
                     else
                         res = false;
@@ -495,7 +488,7 @@ bool CalcParser::AddToken(String *pexpr)
             else
                 if(nTok->Value() == ")")
                 {
-                    if(ltok->Type() == NUMBER || ltok->Type() == VARIABLE || ltok->Value() == ")")
+                    if(ltok->Type() == t_type::NUMBER || ltok->Type() == t_type::VARIABLE || ltok->Value() == ")")
                     {
                         Tokens.push_back(*nTok);
                         if(CheckParentheses() < 0)
@@ -508,17 +501,17 @@ bool CalcParser::AddToken(String *pexpr)
                         res = false;
                 }
             else
-                if(nTok->Type() == FUNCTION || nTok->Type() == VARIABLE)
+                if(nTok->Type() == t_type::FUNCTION || nTok->Type() == t_type::VARIABLE)
                 {
-                    if(ltok->Type() != NUMBER && ltok->Value() != ")" && ltok->Type() != VARIABLE)
+                    if(ltok->Type() != t_type::NUMBER && ltok->Value() != ")" && ltok->Type() != t_type::VARIABLE)
                         Tokens.push_back(*nTok);
                     else
                         res = false;
                 }
             else
-                if(nTok->Type() == DELIMITER)
+                if(nTok->Type() == t_type::DELIMITER)
                 {
-                    if((ltok->Type() != DELIMITER && ltok->Type() != END && ltok->Type() != FUNCTION)
+                    if((ltok->Type() != t_type::DELIMITER && ltok->Type() != t_type::END && ltok->Type() != t_type::FUNCTION)
                             || ltok->Value() == ")")
                     {
                         if(nTok->Value() == "~")
@@ -576,7 +569,7 @@ void CalcParser::ToBack(bool lastdigit)
     EraseErrors();
     Token *lastT = LastToken();
 
-    if(lastT->Type() != END)
+    if(lastT->Type() != t_type::END)
     {
         if(lastdigit)
             cutnumber = lastT->CutNumber();
@@ -585,7 +578,7 @@ void CalcParser::ToBack(bool lastdigit)
             if(lastT->Value() == ")")
             {
                 auto itP = FindParentheses();
-                if(itP == Tokens.begin() && ((Token*)&(*itP))->Type() != FUNCTION)
+                if(itP == Tokens.begin() && ((Token*)&(*itP))->Type() != t_type::FUNCTION)
                     Tokens.pop_front();
             }
 
@@ -606,14 +599,15 @@ e_type_var CalcParser::TypeRes()
 //----------------------------------------------------------------------------------------------------------------------
 bool CalcParser::HasErr()
 {
-    return err != -1;
+    for (Token t: Tokens) { err = t.Err(); if (err != errors::SUCCESS) break;}
+    return err != errors::SUCCESS;
 }
 
 
 //----------------------------------------------------------------------------------------------------------------------
 long double CalcParser::GetResult()
 {
-    return result->ValueFloat();
+    return RoundS(result->ValueFloat(), PRECISION_FOR_DOUBLE);
 }
 
 
@@ -631,11 +625,11 @@ void CalcParser::ReadVariableToken(Token *loc_token)
         loc_token->Add(*exp_p++);
     if(*exp_p == '(')
     {
-        loc_token->SetType(FUNCTION);
+        loc_token->SetType(t_type::FUNCTION);
         loc_token->Add(*exp_p++);
     }
     else
-        loc_token->SetType(VARIABLE);
+        loc_token->SetType(t_type::VARIABLE);
 
 }
 
@@ -655,7 +649,7 @@ Token* CalcParser::LoadToken()
 
     if(strchr("*/+-()%^!&|~=", *exp_p))
     {
-        loc_token->SetType(DELIMITER);
+        loc_token->SetType(t_type::DELIMITER);
         loc_token->Add(*exp_p++);
         //if(loc_token->Value() == "=")
         //    exp_p = expr.end();
@@ -664,14 +658,14 @@ Token* CalcParser::LoadToken()
     else
     if(strchr("<>", *exp_p))
     {
-        loc_token->SetType(DELIMITER);
+        loc_token->SetType(t_type::DELIMITER);
         if(*exp_p == '<' && *(exp_p + 1) == '<')
             loc_token->Add("<<");
         else
         if(*exp_p == '>' && *(exp_p + 1) == '>')
             loc_token->Add(">>");
         else
-            Error(SYNTAX, loc_token);
+            Error(errors::SYNTAX, loc_token);
 
         exp_p += 2;
     }
@@ -679,7 +673,7 @@ Token* CalcParser::LoadToken()
         if(isalpha(*exp_p))
         {
             ReadVariableToken(loc_token);
-            if(loc_token->Type() == VARIABLE)
+            if(loc_token->Type() == t_type::VARIABLE)
             {
                 if(loc_token->Value() == VarTypes[1]) //строковая переменная
                 {
@@ -690,13 +684,13 @@ Token* CalcParser::LoadToken()
                     if(isalpha(*exp_p))
                     {
                         ReadVariableToken(loc_token);
-                        if(loc_token->Type() == VARIABLE)
+                        if(loc_token->Type() == t_type::VARIABLE)
                             loc_token->type_var = STRING;
                         else
-                            Error(SYNTAX, loc_token);
+                            Error(errors::SYNTAX, loc_token);
                     }
                     else
-                        Error(SYNTAX, loc_token);
+                        Error(errors::SYNTAX, loc_token);
                 }
             }
         }
@@ -710,17 +704,17 @@ Token* CalcParser::LoadToken()
                 if(strchr("-+",*(exp_p + 1)))
                     loc_token->Add(*exp_p++);
                 else
-                    Error(SYNTAX, loc_token);
+                    Error(errors::SYNTAX, loc_token);
             }
             loc_token->Add(*exp_p++);
         }
-        loc_token->SetType(NUMBER);
+        loc_token->SetType(t_type::NUMBER);
     }
     else
     if(*exp_p == ';')
     {
         loc_token->Add(*exp_p++);
-        loc_token->SetType(ENDLINE);
+        loc_token->SetType(t_type::ENDLINE);
     }
     else
     if(*exp_p == '"')
@@ -730,15 +724,15 @@ Token* CalcParser::LoadToken()
             loc_token->Add(*exp_p++);
 
         if(*exp_p++ != '"')
-            Error(SYNTAX, loc_token);
+            Error(errors::SYNTAX, loc_token);
 
-        loc_token->SetType(TEXT);
+        loc_token->SetType(t_type::TEXT);
         loc_token->type_var = STRING;
     }
     else
     {
         loc_token->Add(*exp_p++);
-        loc_token->SetType(UNK);
+        loc_token->SetType(t_type::UNK);
     }
     return loc_token;
 }
@@ -784,7 +778,7 @@ String CalcParser::GetExpression(String eq, bool html)
     while(tit != Tokens.end())
     {
         t = *tit++;
-        if(t.Type() != ERR)
+        if(t.Type() != t_type::ERR)
         {
             tokVal = t.Value();
 
@@ -795,34 +789,31 @@ String CalcParser::GetExpression(String eq, bool html)
             if(tit != Tokens.end())
             {
                 next_t = *tit;
-                if(next_t.Type() == ERR)
-                    next_t.SetType(END);
+                if(next_t.Type() == t_type::ERR)
+                    next_t.SetType(t_type::END);
             }
 
             if(html)
             {
                 b_tag = "<FONT color=" + default_color + ">";
-                if(t.Type() == NUMBER || t.prefix)
+                if(t.Type() == t_type::NUMBER || t.prefix)
                     b_tag = "<FONT color=" + number_color + ">";
-                if(t.Type() == FUNCTION)
+                if(t.Type() == t_type::FUNCTION)
                     b_tag = "<FONT color=" + function_color + ">";
-                if(t.Type() == DELIMITER && t.Value() != ")" && t.Value() != "(" && !t.prefix)
+                if(t.Type() == t_type::DELIMITER && t.Value() != ")" && t.Value() != "(" && !t.prefix)
                     b_tag = "<FONT color=" + delimiter_color + ">";
                 e_tag = "</FONT>";
 
-                if(t.Type() == FUNCTION)
+                if(t.Type() == t_type::FUNCTION)
                     tokVal.remove('(');
 
                 mit = ToksHtml.find(tokVal);
                 if(mit != ToksHtml.end())
-                {
                     tokVal = mit->second;
-                }
-                if(t.Type() == FUNCTION)
+                if(t.Type() == t_type::FUNCTION)
                     tokVal += '(';
             }
-
-                if(tokVal == "(" || next_t.Value() == ")" || t.Type() == FUNCTION || next_t.Type() == END || t.prefix)
+                if(tokVal == "(" || next_t.Value() == ")" || t.Type() == t_type::FUNCTION || next_t.Type() == t_type::END || t.prefix)
                     space = "";
 
                 es.append(b_tag + tokVal + e_tag + space);
@@ -856,7 +847,7 @@ bool CalcParser::strchr(String t, Char c)
 
 
 //----------------------------------------------------------------------------------------------------------------------
-void CalcParser::Error(int c_err, Token *current_token)
+void CalcParser::Error(errors c_err, Token *current_token)
 {
     Token t;
 
@@ -864,9 +855,9 @@ void CalcParser::Error(int c_err, Token *current_token)
     if(!current_token)
         current_token = token;
 
-    if(current_token->Type() == END)
+    if(current_token->Type() == t_type::END)
     {
-        t.SetType(ERR);
+        t.SetType(t_type::ERR);
         t.SetErr(err);
         t.SetValue("ERR");
 
@@ -887,10 +878,10 @@ const String CalcParser::listErrors()
     for(auto it = Tokens.begin(); it != Tokens.end(); it++)
     {
         t = &(*it);
-        if(t->Err() != -1)
+        if(t->Err() != errors::SUCCESS)
         {
-            if((unsigned int)t->Err() < sizeof(_Errors) / sizeof(String))
-                errs.append(tr(_Errors[t->Err()].toStdString().c_str()));
+            if(static_cast<unsigned int>(t->Err()) < sizeof(_Errors) / sizeof(String))
+                errs.append(tr(_Errors[static_cast<int>(t->Err())].toStdString().c_str()));
             else
                 errs.append("?");
             errs += "\n";
@@ -912,16 +903,16 @@ void CalcParser::EraseErrors()
     {
         t = &(*it);
 
-        if(t->Type() == ERR)
+        if(t->Type() == t_type::ERR)
         {
             it = Tokens.erase(it);
             --it;
             continue;
         }
-        if(t->Err() != -1)
-            t->SetErr(-1);
+        if(t->Err() != errors::SUCCESS)
+            t->SetErr(errors::SUCCESS);
     }
-    err = -1;
+    err = errors::SUCCESS;
 }
 
 
@@ -960,7 +951,7 @@ void CalcParser::Add_exp(CValue *res)
         Mul_exp(&temp);
 
         if(temp.Type() != res->Type())
-            Error(TMS);
+            Error(errors::TMS);
 
         if(op == '+')
         {
@@ -1001,7 +992,7 @@ void CalcParser::Mul_exp(CValue *res)
 
         if(temp.Type() != res->Type())
         {
-            Error(TMS);
+            Error(errors::TMS);
             break;
         }
 
@@ -1012,7 +1003,7 @@ void CalcParser::Mul_exp(CValue *res)
             break;
         case '/':
             if(temp.ValueFloat() == 0)
-                Error(DIVISION);
+                Error(errors::DIVISION);
             else
                 res->SetValue(res->ValueFloat() / temp.ValueFloat());
             break;
@@ -1024,7 +1015,7 @@ void CalcParser::Mul_exp(CValue *res)
             break;
         case '%':
             if(temp.ValueFloat() == 0)
-                Error(DIVISION);
+                Error(errors::DIVISION);
             res->SetValue(fmod(res->ValueFloat(), temp.ValueFloat()));
             break;
         case '&':
@@ -1049,13 +1040,13 @@ void CalcParser::Step_exp(CValue *res)
 
     Sign_exp(res);
 
-    if((token->Type() == DELIMITER) && (token->Value() == "^"))
+    if((token->Type() == t_type::DELIMITER) && (token->Value() == "^"))
     {
         GetToken();
         Step_exp(&temp);
 
         if(temp.Type() != res->Type())
-            Error(TMS);
+            Error(errors::TMS);
 
         res->SetValue(RoundS(pow(res->ValueFloat(), temp.ValueFloat()), PRECISION_FOR_DOUBLE));
     }
@@ -1068,7 +1059,7 @@ void CalcParser::Sign_exp(CValue *res)
 {
     Char op = ' ';
 
-    if((token->Type() == DELIMITER) &&
+    if((token->Type() == t_type::DELIMITER) &&
         (token->Value() == "+" || token->Value() == "-" || token->Value() == "~"))
     {
         op = token->Value()[0];
@@ -1088,26 +1079,26 @@ void CalcParser::Scob_exp(CValue *res)
 {
     CValue temp;
 
-    if(token->Type() == DELIMITER && token->Value() == "(")
+    if(token->Type() == t_type::DELIMITER && token->Value() == "(")
     {
         GetToken();
         if(token->Value() == ")")
-            Error(EMPTBKT);
+            Error(errors::EMPTBKT);
         else
         {
             Add_exp(&temp);
 
             if(temp.Type() != res->Type())
-                Error(TMS);
+                Error(errors::TMS);
 
             res->SetValue(temp.ValueFloat());
             if(token->Value() != ")")
-                Error(BKT);
+                Error(errors::BKT);
 
         }
         GetToken();
-        if(token->Type() == NUMBER)
-            Error(SYNTAX);
+        if(token->Type() == t_type::NUMBER)
+            Error(errors::SYNTAX);
 
     }
     else
@@ -1121,23 +1112,24 @@ void CalcParser::GetNumber(CValue *res)
 {
     CValue temp;
     CValue temp1;
-    //unsigned f;
+    Function* f;
     unsigned f_n_par;
     String var;
     VarList::const_iterator var_it;
     Variable v;
+    Token* ftok;
 
     switch(token->Type())
     {
-    case NUMBER:
+    case t_type::NUMBER:
         {
         res->SetValue(ScaleToVal(token->Value(), scale));
         GetToken();
         break;
         }
-    case FUNCTION:
+    case t_type::FUNCTION:
         {
-        Function* f;
+        ftok = token;
         auto fi = map_funcs.find(token->Value());
         if (fi != map_funcs.end())
         {
@@ -1149,64 +1141,34 @@ void CalcParser::GetNumber(CValue *res)
             {
             case 1:
                 if(token->Value() != ")")
-                    Error(BKT);
-                res->SetValue(f->Calculate(temp.ValueFloat(), DRG_mode));
+                    Error(errors::BKT);
+                res->SetValue(CheckNumberZero(f->Calculate(temp.ValueFloat(), DRG_mode, ftok)));
                 break;
             case 2:
-                if(token->Type() != COMMA)
+                if(token->Type() != t_type::COMMA)
                 {
-                    Error(SYNTAX);
+                    Error(errors::SYNTAX);
                     break;
                 }
                 GetToken();
                 Add_exp(&temp1);
                 if(token->Value() != ")")
                 {
-                    Error(BKT);
+                    Error(errors::BKT);
                     break;
                 }
-                res->SetValue(f->Calculate(temp.ValueFloat(), temp1.ValueFloat(), DRG_mode));
+                res->SetValue(f->Calculate(temp.ValueFloat(), temp1.ValueFloat(), ftok));
                 break;
             default:
-                Error(UNKNOWN);
-            }
+                Error(errors::UNKNOWN);
+                }
             GetToken();
             break;
-        }
-        /*
-        f = FindFunction(&token->Value(), &f_n_par);
-        GetToken();
-        Add_exp(&temp);
-        switch(f_n_par)
-        {
-        case 1:
-            if(token->Value() != ")")
-                Error(BKT);
-            res->SetValue(CalcFunc(f, temp.ValueFloat()));
-            break;
-        case 2:
-            if(token->Type() != COMMA)
-            {
-                Error(SYNTAX);
-                break;
             }
-            GetToken();
-            Add_exp(&temp1);
-            if(token->Value() != ")")
-            {
-                Error(BKT);
-                break;
-            }
-            res->SetValue(CalcFunc(f, temp.ValueFloat(), f_n_par, temp1.ValueFloat()));
-            break;               
-        default:
-            Error(UNKNOWN);
+        else
+            Error(errors::UNDEFINED);
         }
-        GetToken();
-        break;
-        */
-        }
-    case VARIABLE:
+    case t_type::VARIABLE:
         var = token->Value();
         if(!InitVariableFromExpression()) //если выражение содержит инициализацию переменных
             GetToken();
@@ -1224,15 +1186,15 @@ void CalcParser::GetNumber(CValue *res)
 
         }
         else
-            Error(UNKVAR);
+            Error(errors::UNKVAR);
         break;
-    case TEXT:
+    case t_type::TEXT:
         res->SetType(token->type_var);
         res->SetValue(token->Value());
         GetToken();
         break;
     default:
-        Error(SYNTAX);
+        Error(errors::SYNTAX);
         GetToken();
     }
 }
@@ -1249,25 +1211,6 @@ String CalcParser::GetStrValueVariable(String varname)
         return v.value;
     }
     return "";
-}
-
-
-
-//----------------------------------------------------------------------------------------------------------------------
-unsigned CalcParser::FindFunction(const String *func, unsigned *n)
-{
-int i;
-
-*n = 1;
-for(i = 0; i < NUMFUNC; i++)
-    if(func->compare(Func[i]) == 0)
-    {
-        if(i == FMAX || i == FMIN)
-            *n = 2;
-        return i;
-    }
-
-return -1;
 }
 
 
@@ -1334,179 +1277,6 @@ long double CalcParser::ScaleToVal(String s, int scale)
 }
 
 
-//----------------------------------------------------------------------------------------------------------------------
-long double CalcParser::CalcFunc(unsigned f, long double arg, unsigned n, long double arg1)
-{
-long double res = 0;
-
-        switch(f){
-        case SIN:
-                arg = ChoiceArg(arg);
-                res = sin(arg);
-                break;
-        case COS:
-                arg = ChoiceArg(arg);
-                res = cos(arg);
-                break;
-        case TAN:
-                arg = ChoiceArg(arg);
-                res = tan(arg);
-                break;
-        case CTN:
-                arg = ChoiceArg(arg);
-                res = 1/tan(arg);
-                break;
-        case ARCSIN:
-                if(fabs(arg) > 1)
-                {
-                    Error(INVALID);
-                    break;
-                }
-                res = asin(arg);
-                res = ChoiceRes(res);
-                break;
-        case ARCCOS:
-                if(fabs(arg) > 1)
-                {
-                    Error(INVALID);
-                    break;
-                }
-                res = acos(arg);
-                res = ChoiceRes(res);
-                break;
-        case ARCTAN:
-                res = atan(arg);
-                res = ChoiceRes(res);
-                break;
-        case ARCCTN:
-                res = 1 / atan(arg);
-                res = ChoiceRes(res);
-                break;
-        case SINH:
-                arg = ChoiceArg(arg);
-                res = sinh(arg);
-                break;
-        case COSH:
-                arg = ChoiceArg(arg);
-                res = cosh(arg);
-                break;
-        case TANH:
-                arg = ChoiceArg(arg);
-                res = tanh(arg);
-                break;
-        case CTANH:
-                arg = ChoiceArg(arg);
-                res = 1 / tanh(arg);
-                break;
-        case ASINH:
-                res = asinh(arg);
-                res = ChoiceRes(res);
-                break;
-        case ACOSH:
-                res = acosh(arg);
-                res = ChoiceRes(res);
-                break;
-        case ATANH:
-                res = atanh(arg);
-                res = ChoiceRes(res);
-                break;
-        case ACTNH:
-                res = log((arg + 1) / (arg - 1)) / 2;
-                res = ChoiceRes(res);
-                break;
-        case LN:
-                res = log(arg);
-                break;
-        case LOG:
-                res= log10(arg);
-                break;
-        case FACT:
-                if(arg < 0)
-                {
-                    Error(INVALID);
-                    break;
-                }
-                res = Factorial((long int)arg);
-                break;
-        case FMAX:
-                if(n != 2)
-                {
-                    Error(UNKNOWN);
-                    break;
-                }
-                res = arg > arg1? arg: arg1;
-                break;
-        case FMIN:
-                if(n != 2)
-                {
-                    Error(UNKNOWN);
-                    break;
-                }
-                res = arg < arg1? arg: arg1;
-                break;
-        case DMS:
-            res = Dms(arg, false);
-            break;
-        case DEG:
-            res = Dms(arg, true);
-            break;
-        case SQRT:
-            if(arg < 0)
-            {
-                Error(INVALID);
-                break;
-            }
-            res = sqrt(arg);
-            break;
-        case TERRT:
-            if(arg < 0)
-            {
-                Error(INVALID);
-                break;
-            }
-            res = pow(arg, 1.0 / 3.0);
-            break;
-        case EXP:
-            res = exp(arg);
-            break;
-        default:
-                Error(UNDEFINED);
-        }
-        return CheckNumberZero(res);
-}
-
-
-//----------------------------------------------------------------------------------------------------------------------
-long double CalcParser::Dms(long double arg, bool invert)
-{
-    long double m = 0, s = 0, res;
-    long double koeff = 0.6;
-    String temp;
-
-    if(invert)
-        koeff = 1;
-
-    //45.1348
-
-    m = modfl(arg, &arg);
-    m *= koeff * 100;
-    s = modfl(m, &m);
-
-    if(s > 0.9999)
-    {
-        s = 0;
-        m++;
-    }
-
-    s *= koeff;
-    if(invert)
-        res = arg + m / 60 + s / 36;
-    else
-        res = arg + (m + s) / 100;
-
-    return RoundS(res, PRECISION_FOR_DOUBLE);
-}
-
 
 //----------------------------------------------------------------------------------------------------------------------
 long double CalcParser::RoundS(long double arg, int precision)
@@ -1517,41 +1287,6 @@ long double CalcParser::RoundS(long double arg, int precision)
     return ScaleToVal(s, scale);
 }
 
-//----------------------------------------------------------------------------------------------------------------------
-long double CalcParser::Factorial(long int arg)
-{
-
-if(arg == 0)
-    return 1;
-return Factorial(arg - 1) * arg;
-}
-
-
-//----------------------------------------------------------------------------------------------------------------------
-long double CalcParser::ChoiceArg(long double arg)
-{
-long double temp = arg / (180 / PI);
-if(DRG_mode == RDEG)
-    return temp;
-else
-    if(DRG_mode == RGRAD)
-        return  temp * 0.9;
-return arg;
-}
-
-
-//----------------------------------------------------------------------------------------------------------------------
-long double CalcParser::ChoiceRes(long double res)
-{
-long double temp = (180 / PI) * res;
-
-if(DRG_mode == RDEG)
-    return temp;
-else
-    if(DRG_mode == RGRAD)
-        return temp / 0.9;
-return res;
-}
 
 
 
@@ -1617,7 +1352,7 @@ const TokenList& CalcParser::RefTokens(void)
 void CalcParser::InitFuncs()
 {
     Function* f;
-    for(auto i = 0; i < static_cast<int>(EFunc::exp); ++i)
+    for(auto i = 0; i < static_cast<int>(EFunc::user); ++i)
     {
         EFunc ef = static_cast<EFunc>(i);
         f = new Function(ef);
