@@ -19,7 +19,7 @@ String VarTypes[] = {"float", "string"};
 //----------------------------------------------------------------------------------------------------------------------
 CalcParser::CalcParser(String *pexpr): PI(acos(-1))
 {
-    result = new CValue(FLOAT);
+    result = new CValue(e_type_var::FLOAT);
 
     dec_point = "";
     eq = "";
@@ -29,8 +29,8 @@ CalcParser::CalcParser(String *pexpr): PI(acos(-1))
     InitMapToksHtml();
     InitFuncs();
 
-    SetVariable("pi", DoubleToString(PI), FLOAT, true);
-    SetVariable("e", DoubleToString(exp(1)), FLOAT, true);
+    SetVariable("pi", DoubleToString(PI), e_type_var::FLOAT, true);
+    SetVariable("e", DoubleToString(exp(1)), e_type_var::FLOAT, true);
 }
 
 //----------------------------------------------------------------------------------------------------------------------
@@ -71,7 +71,7 @@ bool CalcParser::Calculate(CValue *loc_result)
     GetToken();
     while(token->Type() != t_type::ENDLINE && token->Type() != t_type::END)
     {
-        result->SetType(FLOAT);
+        result->SetType(e_type_var::FLOAT);
         Add_exp(loc_result);
         if(token->Type() != t_type::ENDLINE && token->Type() != t_type::END)
             Error(errors::SYNTAX);
@@ -124,7 +124,7 @@ bool CalcParser::InitVariableFromExpression()
                     return false;
                 }
                 v.name = var;
-                if(v.type == FLOAT)
+                if(v.type == e_type_var::FLOAT)
                     v.value = DoubleToString(res.ValueFloat());
                 else
                     v.value = res.ValueString();
@@ -160,10 +160,10 @@ void CalcParser::InitExpr(String *pexpr)
 
 
 //----------------------------------------------------------------------------------------------------------------------
-void CalcParser::SetParams(String *pexpr, int scale, int DRG_mode)
+void CalcParser::SetParams(String *pexpr, int scale, Drg DRG_mode)
 {
     err = errors::SUCCESS;
-    result->SetType(FLOAT);
+    result->SetType(e_type_var::FLOAT);
 
     InitExpr(pexpr);
 
@@ -203,16 +203,14 @@ int CalcParser::Scale()
 
 
 //----------------------------------------------------------------------------------------------------------------------
-void CalcParser::SetDRG(int drg_mode)
+void CalcParser::SetDRG(Drg drg_mode)
 {
-    if(drg_mode == 0)
-        return;
     this->DRG_mode = drg_mode;
 }
 
 
 //----------------------------------------------------------------------------------------------------------------------
-int CalcParser::DRG()
+Drg CalcParser::DRG()
 {
     return DRG_mode;
 }
@@ -685,7 +683,7 @@ Token* CalcParser::LoadToken()
                     {
                         ReadVariableToken(loc_token);
                         if(loc_token->Type() == t_type::VARIABLE)
-                            loc_token->type_var = STRING;
+                            loc_token->type_var = e_type_var::STRING;
                         else
                             Error(errors::SYNTAX, loc_token);
                     }
@@ -727,7 +725,7 @@ Token* CalcParser::LoadToken()
             Error(errors::SYNTAX, loc_token);
 
         loc_token->SetType(t_type::TEXT);
-        loc_token->type_var = STRING;
+        loc_token->type_var = e_type_var::STRING;
     }
     else
     {
@@ -955,7 +953,7 @@ void CalcParser::Add_exp(CValue *res)
 
         if(op == '+')
         {
-            if(temp.Type() == STRING)
+            if(temp.Type() == e_type_var::STRING)
                 res->SetValue(res->ValueString() + temp.ValueString());
             else
                 res->SetValue(res->ValueFloat() + temp.ValueFloat());
@@ -1176,7 +1174,7 @@ void CalcParser::GetNumber(CValue *res)
         if(var_it != Vars.end())
         {
             v = VariableByIterator(var_it);
-            if(v.type == FLOAT)
+            if(v.type == e_type_var::FLOAT)
                 res->SetValue(ScaleToVal(v.value));
             else
             {

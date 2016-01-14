@@ -7,7 +7,7 @@
 class CValue
 {
 public:
-    CValue(e_type_var type = FLOAT);
+    CValue(e_type_var type = e_type_var::FLOAT);
     ~CValue();
 
     bool SetValue(long double val);

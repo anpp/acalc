@@ -21,7 +21,7 @@ public:
     bool HasErr();
     const String listErrors();
     bool Run(void);
-    void SetParams(String *pexpr, int scale = 10, int DRG_mode = RRAD);
+    void SetParams(String *pexpr, int scale = 10, Drg DRG_mode = Drg::Rad);
     String GetExpression(String eq = "", bool html = false);
     bool AddToken(String *pexpr);
     bool AddPrefixOp(String op);
@@ -32,11 +32,11 @@ public:
     e_type_var TypeRes();
     void SetScale(int scale);
     int Scale();
-    void SetDRG(int drg_mode);
-    int DRG();
+    void SetDRG(Drg drg_mode);
+    Drg DRG();
     String DoubleToString(long double n, int precision = 200);
     const TokenList& RefTokens(void);
-    void SetVariable(String name, String value, e_type_var type = FLOAT, bool readonly = false);
+    void SetVariable(String name, String value, e_type_var type = e_type_var::FLOAT, bool readonly = false);
     String GetStrValueVariable(String varname);
 
 
@@ -78,7 +78,7 @@ private:
     String::iterator exp_p;
     errors err;
     int scale;
-    int DRG_mode;
+    Drg DRG_mode;
     lconv *lc;
     String dec_point;
     bool binit_var;

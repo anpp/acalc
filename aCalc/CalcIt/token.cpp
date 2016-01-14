@@ -24,7 +24,7 @@ void Token::Clear()
     token_type = t_type::NOPE;
     value = "";
     err = errors::SUCCESS;
-    type_var = FLOAT;
+    type_var = e_type_var::FLOAT;
     prefix = false;
 }
 

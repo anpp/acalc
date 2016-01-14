@@ -183,34 +183,34 @@ const QString& Function::getStrFunc()
 
 
 //----------------------------------------------------------------------------------------------------------------------
-long double Function::ArgToRad(long double arg, int DRG_mode)
+long double Function::ArgToRad(long double arg, Drg DRG_mode)
 {
     long double temp = arg / (180 / acos(-1) /*PI*/);
-    if(DRG_mode == RDEG)
+    if(DRG_mode == Drg::Deg)
         return temp;
     else
-        if(DRG_mode == RGRAD)
+        if(DRG_mode == Drg::Grad)
             return  temp * 0.9;
     return arg;
 }
 
 
 //----------------------------------------------------------------------------------------------------------------------
-long double Function::RadToRes(long double res, int DRG_mode)
+long double Function::RadToRes(long double res, Drg DRG_mode)
 {
     long double temp = (180 / acos(-1) /*PI*/) * res;
 
-    if(DRG_mode == RDEG)
+    if(DRG_mode == Drg::Deg)
         return temp;
     else
-        if(DRG_mode == RGRAD)
+        if(DRG_mode == Drg::Grad)
             return temp / 0.9;
     return res;
 }
 
 
 //----------------------------------------------------------------------------------------------------------------------
-long double Function::Calculate(long double arg, int drg, Token* token)
+long double Function::Calculate(long double arg, Drg drg, Token* token)
 {
     long double result = 0;
 

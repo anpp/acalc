@@ -11,7 +11,7 @@ QString sShortLanguages[] = {"en", "ru"};
 
 inline unsigned GetHFButton(unsigned h)
 {
-    return (int)h - 10 > 5? h - 10: 5;
+    return (int)h - (int)DIFF_HEIGHT > (int)MIN_HEIGHT? h - (int)DIFF_HEIGHT: (int)MIN_HEIGHT;
 }
 
 
@@ -50,10 +50,10 @@ MainWidget::MainWidget(QWidget *parent) :
     DefaultKeysMap();
 
 
-    parser->SetVariable("default_color", "#000000", STRING);
-    parser->SetVariable("number_color", String(colorDigits.name().toStdString().c_str()), STRING);
-    parser->SetVariable("function_color", String(colorFunc.name().toStdString().c_str()), STRING);
-    parser->SetVariable("delimiter_color", String(colorOps.name().toStdString().c_str()), STRING);
+    parser->SetVariable("default_color", "#000000", e_type_var::STRING);
+    parser->SetVariable("number_color", String(colorDigits.name().toStdString().c_str()), e_type_var::STRING);
+    parser->SetVariable("function_color", String(colorFunc.name().toStdString().c_str()), e_type_var::STRING);
+    parser->SetVariable("delimiter_color", String(colorOps.name().toStdString().c_str()), e_type_var::STRING);
 
     SendKey(Qt::Key_F3); //Rad
     SendKey(Qt::Key_F6); //Dec
@@ -1140,14 +1140,14 @@ void MainWidget::ProcessClickServ(const QString& sButtonValue)
 void MainWidget::ProcessClickDRG(const QString& sButtonValue)
 {
 
-    int drg_mode = 0;
+    Drg drg_mode = Drg::Rad;
 
     if(sButtonValue == "Deg")
-        drg_mode = RDEG;
+        drg_mode = Drg::Deg;
     if(sButtonValue == "Rad")
-        drg_mode = RRAD;
+        drg_mode = Drg::Rad;
     if(sButtonValue == "Grad")
-        drg_mode = RGRAD;
+        drg_mode = Drg::Grad;
     parser->SetDRG(drg_mode);
 
     UpdateDisplay();

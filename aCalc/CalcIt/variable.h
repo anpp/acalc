@@ -8,7 +8,7 @@
 class Variable
 {
 public:
-    Variable(String n = "", String v = "", e_type_var t = FLOAT);
+    Variable(String n = "", String v = "", e_type_var t = e_type_var::FLOAT);
 
     String name;
     String value;

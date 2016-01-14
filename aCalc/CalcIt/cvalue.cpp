@@ -3,7 +3,7 @@
 //*****************************************************************************************
 CValue::CValue(e_type_var type)
 {
-    value = NULL;
+    value = nullptr;
     CreateValue(type);
 }
 
@@ -14,11 +14,11 @@ void CValue::CreateValue(e_type_var type)
     this->type = type;
     switch(type)
     {
-    case FLOAT:
+    case e_type_var::FLOAT:
         value = (void*)new long double;
         *((long double*)(value)) = 0;
         break;
-    case STRING:
+    case e_type_var::STRING:
         value = (void*)new String;
         break;
     default:
@@ -35,21 +35,21 @@ void CValue::DeleteValue()
 {
     switch(type)
     {
-    case FLOAT:
+    case e_type_var::FLOAT:
         delete (long double*)value;
         break;
-    case STRING:
+    case e_type_var::STRING:
         delete (String*)value;
         break;
     default:
         break;
     }
-    value = NULL;
+    value = nullptr;
 }
 
 bool CValue::SetValue(long double val)
 {
-    if(type == FLOAT)
+    if(type == e_type_var::FLOAT)
     {
         *((long double*)(value)) = val;
         return true;
@@ -60,7 +60,7 @@ bool CValue::SetValue(long double val)
 
 bool CValue::SetValue(String val)
 {
-    if(type == STRING)
+    if(type == e_type_var::STRING)
     {
         *((String*)(value)) = val;
         return true;
@@ -72,7 +72,7 @@ bool CValue::SetValue(String val)
 long double CValue::ValueFloat()
 {
     long double r = 0;
-    if(type == FLOAT)
+    if(type == e_type_var::FLOAT)
         r = *((long double*)value);
     return r;
 }
@@ -80,7 +80,7 @@ long double CValue::ValueFloat()
 String CValue::ValueString()
 {
     String r = "";
-    if(type == STRING)
+    if(type == e_type_var::STRING)
         r = *((String*)value);
     return r;
 }
