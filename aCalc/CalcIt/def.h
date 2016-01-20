@@ -17,7 +17,6 @@ typedef QChar Char;
 typedef std::list<Token> TokenList;
 typedef std::map<String, Variable> VarList;
 typedef std::map<String, String> MapStrings;
-typedef std::map<char, String> MapCharString;
 
 typedef unsigned int UINT;
 

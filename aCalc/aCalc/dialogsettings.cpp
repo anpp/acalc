@@ -86,13 +86,13 @@ void DialogSettings::setEditor(QTableWidget* tblSettings, Setting* s, int row)
     QLineEdit* edit = nullptr;
     switch (s->editor) {
     case spin:
-        spinbox = new QSpinBox(this);
+        spinbox = new QSpinBox();
         tblSettings->setCellWidget(row, 0, spinbox);
         spinbox->setValue(settings->getSetting(s->title).toInt());
         mapSetControl[s->title] = spinbox;
         break;
     case text:
-        edit = new QLineEdit(this);
+        edit = new QLineEdit();
         tblSettings->setCellWidget(row, 0, edit);
         edit->setText(settings->getSetting(s->title).toString());
         mapSetControl[s->title] = edit;

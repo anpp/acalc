@@ -89,7 +89,6 @@ private:
 
     VarList Vars;
     MapStrings ToksHtml;
-    MapCharString Hex2Bin;
 
     std::map<QString, Function*> map_funcs;
 

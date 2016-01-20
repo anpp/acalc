@@ -37,6 +37,11 @@ CalcParser::CalcParser(String *pexpr): PI(acos(-1))
 CalcParser::~CalcParser()
 {
     Tokens.clear();
+    Vars.clear();
+    ToksHtml.clear();
+
+    for (std::pair<QString, Function*> mf: map_funcs) { delete mf.second;}
+    map_funcs.clear();
     delete result;
 }
 
