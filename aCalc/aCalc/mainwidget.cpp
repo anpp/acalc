@@ -190,7 +190,7 @@ void MainWidget::slotCopy(void)
   if(!wResult->text().isEmpty())
   {
       if(parser->Run())
-          s = s + " = " + parser->DoubleToString(parser->GetResult());
+          s = s + " = " + parser->DoubleToString(parser->GetResult(), PRECISION_FOR_DOUBLE);
       else
           s = s + " " + parser->listErrors();
   }
@@ -1087,7 +1087,7 @@ void MainWidget::ProcessClickMem(const QString& sButtonValue)
         if(lblMem->text().isEmpty())
             return;
 
-        QString sMemory = parser->DoubleToString(fabs(inMemory), 16);
+        QString sMemory = parser->DoubleToString(fabs(inMemory), PRECISION_FOR_DOUBLE);
         if(AddToken(sMemory))
         {
             if(inMemory < 0)
@@ -1194,7 +1194,7 @@ void MainWidget::UpdateDisplay(ud how_update)
         wResult->setText(errors);
     else
         if(how_update == ud::Result)
-            wResult->setText("= " + parser->DoubleToString(parser->GetResult(), 16));
+            wResult->setText("= " + parser->DoubleToString(parser->GetResult(), PRECISION_FOR_DOUBLE));
     else
             if(how_update == ud::Empty)
                 wResult->setText("");
