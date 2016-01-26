@@ -30,7 +30,8 @@ SOURCES += main.cpp\
     ../CalcIt/calcparser.cpp \
     dialogsettings.cpp \
     settings.cpp \
-    ../CalcIt/function.cpp
+    ../CalcIt/function.cpp \
+    pnlbutton.cpp
 
 HEADERS  += mainwidget.h \
     common.h \
@@ -45,7 +46,8 @@ HEADERS  += mainwidget.h \
     dialogsettings.h \
     functors.h \
     settings.h \
-    ../CalcIt/function.h
+    ../CalcIt/function.h \
+    pnlbutton.h
 
 FORMS    += mainwidget.ui
 

@@ -11,7 +11,7 @@
 #include "common.h"
 
 
-enum kindset {appearance = 0, misc, screen};
+enum kindset: int {appearance = 0, misc, screen};
 enum editorset {text = 0, spin, combo};
 
 struct Setting
@@ -33,6 +33,7 @@ class Settings {
 
 public:
     Settings(QWidget* widget_owner, const QString &organization, const QString &application);
+    ~Settings();
 
     void loadSettingsByKind(kindset ks);
     void saveSettingsByKind(kindset ks);
@@ -45,12 +46,12 @@ public:
 
 
     void loadSettings(){
-        loadSettingsByKind(appearance);
+        loadSettingsByKind(kindset::appearance);
         loadSettingsScreen();
     }
 
     void saveSettings(){
-        saveSettingsByKind(appearance);
+        saveSettingsByKind(kindset::appearance);
         saveSettingsScreen();
     }
 

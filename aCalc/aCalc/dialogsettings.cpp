@@ -43,7 +43,7 @@ void DialogSettings::loadSettingsGrids()
 
     for (kindset ks: set_kindset)
     {
-        if(ks == screen) continue;
+        if(ks == kindset::screen) continue;
 
         n_rows = 0;
         sl_labels_vert.clear();

@@ -30,6 +30,7 @@
 #include "common.h"
 #include "../CalcIt/calcparser.h"
 #include "settings.h"
+#include "pnlbutton.h"
 
 
 namespace Ui {
@@ -159,6 +160,7 @@ private:
     bool bPasting;
 
     Settings settings;
+    PnlButton pb;
 
 public slots:
     void ProcessClick(const QString& sButtonValue);

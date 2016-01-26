@@ -18,7 +18,16 @@ inline unsigned GetHFButton(unsigned h)
 //----------------------------------------------------------------------------------------------------------------------
 MainWidget::MainWidget(QWidget *parent) :
         QWidget(parent, Qt::WindowMinimizeButtonHint | Qt::WindowCloseButtonHint),
-    ui(new Ui::MainWidget), settings(this, "anp", "acalc")
+    ui(new Ui::MainWidget), settings(this, "anp", "acalc"),
+    pb{ {Pnl::Dig, 4, 3, new QColor(Qt::blue)},
+        {Pnl::Op, 4, 3, new QColor(Qt::red)},
+        {Pnl::Abc, 2, 3, new QColor(0, 64, 128)},
+        {Pnl::Mem, 1, 3, new QColor(128, 0, 128)},
+        {Pnl::Func, 3, 7, new QColor(Qt::black)},
+        {Pnl::Scale, 1, 4, new QColor(Qt::black)},
+        {Pnl::Drg, 1, 3, new QColor(Qt::black)},
+        {Pnl::FuncModes, 1, 2, new QColor(Qt::black)},
+        {Pnl::ServButtons, 1, 3, new QColor(Qt::black)}}
 {
     ui->setupUi(this);
 
@@ -281,7 +290,7 @@ void MainWidget::slotSettings(void)
   if (dialog_settings->exec() == QDialog::Accepted)
   {
       ResizeAll(settings.getSetting("button_width").toInt(), settings.getSetting("button_height").toInt());
-      settings.saveSettingsByKind(appearance);
+      settings.saveSettingsByKind(kindset::appearance);
   }
   delete dialog_settings;
 }
