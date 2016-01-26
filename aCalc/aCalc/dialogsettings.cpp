@@ -52,6 +52,7 @@ void DialogSettings::loadSettingsGrids()
         sl_labels_horz.clear();
 
         dsg = new DSGrid;
+        dsg->tblSettings.setParent(this);
         dsg->kind = ks;
         dsg->tblSettings.setColumnCount(1);
         vec_tbl.append(dsg);
