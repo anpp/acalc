@@ -8,12 +8,11 @@ QT       += core gui widgets
 DEFINES += HAVE_QT5
 
 
-CONFIG += release c++11
 #CONFIG += static
 
 
-QMAKE_CFLAGS += -std=c++11
-QMAKE_CXXFLAGS += -std=c++11
+QMAKE_CFLAGS += -std=c++14
+QMAKE_CXXFLAGS += -std=c++14
 
 #QMAKE_LFLAGS += -static -static-libgcc
 #LIBS += -static-libgcc

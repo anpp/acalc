@@ -26,7 +26,9 @@ DialogSettings::DialogSettings(Settings* app_settings, QWidget *parent) :
 //----------------------------------------------------------------------------------------------------------------------
 DialogSettings::~DialogSettings()
 {
-
+  for (DSGrid* dsg: vec_tbl) delete dsg;
+  vec_tbl.clear();
+  mapSetControl.clear();
 }
 
 
