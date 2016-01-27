@@ -10,7 +10,7 @@
 
 enum consts: int {DIFF_HEIGHT = 10, MIN_HEIGHT = 5};
 
-enum class Pnl {Dig, Op, Abc, Mem, Func, Scale, Drg, FuncModes, ServButtons, Nop};
+enum class Pnl {Dig, Op, Abc, Mem, MemDisp, Func, Scale, Drg, FuncModes, ServButtons, Nop};
 
 enum class ud {Result, Empty, Errors};
 

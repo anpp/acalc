@@ -95,15 +95,7 @@ private:
 
     QFrame *wDisplay;
     QFrame *wMode;
-    QFrame *wCentral;
     QFrame *wBottom;
-    QFrame *wDigits;
-    QFrame *wOps;
-    QFrame *wMem;
-    QFrame *wAbc;
-    QFrame *wScale;
-    QFrame *wDRG;
-    QFrame *wFuncModes;
     QLabel *Display;
     QLabel *wResult;
 

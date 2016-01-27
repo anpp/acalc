@@ -40,7 +40,7 @@ CalcParser::~CalcParser()
     Vars.clear();
     ToksHtml.clear();
 
-    for (std::pair<QString, Function*> mf: map_funcs) { delete mf.second;}
+    for (auto mf: map_funcs) { delete mf.second;}
     map_funcs.clear();
     delete result;
 }
