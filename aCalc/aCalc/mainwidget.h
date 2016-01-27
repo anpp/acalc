@@ -62,7 +62,7 @@ protected:
 private:
     void InitLocale();
     void LoadLocale(const QString& sloc);
-    void SetLocale(int indexLang);
+    void SetLocale(Langs indexLang);
     void SetView(int indexView);
     void CreateMenus(void);
     void SetLocaleTexts(void);

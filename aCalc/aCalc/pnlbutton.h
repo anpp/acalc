@@ -19,7 +19,7 @@ class PnlButton
 {
     QVector<PnlDesc> panels;
 public:
-    PnlButton(std::initializer_list<PnlDesc> list);
+    PnlButton();
     ~PnlButton();
 
 };

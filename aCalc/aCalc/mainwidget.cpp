@@ -3,7 +3,6 @@
 #include "buttexts.h"
 #include "dialogsettings.h"
 #include "functors.h"
-#include <qlocale.h>
 
 QString sViews[] = {QObject::tr("Original"), QObject::tr("Simple"), QObject::tr("Programmable")};
 QString sLanguages[] = {QObject::tr("English"), QObject::tr("Russian")};
@@ -18,16 +17,7 @@ inline unsigned GetHFButton(unsigned h)
 //----------------------------------------------------------------------------------------------------------------------
 MainWidget::MainWidget(QWidget *parent) :
         QWidget(parent, Qt::WindowMinimizeButtonHint | Qt::WindowCloseButtonHint),
-    ui(new Ui::MainWidget), settings(this, "anp", "acalc"),
-    pb{ {Pnl::Dig, 4, 3, new QColor(Qt::blue)},
-        {Pnl::Op, 4, 3, new QColor(Qt::red)},
-        {Pnl::Abc, 2, 3, new QColor(0, 64, 128)},
-        {Pnl::Mem, 1, 3, new QColor(128, 0, 128)},
-        {Pnl::Func, 3, 7, new QColor(Qt::black)},
-        {Pnl::Scale, 1, 4, new QColor(Qt::black)},
-        {Pnl::Drg, 1, 3, new QColor(Qt::black)},
-        {Pnl::FuncModes, 1, 2, new QColor(Qt::black)},
-        {Pnl::ServButtons, 1, 3, new QColor(Qt::black)}}
+    ui(new Ui::MainWidget), settings(this, "anp", "acalc")
 {
     ui->setupUi(this);
 
@@ -181,7 +171,7 @@ void MainWidget::slotView(QAction* action)
 void MainWidget::slotLanguage(QAction* action)
 {
     if(action == nullptr) return;
-    SetLocale(ActionLanguages.indexOf(action));
+    SetLocale(static_cast<Langs>(ActionLanguages.indexOf(action)));
 }
 
 
@@ -427,18 +417,19 @@ void MainWidget::InitLocale()
     if(locale.language() == QLocale::Russian)
         lang = Langs::Ru;
 
-    SetLocale(static_cast<int>(lang));
+    SetLocale(lang);
 }
 
 
 //----------------------------------------------------------------------------------------------------------------------
-void MainWidget::SetLocale(int indexLang)
+void MainWidget::SetLocale(Langs indexLang)
 {
-    LoadLocale(sShortLanguages[indexLang]);
-
+    int selectedIndex = static_cast<int>(indexLang);
     int index = 0;
+
+    LoadLocale(sShortLanguages[selectedIndex]);
     for (QAction *action: ActionLanguages){
-        action->setChecked(indexLang == index++);
+        action->setChecked(selectedIndex == index++);
     }
 }
 
