@@ -99,17 +99,10 @@ private:
     QLabel *Display;
     QLabel *wResult;
 
-    QColor colorDigits;
-    QColor colorOps;
-    QColor colorAbc;
-    QColor colorMem;
-    QColor colorFunc;
-
     std::vector<QCalcWidget*> vec_btns;
 
     QMap<sKeyMod, QCalcWidget*> map_keys;
     QMap<QString, sKeyMod> map_val_key;
-
 
     QMenuBar *MenuBar;
     QMenu *MenuView;
@@ -138,7 +131,7 @@ private:
 
     CalcParser *parser = new CalcParser;
 
-    unsigned button_func_w;
+    unsigned button_func_w = 0;
 
     double inMemory;
 

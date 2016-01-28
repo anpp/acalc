@@ -28,21 +28,15 @@ MainWidget::MainWidget(QWidget *parent) :
     //QApplication::setStyle("plastique");
     QApplication::setStyle("fusion");
 
-    colorDigits = Qt::blue;
-    colorOps = Qt::red;
-    colorAbc.setRgb(0, 64, 128);
-    colorMem.setRgb(128, 0, 128);
-    colorFunc = Qt::black;
-
     CreateMenus();    
     CreateWidgets();
     InitLocale();
     DefaultKeysMap();
 
     parser->SetVariable("default_color", "#000000", e_type_var::STRING);
-    parser->SetVariable("number_color", String(colorDigits.name().toStdString().c_str()), e_type_var::STRING);
-    parser->SetVariable("function_color", String(colorFunc.name().toStdString().c_str()), e_type_var::STRING);
-    parser->SetVariable("delimiter_color", String(colorOps.name().toStdString().c_str()), e_type_var::STRING);
+    parser->SetVariable("number_color", String(pb.getColor(Pnl::Dig)->name().toStdString().c_str()), e_type_var::STRING);
+    parser->SetVariable("function_color", String(pb.getColor(Pnl::Func)->name().toStdString().c_str()), e_type_var::STRING);
+    parser->SetVariable("delimiter_color", String(pb.getColor(Pnl::Op)->name().toStdString().c_str()), e_type_var::STRING);
 
     SendKey(Qt::Key_F3); //Rad
     SendKey(Qt::Key_F6); //Dec
@@ -661,7 +655,7 @@ void MainWidget::LayoutSimple(void)
     lDisplay->addWidget(Display, 0, 0);
     lDisplay->addWidget(wResult, 1, 0);
 
-    lMode->setMargin(0);
+    lMode->setContentsMargins(0, 0, spacing, 0);
     lMode->setSpacing(spacing);
     lMode->addStretch();
     FillLayoutWidgets(lMode, Pnl::ServButtons, false);
@@ -699,6 +693,7 @@ void MainWidget::InitModesLayouts()
 
     lModeBottom->setMargin(0);
     lModeBottom->setSpacing(spacing);
+
     lModeBottom->addWidget(pb.getPanel(Pnl::Scale));
     lModeBottom->addWidget(pb.getPanel(Pnl::Drg));
 
@@ -706,12 +701,13 @@ void MainWidget::InitModesLayouts()
     lScale->setSpacing(0);
     FillLayoutWidgets(lScale, Pnl::Scale, false);
 
-    lDrg->setContentsMargins(0, 0, 0, 0);
+    lDrg->setContentsMargins(spacing, 0, 0, 0);
     lDrg->setSpacing(0);
     FillLayoutWidgets(lDrg, Pnl::Drg, false);
 
 
-    lModeTop->setMargin(0);
+    //lModeTop->setMargin(0);
+    lModeTop->setContentsMargins(0, 0, spacing, 0);
     lModeTop->setSpacing(spacing);
     lModeTop->addWidget(pb.getPanel(Pnl::FuncModes));
     lModeTop->addStretch();
@@ -776,45 +772,34 @@ void MainWidget::CreateButtons(Pnl atype)
     int index;
 
     QCalcWidget *cw;
-    auto max_i = 0;
-    auto max_j = 0;
+    auto max_i = pb.getRows(atype);
+    auto max_j = pb.getCols(atype);
 
-    QColor *color;
+    QColor *color = pb.getColor(atype);;
     std::vector<QCalcWidget*>::iterator it;
 
     switch(atype)
     {
     case Pnl::Dig:
     {
-        max_i = 4;
-        max_j = 3;
         s = sDigits;
         s_v = svDigits;
-        color = &colorDigits;
         break;
     }
     case Pnl::Op:
     {
-        max_i = 4;
-        max_j = 3;
         s = sOperators;
         s_v = svOperators;
-        color = &colorOps;
         break;
     }
     case Pnl::Abc:
     {
-        max_i = 2;
-        max_j = 3;
         s = sAbc;
         s_v = sAbc;
-        color = &colorAbc;
         break;
     }
     case Pnl::Mem:
     {
-        max_i = 1;
-        max_j = 3;
         s = sMem;
         s_v = sMem;
 
@@ -822,16 +807,12 @@ void MainWidget::CreateButtons(Pnl atype)
         lblMem->setFrameStyle(QFrame::WinPanel);
         lblMem->setAlignment(Qt::AlignCenter);
         vec_btns.push_back(new QCalcWidget(lblMem, 1, 0, atype, "", "", 1, 3, true));
-        color = &colorMem;
         break;
     }
     case Pnl::Func:
     {
-        max_i = 3;
-        max_j = 7;
         s = sFunc;
         s_v = svFunc;
-        color = &colorFunc;
         break;
     }
     case Pnl::Scale:
@@ -918,49 +899,45 @@ void MainWidget::ResizeWidgets(unsigned w, unsigned h, Pnl atype)
 void MainWidget::SetSizeOfWidgets(unsigned button_w, unsigned button_h)
 {
     int i_left, i_top, i_right, i_bottom;
-    unsigned w_bord, h_bord;
     unsigned func_button_h = GetHFButton(button_h);
 
     i_left = i_right = i_top = i_bottom = 0;
-    pb.getPanel(Pnl::Dig)->getContentsMargins(&i_left, &i_top, &i_right, &i_bottom);
-    w_bord = i_left + i_right;
-    h_bord = i_top + i_bottom;
 
     this->getContentsMargins(&i_left, &i_top, &i_right, &i_bottom);
 
-    pb.getPanel(Pnl::Dig)->setFixedSize(button_w * 3 + spacing * 4 + w_bord, button_h * 4 + spacing * 5 + h_bord);
+    pb.setSizeButton(Pnl::Dig, button_w, button_h);
 
     switch(static_cast<CalcView>(settings.getSetting("appview").toInt()))
     {
     case CalcView::Original:
-        pb.getPanel(Pnl::Op)->setFixedSize(button_w * 3 + spacing * 4 + w_bord, button_h * 4 + spacing * 5 + h_bord);
-        pb.getPanel(Pnl::Abc)->setFixedSize(button_w * 3 + spacing * 4 + w_bord, button_h * 2 + spacing * 3 + h_bord);
+        pb.setSizeButton(Pnl::Op, button_w, button_h);
+        pb.setSizeButton(Pnl::Abc, button_w, button_h);
         pb.getPanel(Pnl::Mem)->setFixedSize(pb.getPanel(Pnl::Abc)->width(), pb.getPanel(Pnl::Op)->height() - pb.getPanel(Pnl::Abc)->height() - spacing);
-        wBottom->setFixedSize(pb.getPanel(Pnl::Dig)->width() + pb.getPanel(Pnl::Op)->width() + pb.getPanel(Pnl::Mem)->width() + spacing * 2, pb.getPanel(Pnl::Dig)->height());
+        wBottom->setFixedSize(pb.getPanel(Pnl::Dig)->width() + pb.getPanel(Pnl::Op)->width() + pb.getPanel(Pnl::Mem)->width() + spacing * 2,
+                              pb.getPanel(Pnl::Dig)->height());
 
-        pb.getPanel(Pnl::Func)->setFixedSize(wBottom->width(), func_button_h * 3 + spacing * 4 + h_bord);
-        button_func_w = (pb.getPanel(Pnl::Func)->width() - spacing * 8) / 7;
+        button_func_w = (wBottom->width() - spacing * (pb.getCols(Pnl::Func) + 1)) / pb.getCols(Pnl::Func);
+        pb.setSizeButton(Pnl::Func, button_func_w, func_button_h);
 
-        wDisplay->setFixedSize(wBottom->width(), button_h + h_bord);
-        //Display->setFixedSize(wDisplay->width() - w_bord, wDisplay->height() - h_bord);
+        wDisplay->setFixedSize(wBottom->width(), button_h + i_top + i_bottom);
 
-        pb.getPanel(Pnl::Scale)->setFixedSize(button_func_w * 4 + spacing * 4, func_button_h + h_bord);
-        pb.getPanel(Pnl::Drg)->setFixedSize(wBottom->width() - pb.getPanel(Pnl::Scale)->width() - spacing, pb.getPanel(Pnl::Scale)->height());
+        pb.setSizeButton(Pnl::Scale, button_func_w, func_button_h);
+        pb.setSizeButton(Pnl::FuncModes, button_func_w, func_button_h);
+        pb.getPanel(Pnl::Drg)->setFixedSize(wBottom->width() - pb.getPanel(Pnl::Scale)->width() - spacing,
+                                            pb.getPanel(Pnl::Scale)->height());
 
-
-        pb.getPanel(Pnl::FuncModes)->setFixedSize(button_func_w * 2 + spacing * 3, pb.getPanel(Pnl::Scale)->height());
-        ResizeWidgets(button_w, pb.getPanel(Pnl::FuncModes)->height(), Pnl::ServButtons);
         wMode->setFixedSize(wBottom->width(), pb.getPanel(Pnl::Scale)->height() + pb.getPanel(Pnl::FuncModes)->height() + spacing);
+        ResizeWidgets(button_w, pb.getPanel(Pnl::FuncModes)->height(), Pnl::ServButtons);
 
         this->setFixedSize(wBottom->width() + i_left + i_right,
                            wBottom->height() + pb.getPanel(Pnl::Func)->height() + wMode->height() +
                            wDisplay->height() +  spacing * 4 + MenuBar->height() + i_top + i_bottom);
         break;
     case CalcView::Simple:
-        pb.getPanel(Pnl::Op)->setFixedSize(button_w * 2 + spacing * 3 + w_bord, button_h * 4 + spacing * 5 + h_bord);
+        pb.setSizeButton(Pnl::Op, button_w, button_h, button_w + spacing);
         wBottom->setFixedSize(pb.getPanel(Pnl::Dig)->width() + pb.getPanel(Pnl::Op)->width() + spacing, pb.getPanel(Pnl::Dig)->height());
-        wDisplay->setFixedSize(wBottom->width(), button_h + h_bord);
-        wMode->setFixedSize(wBottom->width(), func_button_h + h_bord);
+        wDisplay->setFixedSize(wBottom->width(), button_h + i_top + i_bottom);
+        wMode->setFixedSize(wBottom->width(), func_button_h + i_top + i_bottom);
         ResizeWidgets(button_w, wMode->height(), Pnl::ServButtons);
 
         this->setFixedSize(wBottom->width() + i_left + i_right,
@@ -995,9 +972,9 @@ void MainWidget::ResizeAll(unsigned new_button_w, unsigned new_button_h)
     SetSizeOfWidgets(logical_w, logical_h);
 
     ResizeWidgets(button_func_w, GetHFButton(logical_h), Pnl::Func);
-    ResizeWidgets(button_func_w + 2, GetHFButton(logical_h), Pnl::Scale);
-    ResizeWidgets(button_func_w + 2, GetHFButton(logical_h), Pnl::Drg);
-    ResizeWidgets(button_func_w + 2, GetHFButton(logical_h), Pnl::FuncModes);
+    ResizeWidgets(button_func_w + spacing, GetHFButton(logical_h), Pnl::Scale);
+    ResizeWidgets(button_func_w + spacing, GetHFButton(logical_h), Pnl::Drg);
+    ResizeWidgets(button_func_w + spacing, GetHFButton(logical_h), Pnl::FuncModes);
 
     posMousePress.setX(logical_w / 2);
     posMousePress.setY(logical_h / 3);
