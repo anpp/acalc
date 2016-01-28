@@ -133,26 +133,26 @@ private:
 
     QLabel *lblMem;
 
-    int shape;
+    int shape = QFrame::WinPanel | QFrame::Sunken;
+    unsigned spacing = SPACING;
+
+    CalcParser *parser = new CalcParser;
 
     unsigned button_func_w;
-    unsigned spacing;
-
-    CalcParser *parser;
 
     double inMemory;
 
-    QWidget *curr_widget;
+    QWidget *curr_widget = nullptr;
     QPoint curr_GlobalPos;
 
-    QMouseEvent *mePress;
-    QMouseEvent *meRelease;
+    QMouseEvent *mePress = nullptr;
+    QMouseEvent *meRelease = nullptr;
     QPoint posMousePress;
 
-    bool bPasting;
+    bool bPasting = false;
 
-    Settings settings;
-    PnlButton pb;
+    Settings settings{this, "anp", "acalc"};
+    PnlButton pb{this};
 
 public slots:
     void ProcessClick(const QString& sButtonValue);

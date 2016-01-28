@@ -71,7 +71,7 @@ private:
     long double RoundS(long double arg, int precision);
     void InitFuncs();
 
-    CValue *result;
+    CValue *result = new CValue(e_type_var::FLOAT);
     String expr;
     Token *token;
     Token token_end;
@@ -80,9 +80,9 @@ private:
     int scale;
     Drg DRG_mode;
     lconv *lc;
-    String dec_point;
+    String dec_point = "";
     bool binit_var;
-    String eq;
+    String eq = "";
 
     TokenList Tokens;
     TokenList::iterator i_toks;
@@ -92,7 +92,7 @@ private:
 
     std::map<QString, Function*> map_funcs;
 
-    double PI;
+    double PI = acos(-1);
 
 };
 

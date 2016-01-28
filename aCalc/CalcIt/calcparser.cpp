@@ -17,12 +17,8 @@ String VarTypes[] = {"float", "string"};
 
 
 //----------------------------------------------------------------------------------------------------------------------
-CalcParser::CalcParser(String *pexpr): PI(acos(-1))
+CalcParser::CalcParser(String *pexpr)
 {
-    result = new CValue(e_type_var::FLOAT);
-
-    dec_point = "";
-    eq = "";
     token_end.SetType(t_type::END);
     token_end.SetValue("END");
     SetParams(pexpr);

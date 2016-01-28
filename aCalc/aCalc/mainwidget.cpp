@@ -17,27 +17,17 @@ inline unsigned GetHFButton(unsigned h)
 //----------------------------------------------------------------------------------------------------------------------
 MainWidget::MainWidget(QWidget *parent) :
         QWidget(parent, Qt::WindowMinimizeButtonHint | Qt::WindowCloseButtonHint),
-    ui(new Ui::MainWidget), settings(this, "anp", "acalc"),
-    pb{this}
+    ui(new Ui::MainWidget)
 {
     ui->setupUi(this);
 
-    mePress = nullptr;
-    meRelease = nullptr;
-
     settings.loadSettings();
-    spacing = SPACING;
 
     this->setContentsMargins(spacing / 2, 0, spacing / 2, spacing / 2);
 
-    curr_widget = nullptr;
-    bPasting = false;
-
-    parser = new CalcParser();
-
     //QApplication::setStyle("plastique");
     QApplication::setStyle("fusion");
-    shape = QFrame::WinPanel | QFrame::Sunken;
+
     colorDigits = Qt::blue;
     colorOps = Qt::red;
     colorAbc.setRgb(0, 64, 128);
@@ -48,7 +38,6 @@ MainWidget::MainWidget(QWidget *parent) :
     CreateWidgets();
     InitLocale();
     DefaultKeysMap();
-
 
     parser->SetVariable("default_color", "#000000", e_type_var::STRING);
     parser->SetVariable("number_color", String(colorDigits.name().toStdString().c_str()), e_type_var::STRING);
