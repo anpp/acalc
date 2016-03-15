@@ -6,6 +6,7 @@
 #include <QFrame>
 #include <QColor>
 #include <QVector>
+#include <map>
 #include "common.h"
 
 struct PnlDesc
