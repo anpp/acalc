@@ -10,6 +10,7 @@ PnlButton::PnlButton(QWidget* parent)
     for(auto pd: panelsDesc)
     {
         w = new QFrame(this->parent);
+        if(pd.first != Pnl::ServButtons)
         w->setFrameStyle(QFrame::WinPanel | QFrame::Sunken);
         panelsW[pd.first] = w;
     }
@@ -22,6 +23,18 @@ PnlButton::~PnlButton()
     for (auto pd: panelsDesc) delete pd.second.color;
 }
 
+
+
+//----------------------------------------------------------------------------------------------------------------------
+void PnlButton::createLayouts()
+{
+    QGridLayout *layout;
+    for(auto panel: panelsW)
+    {
+        layout = new QGridLayout();
+        panel.second->setLayout(layout);
+    }
+}
 
 
 //----------------------------------------------------------------------------------------------------------------------

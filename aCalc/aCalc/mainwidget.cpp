@@ -455,6 +455,7 @@ bool MainWidget::InitLayouts()
     QString rv;
 
     FreeLayouts();
+    pb.createLayouts();
     switch(static_cast<CalcView>(settings.getSetting("appview").toInt()))
     {
     case CalcView::Original:
@@ -499,29 +500,23 @@ void MainWidget::FreeLayouts(void)
     pb.getPanel(Pnl::Drg)->setVisible(appview == CalcView::Original);
     pb.getPanel(Pnl::FuncModes)->setVisible(appview == CalcView::Original);
 
-    QString classname;
+    for(std::pair<Pnl, QFrame*> panel: pb.panels())
+        delete (panel.second->layout());
 
-    for(QWidget* w: QApplication::allWidgets())
-    {
-        classname = w->metaObject()->className();
-        if("QPushButton" != classname)
-            delete w->layout();
-    }
+    delete wBottom->layout();
+    delete wMode->layout();
+    delete wDisplay->layout();
+    delete this->layout();
 }
 
 
 //----------------------------------------------------------------------------------------------------------------------
-void MainWidget::FillLayoutWidgets(QLayout *l, Pnl atype, bool bGrid)
+void MainWidget::FillLayoutWidgets(QLayout *l, Pnl atype)
 {
     std::for_each(vec_btns.begin(), vec_btns.end(), [=] (QCalcWidget* w)
     {
         if(w->GetType() == atype)
-        {
-            if(bGrid)
-                ((QGridLayout*)(l))->addWidget(w->widget, w->i, w->j, w->n_rows, w->n_cols);
-            else
-                ((QBoxLayout*)(l))->addWidget(w->widget);
-        }
+            ((QGridLayout*)(l))->addWidget(w->widget, w->i, w->j, w->n_rows, w->n_cols);
     });
 }
 
@@ -529,15 +524,18 @@ void MainWidget::FillLayoutWidgets(QLayout *l, Pnl atype, bool bGrid)
 //----------------------------------------------------------------------------------------------------------------------
 void MainWidget::LayoutOriginal(void)
 {
-    QGridLayout *lFuncs = new QGridLayout();
-    QGridLayout *lDigits = new QGridLayout();
-    QGridLayout *lOps = new QGridLayout();
-    QGridLayout *lMem = new QGridLayout();
-    QGridLayout *lAbc = new QGridLayout();
     QVBoxLayout *lMain = new QVBoxLayout();
     QVBoxLayout *lMenu = new QVBoxLayout();
     QHBoxLayout *lBottom = new QHBoxLayout();
-    QVBoxLayout *lMemAbc = new QVBoxLayout();
+    QBoxLayout *lMemAbc = new QVBoxLayout();
+
+
+    QLayout *lFuncs = pb.getPanel(Pnl::Func)->layout();
+    QLayout *lDigits = pb.getPanel(Pnl::Dig)->layout();
+    QLayout *lOps = pb.getPanel(Pnl::Op)->layout();
+    QLayout *lMem = pb.getPanel(Pnl::Mem)->layout();
+    QLayout *lAbc =  pb.getPanel(Pnl::Abc)->layout();
+
     QGridLayout *lDisplay = new QGridLayout();
 
     lMain->setContentsMargins(0, 0, 0, 0);
@@ -619,10 +617,12 @@ void MainWidget::LayoutSimple(void)
     QGridLayout *lDisplay = new QGridLayout();
     QVBoxLayout *lMain = new QVBoxLayout();
     QVBoxLayout *lMenu = new QVBoxLayout();
-    QGridLayout *lDigits = new QGridLayout();
-    QGridLayout *lOps = new QGridLayout();
     QHBoxLayout *lBottom = new QHBoxLayout();
     QHBoxLayout *lMode = new QHBoxLayout();
+
+    QLayout *lDigits = pb.getPanel(Pnl::Dig)->layout();
+    QLayout *lOps = pb.getPanel(Pnl::Op)->layout();
+    QLayout *lServButtons = pb.getPanel(Pnl::ServButtons)->layout();
 
     //lMain->setContentsMargins(spacing, 0, spacing, spacing);
     lMain->setContentsMargins(0, 0, 0, 0);
@@ -655,10 +655,15 @@ void MainWidget::LayoutSimple(void)
     lDisplay->addWidget(Display, 0, 0);
     lDisplay->addWidget(wResult, 1, 0);
 
+
+    lServButtons->setContentsMargins(0, 0, 0, 0);
+    lServButtons->setSpacing(spacing);
+    FillLayoutWidgets(lServButtons, Pnl::ServButtons);
+
     lMode->setContentsMargins(0, 0, spacing, 0);
     lMode->setSpacing(spacing);
     lMode->addStretch();
-    FillLayoutWidgets(lMode, Pnl::ServButtons, false);
+    lMode->addWidget(pb.getPanel(Pnl::ServButtons));
 
     wBottom->setLayout(lBottom);
     pb.getPanel(Pnl::Dig)->setLayout(lDigits);
@@ -680,11 +685,13 @@ void MainWidget::LayoutProgrammable(void)
 void MainWidget::InitModesLayouts()
 {
     QHBoxLayout *lModeBottom = new QHBoxLayout();
-    QHBoxLayout *lScale = new QHBoxLayout();
-    QHBoxLayout *lDrg = new QHBoxLayout();
     QVBoxLayout *lMode = new QVBoxLayout();
     QHBoxLayout *lModeTop = new QHBoxLayout();
-    QHBoxLayout *lFuncModes = new QHBoxLayout();
+
+    QLayout *lScale = pb.getPanel(Pnl::Scale)->layout();
+    QLayout *lDrg = pb.getPanel(Pnl::Drg)->layout();
+    QLayout *lFuncModes = pb.getPanel(Pnl::FuncModes)->layout();
+    QLayout *lServButtons = pb.getPanel(Pnl::ServButtons)->layout();
 
     lMode->setMargin(0);
     lMode->setSpacing(spacing);
@@ -699,24 +706,28 @@ void MainWidget::InitModesLayouts()
 
     lScale->setContentsMargins(spacing, 0, 0, 0);
     lScale->setSpacing(0);
-    FillLayoutWidgets(lScale, Pnl::Scale, false);
+    FillLayoutWidgets(lScale, Pnl::Scale);
 
     lDrg->setContentsMargins(spacing, 0, 0, 0);
     lDrg->setSpacing(0);
-    FillLayoutWidgets(lDrg, Pnl::Drg, false);
+    FillLayoutWidgets(lDrg, Pnl::Drg);
 
 
     //lModeTop->setMargin(0);
+    lServButtons->setContentsMargins(0, 0, 0, 0);
+    lServButtons->setSpacing(spacing);
+    FillLayoutWidgets(lServButtons, Pnl::ServButtons);
+
     lModeTop->setContentsMargins(0, 0, spacing, 0);
     lModeTop->setSpacing(spacing);
     lModeTop->addWidget(pb.getPanel(Pnl::FuncModes));
     lModeTop->addStretch();
-    FillLayoutWidgets(lModeTop, Pnl::ServButtons, false);
+    lModeTop->addWidget(pb.getPanel(Pnl::ServButtons));
 
 
     lFuncModes->setContentsMargins(spacing, 0, 0, 0);
     lFuncModes->setSpacing(0);
-    FillLayoutWidgets(lFuncModes, Pnl::FuncModes, false);
+    FillLayoutWidgets(lFuncModes, Pnl::FuncModes);
 
     pb.getPanel(Pnl::Scale)->setLayout(lScale);
     pb.getPanel(Pnl::Drg)->setLayout(lDrg);
@@ -841,17 +852,17 @@ void MainWidget::CreateButtons(Pnl atype)
         vec_btns.push_back(new QCalcWidget(new QCheckBox(sModes[static_cast<int>(SModes::Inv)]), 0, 0, atype));
         connect(vec_btns.back(), SIGNAL(ClickServButton(QString)), SLOT(ProcessClickFuncModes(QString)));
 
-        vec_btns.push_back(new QCalcWidget(new QCheckBox(sModes[static_cast<int>(SModes::Hyp)]), 0, 0, atype));
+        vec_btns.push_back(new QCalcWidget(new QCheckBox(sModes[static_cast<int>(SModes::Hyp)]), 0, 1, atype));
         connect(vec_btns.back(), SIGNAL(ClickServButton(QString)), SLOT(ProcessClickFuncModes(QString)));
         return;
     case Pnl::ServButtons:
         vec_btns.push_back(new QCalcWidget(new QPushButton(), 0, 0, atype, sServ[static_cast<int>(Serv::BackSpace)]));
         connect(vec_btns.back(), SIGNAL(ClickButton(QString)), SLOT(ProcessClickServ(QString)));
 
-        vec_btns.push_back(new QCalcWidget(new QPushButton(), 0, 0, atype, sServ[static_cast<int>(Serv::CE)]));
+        vec_btns.push_back(new QCalcWidget(new QPushButton(), 0, 1, atype, sServ[static_cast<int>(Serv::CE)]));
         connect(vec_btns.back(), SIGNAL(ClickButton(QString)), SLOT(ProcessClickServ(QString)));
 
-        vec_btns.push_back(new QCalcWidget(new QPushButton(), 0, 0, atype, "C", sServ[static_cast<int>(Serv::Esc)]));
+        vec_btns.push_back(new QCalcWidget(new QPushButton(), 0, 2, atype, "C", sServ[static_cast<int>(Serv::Esc)]));
         connect(vec_btns.back(), SIGNAL(ClickButton(QString)), SLOT(ProcessClickServ(QString)));
         return;
     default:

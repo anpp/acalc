@@ -67,7 +67,7 @@ private:
     void CreateMenus(void);
     void SetLocaleTexts(void);
     bool InitLayouts();
-    void FillLayoutWidgets(QLayout *l, Pnl atype, bool bGrid = true);
+    void FillLayoutWidgets(QLayout *l, Pnl atype);
     void LayoutOriginal(void);
     void LayoutSimple(void);
     void LayoutProgrammable(void);

@@ -7,6 +7,7 @@
 #include <QColor>
 #include <QVector>
 #include <map>
+#include <QGridLayout>
 #include "common.h"
 
 struct PnlDesc
@@ -39,6 +40,7 @@ public:
     PnlButton(QWidget* parent);
     ~PnlButton();
 
+    void createLayouts();
     const std::map<Pnl, PnlDesc>& panelsInfo() { return panelsDesc;}
     const std::map<Pnl, QFrame*>& panels() { return panelsW;}
     QFrame* getPanel(Pnl type);
