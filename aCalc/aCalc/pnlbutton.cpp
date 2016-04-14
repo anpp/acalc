@@ -9,9 +9,16 @@ PnlButton::PnlButton(QWidget* parent)
     QFrame* w;
     for(auto pd: panelsDesc)
     {
+        PnlDesc& pDesc = pd.second;
+
         w = new QFrame(this->parent);
-        if(pd.first != Pnl::ServButtons)
-        w->setFrameStyle(QFrame::WinPanel | QFrame::Sunken);
+        w->setFrameStyle(pDesc.edges ? QFrame::WinPanel | QFrame::Sunken: QFrame::NoFrame);
+
+        QGridLayout *layout = new QGridLayout();
+        layout->setSpacing(pDesc.spacing);
+        layout->setContentsMargins(pDesc.margins);
+        w->setLayout(layout);
+
         panelsW[pd.first] = w;
     }
 }
@@ -24,17 +31,6 @@ PnlButton::~PnlButton()
 }
 
 
-
-//----------------------------------------------------------------------------------------------------------------------
-void PnlButton::createLayouts()
-{
-    QGridLayout *layout;
-    for(auto panel: panelsW)
-    {
-        layout = new QGridLayout();
-        panel.second->setLayout(layout);
-    }
-}
 
 
 //----------------------------------------------------------------------------------------------------------------------

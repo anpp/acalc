@@ -454,8 +454,7 @@ bool MainWidget::InitLayouts()
     QCalcWidget* rw;
     QString rv;
 
-    FreeLayouts();
-    pb.createLayouts();
+    FreeLayouts();   
     switch(static_cast<CalcView>(settings.getSetting("appview").toInt()))
     {
     case CalcView::Original:
@@ -501,7 +500,11 @@ void MainWidget::FreeLayouts(void)
     pb.getPanel(Pnl::FuncModes)->setVisible(appview == CalcView::Original);
 
     for(std::pair<Pnl, QFrame*> panel: pb.panels())
-        delete (panel.second->layout());
+    {
+        QLayout *l = panel.second->layout();
+        for(int i = 0; i < l->count(); ++i)
+            l->removeItem(l->itemAt(i));
+    }
 
     delete wBottom->layout();
     delete wMode->layout();
@@ -528,14 +531,6 @@ void MainWidget::LayoutOriginal(void)
     QVBoxLayout *lMenu = new QVBoxLayout();
     QHBoxLayout *lBottom = new QHBoxLayout();
     QBoxLayout *lMemAbc = new QVBoxLayout();
-
-
-    QLayout *lFuncs = pb.getPanel(Pnl::Func)->layout();
-    QLayout *lDigits = pb.getPanel(Pnl::Dig)->layout();
-    QLayout *lOps = pb.getPanel(Pnl::Op)->layout();
-    QLayout *lMem = pb.getPanel(Pnl::Mem)->layout();
-    QLayout *lAbc =  pb.getPanel(Pnl::Abc)->layout();
-
     QGridLayout *lDisplay = new QGridLayout();
 
     lMain->setContentsMargins(0, 0, 0, 0);
@@ -553,27 +548,10 @@ void MainWidget::LayoutOriginal(void)
     lMain->addWidget(wBottom);
 
 
-    lFuncs->setMargin(spacing);
-    lFuncs->setSpacing(spacing);
-    FillLayoutWidgets(lFuncs, Pnl::Func);
-
-
-    lMem->setMargin(spacing);
-    lMem->setSpacing(spacing);
-    FillLayoutWidgets(lMem, Pnl::Mem);
-
-
-    lAbc->setMargin(spacing);
-    lAbc->setSpacing(spacing);
-    FillLayoutWidgets(lAbc, Pnl::Abc);
-
-
     lMemAbc->setMargin(0);
     lMemAbc->setSpacing(spacing);
     lMemAbc->addWidget(pb.getPanel(Pnl::Mem));
     lMemAbc->addWidget(pb.getPanel(Pnl::Abc));
-
-
 
     lBottom->setMargin(0);
     lBottom->setSpacing(spacing);
@@ -581,15 +559,11 @@ void MainWidget::LayoutOriginal(void)
     lBottom->addWidget(pb.getPanel(Pnl::Op), Qt::AlignLeft);
     lBottom->addLayout(lMemAbc);
 
-
-
-    lDigits->setMargin(spacing);
-    lDigits->setSpacing(spacing);
-    FillLayoutWidgets(lDigits, Pnl::Dig);
-
-    lOps->setMargin(spacing);
-    lOps->setSpacing(spacing);
-    FillLayoutWidgets(lOps, Pnl::Op);
+    FillLayoutWidgets(pb.getPanel(Pnl::Func)->layout(), Pnl::Func);
+    FillLayoutWidgets(pb.getPanel(Pnl::Mem)->layout(), Pnl::Mem);
+    FillLayoutWidgets(pb.getPanel(Pnl::Abc)->layout(), Pnl::Abc);
+    FillLayoutWidgets(pb.getPanel(Pnl::Dig)->layout(), Pnl::Dig);
+    FillLayoutWidgets(pb.getPanel(Pnl::Op)->layout(), Pnl::Op);
 
 
     InitModesLayouts();
@@ -599,12 +573,7 @@ void MainWidget::LayoutOriginal(void)
     lDisplay->addWidget(Display, 0, 0);
     lDisplay->addWidget(wResult, 1, 0);
 
-    pb.getPanel(Pnl::Func)->setLayout(lFuncs);
-    pb.getPanel(Pnl::Mem)->setLayout(lMem);
-    pb.getPanel(Pnl::Abc)->setLayout(lAbc);
     wBottom->setLayout(lBottom);
-    pb.getPanel(Pnl::Dig)->setLayout(lDigits);
-    pb.getPanel(Pnl::Op)->setLayout(lOps);
     wDisplay->setLayout(lDisplay);
 
     this->setLayout(lMain);
@@ -619,10 +588,6 @@ void MainWidget::LayoutSimple(void)
     QVBoxLayout *lMenu = new QVBoxLayout();
     QHBoxLayout *lBottom = new QHBoxLayout();
     QHBoxLayout *lMode = new QHBoxLayout();
-
-    QLayout *lDigits = pb.getPanel(Pnl::Dig)->layout();
-    QLayout *lOps = pb.getPanel(Pnl::Op)->layout();
-    QLayout *lServButtons = pb.getPanel(Pnl::ServButtons)->layout();
 
     //lMain->setContentsMargins(spacing, 0, spacing, spacing);
     lMain->setContentsMargins(0, 0, 0, 0);
@@ -642,23 +607,15 @@ void MainWidget::LayoutSimple(void)
     lBottom->addWidget(pb.getPanel(Pnl::Dig), Qt::AlignLeft);
     lBottom->addWidget(pb.getPanel(Pnl::Op), Qt::AlignLeft);
 
-    lDigits->setMargin(spacing);
-    lDigits->setSpacing(spacing);
-    FillLayoutWidgets(lDigits, Pnl::Dig);
-
-    lOps->setMargin(spacing);
-    lOps->setSpacing(spacing);
-    FillLayoutWidgets(lOps, Pnl::Op);
 
     lDisplay->setMargin(0);
     lDisplay->setSpacing(0);
     lDisplay->addWidget(Display, 0, 0);
     lDisplay->addWidget(wResult, 1, 0);
 
-
-    lServButtons->setContentsMargins(0, 0, 0, 0);
-    lServButtons->setSpacing(spacing);
-    FillLayoutWidgets(lServButtons, Pnl::ServButtons);
+    FillLayoutWidgets(pb.getPanel(Pnl::Dig)->layout(), Pnl::Dig);
+    FillLayoutWidgets(pb.getPanel(Pnl::Op)->layout(), Pnl::Op);
+    FillLayoutWidgets(pb.getPanel(Pnl::ServButtons)->layout(), Pnl::ServButtons);
 
     lMode->setContentsMargins(0, 0, spacing, 0);
     lMode->setSpacing(spacing);
@@ -666,8 +623,6 @@ void MainWidget::LayoutSimple(void)
     lMode->addWidget(pb.getPanel(Pnl::ServButtons));
 
     wBottom->setLayout(lBottom);
-    pb.getPanel(Pnl::Dig)->setLayout(lDigits);
-    pb.getPanel(Pnl::Op)->setLayout(lOps);
     wMode->setLayout(lMode);
     wDisplay->setLayout(lDisplay);
     this->setLayout(lMain);
@@ -688,11 +643,6 @@ void MainWidget::InitModesLayouts()
     QVBoxLayout *lMode = new QVBoxLayout();
     QHBoxLayout *lModeTop = new QHBoxLayout();
 
-    QLayout *lScale = pb.getPanel(Pnl::Scale)->layout();
-    QLayout *lDrg = pb.getPanel(Pnl::Drg)->layout();
-    QLayout *lFuncModes = pb.getPanel(Pnl::FuncModes)->layout();
-    QLayout *lServButtons = pb.getPanel(Pnl::ServButtons)->layout();
-
     lMode->setMargin(0);
     lMode->setSpacing(spacing);
     lMode->addLayout(lModeTop);
@@ -704,34 +654,17 @@ void MainWidget::InitModesLayouts()
     lModeBottom->addWidget(pb.getPanel(Pnl::Scale));
     lModeBottom->addWidget(pb.getPanel(Pnl::Drg));
 
-    lScale->setContentsMargins(spacing, 0, 0, 0);
-    lScale->setSpacing(0);
-    FillLayoutWidgets(lScale, Pnl::Scale);
-
-    lDrg->setContentsMargins(spacing, 0, 0, 0);
-    lDrg->setSpacing(0);
-    FillLayoutWidgets(lDrg, Pnl::Drg);
-
-
-    //lModeTop->setMargin(0);
-    lServButtons->setContentsMargins(0, 0, 0, 0);
-    lServButtons->setSpacing(spacing);
-    FillLayoutWidgets(lServButtons, Pnl::ServButtons);
-
     lModeTop->setContentsMargins(0, 0, spacing, 0);
     lModeTop->setSpacing(spacing);
     lModeTop->addWidget(pb.getPanel(Pnl::FuncModes));
     lModeTop->addStretch();
     lModeTop->addWidget(pb.getPanel(Pnl::ServButtons));
 
+    FillLayoutWidgets(pb.getPanel(Pnl::Scale)->layout(), Pnl::Scale);
+    FillLayoutWidgets(pb.getPanel(Pnl::Drg)->layout(), Pnl::Drg);
+    FillLayoutWidgets(pb.getPanel(Pnl::ServButtons)->layout(), Pnl::ServButtons);
+    FillLayoutWidgets(pb.getPanel(Pnl::FuncModes)->layout(), Pnl::FuncModes);
 
-    lFuncModes->setContentsMargins(spacing, 0, 0, 0);
-    lFuncModes->setSpacing(0);
-    FillLayoutWidgets(lFuncModes, Pnl::FuncModes);
-
-    pb.getPanel(Pnl::Scale)->setLayout(lScale);
-    pb.getPanel(Pnl::Drg)->setLayout(lDrg);
-    pb.getPanel(Pnl::FuncModes)->setLayout(lFuncModes);
     wMode->setLayout(lMode);
 }
 
