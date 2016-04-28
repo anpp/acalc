@@ -454,7 +454,8 @@ bool MainWidget::InitLayouts()
     QCalcWidget* rw;
     QString rv;
 
-    FreeLayouts();   
+    FreeLayouts();
+
     switch(static_cast<CalcView>(settings.getSetting("appview").toInt()))
     {
     case CalcView::Original:
@@ -483,6 +484,13 @@ bool MainWidget::InitLayouts()
     default:
         return false;
     }
+
+    for(auto i = 0; i < static_cast<int>(Pnl::Nop); ++i)
+    {
+        Pnl atype = static_cast<Pnl>(i);
+            FillLayoutWidgets(atype);
+    }
+
     ResizeAll(settings.getSetting("button_width").toInt(), settings.getSetting("button_height").toInt());
     return true;
 }
@@ -499,6 +507,7 @@ void MainWidget::FreeLayouts(void)
     pb.getPanel(Pnl::Drg)->setVisible(appview == CalcView::Original);
     pb.getPanel(Pnl::FuncModes)->setVisible(appview == CalcView::Original);
 
+
     for(std::pair<Pnl, QFrame*> panel: pb.panels())
     {
         QLayout *l = panel.second->layout();
@@ -506,6 +515,7 @@ void MainWidget::FreeLayouts(void)
             l->removeItem(l->itemAt(i));
     }
 
+    this->repaint();
     delete wBottom->layout();
     delete wMode->layout();
     delete wDisplay->layout();
@@ -514,12 +524,12 @@ void MainWidget::FreeLayouts(void)
 
 
 //----------------------------------------------------------------------------------------------------------------------
-void MainWidget::FillLayoutWidgets(QLayout *l, Pnl atype)
+void MainWidget::FillLayoutWidgets(Pnl atype)
 {
     std::for_each(vec_btns.begin(), vec_btns.end(), [=] (QCalcWidget* w)
     {
         if(w->GetType() == atype)
-            ((QGridLayout*)(l))->addWidget(w->widget, w->i, w->j, w->n_rows, w->n_cols);
+            ((QGridLayout*)(pb.getPanel(atype)->layout()))->addWidget(w->widget, w->i, w->j, w->n_rows, w->n_cols);
     });
 }
 
@@ -558,13 +568,6 @@ void MainWidget::LayoutOriginal(void)
     lBottom->addWidget(pb.getPanel(Pnl::Dig), Qt::AlignLeft);
     lBottom->addWidget(pb.getPanel(Pnl::Op), Qt::AlignLeft);
     lBottom->addLayout(lMemAbc);
-
-    FillLayoutWidgets(pb.getPanel(Pnl::Func)->layout(), Pnl::Func);
-    FillLayoutWidgets(pb.getPanel(Pnl::Mem)->layout(), Pnl::Mem);
-    FillLayoutWidgets(pb.getPanel(Pnl::Abc)->layout(), Pnl::Abc);
-    FillLayoutWidgets(pb.getPanel(Pnl::Dig)->layout(), Pnl::Dig);
-    FillLayoutWidgets(pb.getPanel(Pnl::Op)->layout(), Pnl::Op);
-
 
     InitModesLayouts();
 
@@ -613,10 +616,6 @@ void MainWidget::LayoutSimple(void)
     lDisplay->addWidget(Display, 0, 0);
     lDisplay->addWidget(wResult, 1, 0);
 
-    FillLayoutWidgets(pb.getPanel(Pnl::Dig)->layout(), Pnl::Dig);
-    FillLayoutWidgets(pb.getPanel(Pnl::Op)->layout(), Pnl::Op);
-    FillLayoutWidgets(pb.getPanel(Pnl::ServButtons)->layout(), Pnl::ServButtons);
-
     lMode->setContentsMargins(0, 0, spacing, 0);
     lMode->setSpacing(spacing);
     lMode->addStretch();
@@ -659,11 +658,6 @@ void MainWidget::InitModesLayouts()
     lModeTop->addWidget(pb.getPanel(Pnl::FuncModes));
     lModeTop->addStretch();
     lModeTop->addWidget(pb.getPanel(Pnl::ServButtons));
-
-    FillLayoutWidgets(pb.getPanel(Pnl::Scale)->layout(), Pnl::Scale);
-    FillLayoutWidgets(pb.getPanel(Pnl::Drg)->layout(), Pnl::Drg);
-    FillLayoutWidgets(pb.getPanel(Pnl::ServButtons)->layout(), Pnl::ServButtons);
-    FillLayoutWidgets(pb.getPanel(Pnl::FuncModes)->layout(), Pnl::FuncModes);
 
     wMode->setLayout(lMode);
 }
