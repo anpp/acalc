@@ -1,7 +1,7 @@
 #ifndef HAVE_QT5
 #include <QtGui/QApplication>
 #else
-#include <QtWidgets/QApplication>
+#include <QApplication>
 #endif
 
 #include "mainwidget.h"

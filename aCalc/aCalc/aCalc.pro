@@ -14,8 +14,8 @@ DEFINES += HAVE_QT5
 QMAKE_CFLAGS += -std=c++11
 QMAKE_CXXFLAGS += -std=c++11
 
-QMAKE_LFLAGS += -static -static-libgcc
-LIBS += -static-libgcc
+#QMAKE_LFLAGS += -static -static-libgcc
+#LIBS += -static-libgcc
 
 TARGET = acalc
 TEMPLATE = app

@@ -25,8 +25,8 @@ MainWidget::MainWidget(QWidget *parent) :
 
     this->setContentsMargins(spacing / 2, 0, spacing / 2, spacing / 2);
 
-    //QApplication::setStyle("plastique");
-    QApplication::setStyle("fusion");
+    QApplication::setStyle("plastique");
+    //QApplication::setStyle("fusion");
 
     CreateMenus();    
     CreateWidgets();
