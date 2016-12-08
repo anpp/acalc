@@ -25,6 +25,8 @@ MainWidget::MainWidget(QWidget *parent) :
 
     this->setContentsMargins(spacing / 2, 0, spacing / 2, spacing / 2);
 
+    setWindowIcon(QIcon(":/Icons/Icons/Calculator-50.png"));
+
     QApplication::setStyle("plastique");
     //QApplication::setStyle("fusion");
 

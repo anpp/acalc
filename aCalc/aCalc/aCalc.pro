@@ -61,4 +61,4 @@ TRANSLATIONS = acalc_en.ts \
 RESOURCES += \
     aCalc.qrc
 
-DISTFILES +=
+

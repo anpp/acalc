@@ -7,4 +7,7 @@
         <file>popup_ru.qm</file>
         <file>acalc_ru.qm</file>
     </qresource>
+    <qresource prefix="/Icons">
+        <file>Icons/Calculator-50.png</file>
+    </qresource>
 </RCC>
