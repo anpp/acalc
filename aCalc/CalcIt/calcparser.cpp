@@ -980,7 +980,7 @@ void CalcParser::Mul_exp(CValue *res)
     {
 
         op = token->Value()[0];
-    #ifdef HAVE_QT5
+    #ifndef QT4
         c_op = (char)(op.toLatin1());
     #else
         c_op = (char)(op.toAscii());

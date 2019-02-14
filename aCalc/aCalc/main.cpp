@@ -1,4 +1,4 @@
-#ifndef HAVE_QT5
+#ifdef QT4
 #include <QtGui/QApplication>
 #else
 #include <QApplication>

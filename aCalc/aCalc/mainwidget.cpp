@@ -27,8 +27,7 @@ MainWidget::MainWidget(QWidget *parent) :
 
     setWindowIcon(QIcon(":/Icons/Icons/Calculator-50.png"));
 
-    QApplication::setStyle("plastique");
-    //QApplication::setStyle("fusion");
+    QApplication::setStyle("breeze");
 
     CreateMenus();    
     CreateWidgets();
@@ -334,7 +333,7 @@ QCalcWidget* MainWidget::FindWidgetByKey(sKeyMod km)
 void MainWidget::keyPressEvent(QKeyEvent* pe)
 {
     QCalcWidget *cw;
-    sKeyMod km = {pe->key(), pe->modifiers()};
+    sKeyMod km{pe->key(), pe->modifiers()};
 
     cw = FindWidgetByKey(km);
     if(!cw && km.mod)
@@ -1113,7 +1112,7 @@ QCalcWidget* MainWidget::FindButtonByValue(QString value)
 
 
 //----------------------------------------------------------------------------------------------------------------------
-void MainWidget::AssignKeyToButton(QString button_value, int key, int mod)
+void MainWidget::AssignKeyToButton(QString button_value, int key, unsigned int mod)
 {
     QCalcWidget *calcwidget = nullptr;
     sKeyMod keymod = {key, mod};

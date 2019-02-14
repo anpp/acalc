@@ -40,7 +40,7 @@ class MainWidget;
 
 struct sKeyMod {
     int key;
-    int mod;
+    unsigned int mod;
 
     inline friend bool operator<(sKeyMod km1, sKeyMod km2){return (km1.key + km1.mod < km2.key + km2.mod);}
 };
@@ -81,7 +81,7 @@ private:
     bool AddToken(const QString& stok);
     void DefaultKeysMap(void);
     QCalcWidget* FindButtonByValue(QString value);
-    void AssignKeyToButton(QString button_value, int key, int mod = 0);
+    void AssignKeyToButton(QString button_value, int key, unsigned int mod = 0);
     QCalcWidget* FindWidgetByKey(sKeyMod km);
     sKeyMod FindKeyByValue(QString value);
     void SendKey(int Key, int Mod = 0);
