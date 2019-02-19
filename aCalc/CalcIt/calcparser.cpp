@@ -4,14 +4,14 @@
 #define tr(text) QObject::tr(text)
 
 
-String _Errors[] = {tr("Unknown error!"), tr("Syntax error"), tr("Unclosed parenthesis")
-    ,tr("Unknown function"), tr("Division by zero!"),
-                  tr("Invalid argument"), tr("Value is too large"), tr("Undefined variable"),
-                  tr("Empty parentheses"), tr("Type mismatch"), tr("Readonly variable")};
+static String _Errors[] = {tr("Unknown error!"), tr("Syntax error"), tr("Unclosed parenthesis"),
+     tr("Unknown function"), tr("Division by zero!"),
+     tr("Invalid argument"), tr("Value is too large"), tr("Undefined variable"),
+     tr("Empty parentheses"), tr("Type mismatch"), tr("Readonly variable")};
 
 
 
-String VarTypes[] = {"float", "string"};
+static String VarTypes[] = {"float", "string"};
 
 
 
@@ -26,7 +26,7 @@ CalcParser::CalcParser(String *pexpr)
     InitFuncs();
 
     SetVariable("pi", DoubleToString(PI), e_type_var::FLOAT, true);
-    SetVariable("e", DoubleToString(exp(1)), e_type_var::FLOAT, true);
+    SetVariable("e", DoubleToString(static_cast<double>(exp(1))), e_type_var::FLOAT, true);
 }
 
 //----------------------------------------------------------------------------------------------------------------------
@@ -178,7 +178,7 @@ void CalcParser::SetParams(String *pexpr, int scale, Drg DRG_mode)
 void CalcParser::SetScale(int scale)
 {
     Token *t;
-    long double number;
+    double number;
     String s;
     int prev_scale = this->scale;
 
@@ -577,7 +577,7 @@ void CalcParser::ToBack(bool lastdigit)
             if(lastT->Value() == ")")
             {
                 auto itP = FindParentheses();
-                if(itP == Tokens.begin() && ((Token*)&(*itP))->Type() != t_type::FUNCTION)
+                if(itP == Tokens.begin() && (static_cast<Token*>(&(*itP))->Type()) != t_type::FUNCTION)
                     Tokens.pop_front();
             }
 
@@ -604,7 +604,7 @@ bool CalcParser::HasErr()
 
 
 //----------------------------------------------------------------------------------------------------------------------
-long double CalcParser::GetResult()
+double CalcParser::GetResult()
 {
     return RoundS(result->ValueFloat(), PRECISION_FOR_DOUBLE);
 }
@@ -978,13 +978,8 @@ void CalcParser::Mul_exp(CValue *res)
           token->Value() == "<<" || token->Value() == "%" ||
         token->Value() == "&" || token->Value() == "|" || token->Value() == "!")
     {
-
         op = token->Value()[0];
-    #ifndef QT4
-        c_op = (char)(op.toLatin1());
-    #else
-        c_op = (char)(op.toAscii());
-    #endif
+        c_op = static_cast<char>(op.toLatin1());
 
         GetToken();
         Step_exp(&temp);
@@ -1001,30 +996,30 @@ void CalcParser::Mul_exp(CValue *res)
             res->SetValue(RoundS((res->ValueFloat() * temp.ValueFloat()), PRECISION_FOR_DOUBLE));
             break;
         case '/':
-            if(temp.ValueFloat() == 0)
+            if(CheckNumberZero(temp.ValueFloat()))
                 Error(errors::DIVISION);
             else
                 res->SetValue(res->ValueFloat() / temp.ValueFloat());
             break;
         case '<':
-            res->SetValue((UINT)res->ValueFloat() << (UINT)temp.ValueFloat());
+            res->SetValue(static_cast<UINT>(res->ValueFloat()) << static_cast<UINT>(temp.ValueFloat()));
             break;
         case '>':
-            res->SetValue((UINT)res->ValueFloat() >> (UINT)temp.ValueFloat());
+            res->SetValue(static_cast<UINT>(res->ValueFloat()) >> static_cast<UINT>(temp.ValueFloat()));
             break;
         case '%':
-            if(temp.ValueFloat() == 0)
+            if(CheckNumberZero(temp.ValueFloat()))
                 Error(errors::DIVISION);
             res->SetValue(fmod(res->ValueFloat(), temp.ValueFloat()));
             break;
         case '&':
-            res->SetValue((int)res->ValueFloat() & (int)temp.ValueFloat());
+            res->SetValue(static_cast<int>(res->ValueFloat()) & static_cast<int>(temp.ValueFloat()));
             break;
         case '|':
-            res->SetValue((int)res->ValueFloat() | (int)temp.ValueFloat());
+            res->SetValue(static_cast<int>(res->ValueFloat()) | static_cast<int>(temp.ValueFloat()));
             break;
         case '!':
-            res->SetValue((int)res->ValueFloat() ^ (int)temp.ValueFloat());
+            res->SetValue(static_cast<int>(res->ValueFloat()) ^ static_cast<int>(temp.ValueFloat()));
             break;
         }
 
@@ -1069,7 +1064,7 @@ void CalcParser::Sign_exp(CValue *res)
         res->SetValue(-res->ValueFloat());
     else
         if(op == '~')
-            res->SetValue(~(int)res->ValueFloat());
+            res->SetValue(~static_cast<int>(res->ValueFloat()));
 }
 
 
@@ -1141,7 +1136,7 @@ void CalcParser::GetNumber(CValue *res)
             case 1:
                 if(token->Value() != ")")
                     Error(errors::BKT);
-                res->SetValue(CheckNumberZero(f->Calculate(temp.ValueFloat(), DRG_mode, ftok)));
+                res->SetValue(GetCheckedNumberZero(f->Calculate(temp.ValueFloat(), DRG_mode, ftok)));
                 break;
             case 2:
                 if(token->Type() != t_type::COMMA)
@@ -1166,6 +1161,7 @@ void CalcParser::GetNumber(CValue *res)
             }
         else
             Error(errors::UNDEFINED);
+        break;
         }
     case t_type::VARIABLE:
         var = token->Value();
@@ -1215,10 +1211,10 @@ String CalcParser::GetStrValueVariable(String varname)
 
 
 //----------------------------------------------------------------------------------------------------------------------
-long double CalcParser::ScaleToVal(String s, int scale)
+double CalcParser::ScaleToVal(String s, int scale)
 {
     int len, i, j;
-    long double res = 0;
+    double res = 0;
     String tst = "";
     String::iterator val;
     if(!dec_point.isEmpty())
@@ -1278,7 +1274,7 @@ long double CalcParser::ScaleToVal(String s, int scale)
 
 
 //----------------------------------------------------------------------------------------------------------------------
-long double CalcParser::RoundS(long double arg, int precision)
+double CalcParser::RoundS(double arg, int precision)
 {
     if(-1 == precision)
         return arg;
@@ -1290,17 +1286,17 @@ long double CalcParser::RoundS(long double arg, int precision)
 
 
 //----------------------------------------------------------------------------------------------------------------------
-String CalcParser::DoubleToString(long double n, int precision)
+String CalcParser::DoubleToString(double n, int precision)
 {
     String res;
 
-    n = CheckNumberZero(n);
+    n = GetCheckedNumberZero(n);
 
     if(10 == scale)
         res = String::number(n, 'g', precision);
     else
     {
-        res = String::number((ulong)n, scale);
+        res = String::number(static_cast<ulong>(n), scale);
         res = res.toUpper();
     }
     return res;
@@ -1332,11 +1328,11 @@ void CalcParser::InitMapToksHtml()
 
 
 //----------------------------------------------------------------------------------------------------------------------
-long double CalcParser::CheckNumberZero(long double n)
+bool CalcParser::CheckNumberZero(double n)
 {
     if(fabs(n) < (1.0 * pow(10.0, -15)))
-        return 0;
-    return n;
+        return true;
+    return false;
 }
 
 

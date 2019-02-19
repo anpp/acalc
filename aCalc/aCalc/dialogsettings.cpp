@@ -111,9 +111,9 @@ void DialogSettings::slotOk()
         {
             QString classname = mapSetControl[s]->metaObject()->className();
             if(classname == "QSpinBox")
-                settings->setSetting(s, ((QSpinBox*)mapSetControl[s])->value());
+                settings->setSetting(s, static_cast<QSpinBox*>(mapSetControl[s])->value());
             if(classname == "QLineEdit")
-                settings->setSetting(s, ((QLineEdit*)mapSetControl[s])->text().toInt());
+                settings->setSetting(s, static_cast<QLineEdit*>(mapSetControl[s])->text().toInt());
         }
     }
     accept();

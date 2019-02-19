@@ -4,13 +4,13 @@
 #include "dialogsettings.h"
 #include "functors.h"
 
-QString sViews[] = {QObject::tr("Original"), QObject::tr("Simple"), QObject::tr("Programmable")};
-QString sLanguages[] = {QObject::tr("English"), QObject::tr("Russian")};
-QString sShortLanguages[] = {"en", "ru"};
+static QString sViews[] = {QObject::tr("Original"), QObject::tr("Simple"), QObject::tr("Programmable")};
+static QString sLanguages[] = {QObject::tr("English"), QObject::tr("Russian")};
+static QString sShortLanguages[] = {"en", "ru"};
 
-inline unsigned GetHFButton(unsigned h)
+inline int GetHFButton(int h)
 {
-    return (int)h - (int)DIFF_HEIGHT > (int)MIN_HEIGHT? h - (int)DIFF_HEIGHT: (int)MIN_HEIGHT;
+    return h - DIFF_HEIGHT > MIN_HEIGHT? h - DIFF_HEIGHT: MIN_HEIGHT;
 }
 
 
@@ -264,7 +264,7 @@ void MainWidget::slotSettings(void)
   DialogSettings* dialog_settings = new DialogSettings(&settings, this);
   if (dialog_settings->exec() == QDialog::Accepted)
   {
-      ResizeAll(settings.getSetting("button_width").toInt(), settings.getSetting("button_height").toInt());
+      ResizeAll(settings.getSetting("button_width").toUInt(), settings.getSetting("button_height").toUInt());
       settings.saveSettingsByKind(kindset::appearance);
   }
   delete dialog_settings;
@@ -272,9 +272,9 @@ void MainWidget::slotSettings(void)
 
 
 //----------------------------------------------------------------------------------------------------------------------
-void MainWidget::SendKey(int Key, int Mod)
+void MainWidget::SendKey(int Key, unsigned int Mod)
 {
-    QKeyEvent *ke = new QKeyEvent(QEvent::KeyPress, Key, (Qt::KeyboardModifiers)Mod);
+    QKeyEvent *ke = new QKeyEvent(QEvent::KeyPress, Key, static_cast<Qt::KeyboardModifiers>(Mod));
     QApplication::sendEvent(this, ke);
     delete ke;
 }
@@ -287,7 +287,7 @@ void MainWidget::ClickToWidget(QWidget *widget, int msec)
     if(widget)
     {
         if(!widget->isVisible())
-            ((QAbstractButton*)(widget))->click();
+            (static_cast<QAbstractButton*>(widget))->click();
         else
         {
             if(!(mePress && meRelease)) return;
@@ -482,8 +482,6 @@ bool MainWidget::InitLayouts()
     case CalcView::Programmable:
         LayoutProgrammable();
         break;
-    default:
-        return false;
     }
 
     for(auto i = 0; i < static_cast<int>(Pnl::Nop); ++i)
@@ -492,7 +490,7 @@ bool MainWidget::InitLayouts()
             FillLayoutWidgets(atype);
     }
 
-    ResizeAll(settings.getSetting("button_width").toInt(), settings.getSetting("button_height").toInt());
+    ResizeAll(settings.getSetting("button_width").toUInt(), settings.getSetting("button_height").toUInt());
     return true;
 }
 
@@ -530,7 +528,7 @@ void MainWidget::FillLayoutWidgets(Pnl atype)
     std::for_each(vec_btns.begin(), vec_btns.end(), [=] (QCalcWidget* w)
     {
         if(w->GetType() == atype)
-            ((QGridLayout*)(pb.getPanel(atype)->layout()))->addWidget(w->widget, w->i, w->j, w->n_rows, w->n_cols);
+            static_cast<QGridLayout*>(pb.getPanel(atype)->layout())->addWidget(w->widget, static_cast<int>(w->i), static_cast<int>(w->j), static_cast<int>(w->n_rows), static_cast<int>(w->n_cols));
     });
 }
 
@@ -828,17 +826,17 @@ void MainWidget::CreateButtons(Pnl atype)
 
 
 //----------------------------------------------------------------------------------------------------------------------
-void MainWidget::ResizeWidgets(unsigned w, unsigned h, Pnl atype)
+void MainWidget::ResizeWidgets(int w, int h, Pnl atype)
 {
     for (QCalcWidget* widget: vec_btns) { if(widget->GetType() == atype) widget->SetSize(w, h);}
 }
 
 
 //----------------------------------------------------------------------------------------------------------------------
-void MainWidget::SetSizeOfWidgets(unsigned button_w, unsigned button_h)
+void MainWidget::SetSizeOfWidgets(int button_w, int button_h)
 {
     int i_left, i_top, i_right, i_bottom;
-    unsigned func_button_h = GetHFButton(button_h);
+    int func_button_h = GetHFButton(button_h);
 
     i_left = i_right = i_top = i_bottom = 0;
 
@@ -887,8 +885,6 @@ void MainWidget::SetSizeOfWidgets(unsigned button_w, unsigned button_h)
     case CalcView::Programmable:
         //
         break;
-    default:
-        return;
     }
 }
 
@@ -1051,7 +1047,7 @@ void MainWidget::ProcessClickFuncModes(const QString& sModeValue)
     QCalcWidget* w = FindButtonByValue(sModeValue);
     if(!w) return;
 
-    stFuncMode FM = {sModeValue, ((QCheckBox*)((QCalcWidget*)w->widget))->isChecked()};
+    stFuncMode FM = {sModeValue, reinterpret_cast<QCheckBox*>(reinterpret_cast<QCalcWidget*>(w->widget))->isChecked()};
     std::for_each(vec_btns.begin(), vec_btns.end(), bind2nd(setHypInv(), FM));
 }
 
@@ -1064,7 +1060,7 @@ void MainWidget::SetMode(SModes mode, bool on)
     std::copy_if(vec_btns.begin(), vec_btns.end(), btns_fm.begin(), bind2nd(checkBtnType(), Pnl::FuncModes));
 
     if(static_cast<int>(mode) < static_cast<int>(SModes::Inv) || static_cast<int>(mode) > static_cast<int>(SModes::Hyp) ) return;
-    QCheckBox *cb = ((QCheckBox*)((QCalcWidget*)btns_fm.at(static_cast<int>(mode))->widget));
+    QCheckBox *cb = reinterpret_cast<QCheckBox*>(btns_fm.at(static_cast<int>(mode))->widget);
     if(cb->isChecked() != on)
         cb->click();        
 }

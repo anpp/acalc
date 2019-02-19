@@ -16,7 +16,7 @@ class CalcParser
 public:
     CalcParser(String *pexpr = nullptr);
     ~CalcParser();
-    long double GetResult();
+    double GetResult();
     String GetResultStr();
     bool HasErr();
     const String listErrors();
@@ -34,7 +34,7 @@ public:
     int Scale();
     void SetDRG(Drg drg_mode);
     Drg DRG();
-    String DoubleToString(long double n, int precision = 200);
+    String DoubleToString(double n, int precision = 200);
     const TokenList& RefTokens(void);
     void SetVariable(String name, String value, e_type_var type = e_type_var::FLOAT, bool readonly = false);
     String GetStrValueVariable(String varname);
@@ -54,7 +54,7 @@ private:
     void Sign_exp(CValue *res);
     void Scob_exp(CValue *res);
     void GetNumber(CValue *res);
-    long double ScaleToVal(String s, int scale = 10);
+    double ScaleToVal(String s, int scale = 10);
     void ReadVariableToken(Token *loc_token);
     void LoadTokens();
     Token* LoadToken();
@@ -65,10 +65,11 @@ private:
     int CheckParentheses();
     TokenList::iterator FindParentheses();
     void InitMapToksHtml();
-    long double CheckNumberZero(long double n);
-    long double Dms(long double arg, bool invert);
+    bool CheckNumberZero(double n);
+    double GetCheckedNumberZero(double n) {if(CheckNumberZero(n))return 0; else return n;}
+    double Dms(double arg, bool invert);
     bool InvExpInNumber(Token* tok);
-    long double RoundS(long double arg, int precision);
+    double RoundS(double arg, int precision);
     void InitFuncs();
 
     CValue *result = new CValue(e_type_var::FLOAT);
@@ -92,7 +93,7 @@ private:
 
     std::map<QString, Function*> map_funcs;
 
-    double PI = acos(-1);
+    double PI = static_cast<double>(acos(-1));
 
 };
 

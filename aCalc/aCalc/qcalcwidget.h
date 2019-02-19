@@ -17,7 +17,7 @@ class QExLabel : public QLabel
 {
     Q_OBJECT
 public:
-    explicit QExLabel(QWidget *parent = 0) : QLabel(parent){}
+    explicit QExLabel(QWidget *parent = nullptr) : QLabel(parent){}
 signals:
     void clicked(QObject *sender);
 protected:
@@ -48,10 +48,10 @@ class QCalcWidget: public QObject
 {
     Q_OBJECT
 public:
-    QCalcWidget(QWidget *widget, unsigned i, unsigned j, QString key = "", QString value = "", unsigned n_rows = 1, unsigned n_cols = 1, bool bsoftsize = false);
-    QCalcWidget(QWidget *widget, unsigned i, unsigned j, Pnl atype, QString key = "", QString value = "", unsigned n_rows = 1, unsigned n_cols = 1, bool bsoftsize = false);
+    QCalcWidget(QWidget *widget, int i, int j, QString key = "", QString value = "", int n_rows = 1, int n_cols = 1, bool bsoftsize = false);
+    QCalcWidget(QWidget *widget, int i, int j, Pnl atype, QString key = "", QString value = "", int n_rows = 1, int n_cols = 1, bool bsoftsize = false);
     void SetTextColor(QColor *color);
-    void SetSize(unsigned w, unsigned h);
+    void SetSize(int w, int h);
     void SetAltTexts(QString altval, QString altkey);
     QString Value(void) {return sValueText.isEmpty() ? sKeyText: sValueText;}
     QString AltValue(void) {return sAltValueText.isEmpty() ? Value(): sAltValueText;}
@@ -73,18 +73,18 @@ public:
 
     void LoadWhatIsText();
 
-    unsigned i;
-    unsigned j;
-    unsigned n_rows;
-    unsigned n_cols;
-    unsigned w;
-    unsigned h;
+    int i;
+    int j;
+    int n_rows;
+    int n_cols;
+    int w;
+    int h;
     QWidget *widget;
     bool hyp;
     bool inv;
 
 private:
-    void Init(QWidget *widget, unsigned i, unsigned j, unsigned n_rows, unsigned n_cols, QString key, QString value);
+    void Init(QWidget *widget, int i, int j, int n_rows, int n_cols, QString key, QString value);
 
     bool bsoftsize;
     bool hyp_mode;
@@ -94,8 +94,8 @@ private:
     bool nopable;
     QString sReplaceValue;
     bool wasReplace;
-    unsigned saved_i;
-    unsigned saved_j;
+    int saved_i;
+    int saved_j;
 
     QString sValueText;
     QString sKeyText;

@@ -15,11 +15,11 @@ void CValue::CreateValue(e_type_var type)
     switch(type)
     {
     case e_type_var::FLOAT:
-        value = (void*)new long double;
-        *((long double*)(value)) = 0;
+        value = static_cast<void*>(new double);
+        *(static_cast<double*>(value)) = 0;
         break;
     case e_type_var::STRING:
-        value = (void*)new String;
+        value = static_cast<void*>(new String);
         break;
     default:
         break;
@@ -36,10 +36,10 @@ void CValue::DeleteValue()
     switch(type)
     {
     case e_type_var::FLOAT:
-        delete (long double*)value;
+        delete static_cast<double*>(value);
         break;
     case e_type_var::STRING:
-        delete (String*)value;
+        delete static_cast<String*>(value);
         break;
     default:
         break;
@@ -47,11 +47,11 @@ void CValue::DeleteValue()
     value = nullptr;
 }
 
-bool CValue::SetValue(long double val)
+bool CValue::SetValue(double val)
 {
     if(type == e_type_var::FLOAT)
     {
-        *((long double*)(value)) = val;
+        *(static_cast<double*>(value)) = val;
         return true;
     }
     else
@@ -62,18 +62,18 @@ bool CValue::SetValue(String val)
 {
     if(type == e_type_var::STRING)
     {
-        *((String*)(value)) = val;
+        *(static_cast<String*>(value)) = val;
         return true;
     }
     else
         return false;
 }
 
-long double CValue::ValueFloat()
+double CValue::ValueFloat()
 {
-    long double r = 0;
+    double r = 0;
     if(type == e_type_var::FLOAT)
-        r = *((long double*)value);
+        r = *(static_cast<double*>(value));
     return r;
 }
 
@@ -81,7 +81,7 @@ String CValue::ValueString()
 {
     String r = "";
     if(type == e_type_var::STRING)
-        r = *((String*)value);
+        r = *(static_cast<String*>(value));
     return r;
 }
 

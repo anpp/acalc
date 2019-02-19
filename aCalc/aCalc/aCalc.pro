@@ -5,8 +5,6 @@
 #-------------------------------------------------
 
 QT       += core gui widgets
-#DEFINES += QT4
-
 
 #CONFIG += static
 

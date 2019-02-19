@@ -1,8 +1,5 @@
-#ifdef QT4
-#include <QtGui/QApplication>
-#else
 #include <QApplication>
-#endif
+
 
 #include "mainwidget.h"
 

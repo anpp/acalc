@@ -15,26 +15,26 @@ enum class ETypeFunc {trig, invtrig, regular};
 struct FuncOptions
 {
     EFunc efunc;
-    int n_arguments;
+    unsigned int n_arguments;
     ETypeFunc t_func;
 };
 
 class Function
 {
     FuncOptions fo;
-    std::function<long double (long double)> lfunc1;
-    std::function<long double (long double, long double)> lfunc2;
+    std::function<double (double)> lfunc1;
+    std::function<double (double, double)> lfunc2;
     errors error_code;
 
-    long double ArgToRad(long double arg, Drg DRG_mode);
-    long double RadToRes(long double res, Drg DRG_mode);
-    long double Dms(long double arg, bool invert);
+    double ArgToRad(double arg, Drg DRG_mode);
+    double RadToRes(double res, Drg DRG_mode);
+    double Dms(double arg, bool invert);
 public:
     Function(EFunc efunc);
     const QString& getStrFunc();
-    long double Calculate(long double arg, Drg drg, Token* token = nullptr);
-    long double Calculate(long double arg1, long double arg2, Token* token = nullptr);
-    int getCountAgrs() { return fo.n_arguments;}
+    double Calculate(double arg, Drg drg, Token* token = nullptr);
+    double Calculate(double arg1, double arg2, Token* token = nullptr);
+    unsigned int getCountAgrs() { return fo.n_arguments;}
 };
 
 #endif // FUNCTION_H

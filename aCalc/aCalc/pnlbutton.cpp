@@ -15,7 +15,7 @@ PnlButton::PnlButton(QWidget* parent)
         w->setFrameStyle(pDesc.edges ? QFrame::WinPanel | QFrame::Sunken: QFrame::NoFrame);
 
         QGridLayout *layout = new QGridLayout();
-        layout->setSpacing(pDesc.spacing);
+        layout->setSpacing(static_cast<int>(pDesc.spacing));
         layout->setContentsMargins(pDesc.margins);
         w->setLayout(layout);
 

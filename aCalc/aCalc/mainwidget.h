@@ -42,7 +42,7 @@ struct sKeyMod {
     int key;
     unsigned int mod;
 
-    inline friend bool operator<(sKeyMod km1, sKeyMod km2){return (km1.key + km1.mod < km2.key + km2.mod);}
+    inline friend bool operator<(sKeyMod km1, sKeyMod km2){return (km1.key + static_cast<int>(km1.mod) < km2.key + static_cast<int>(km2.mod));}
 };
 
 
@@ -50,7 +50,7 @@ class MainWidget : public QWidget
 {
     Q_OBJECT
 public:
-    explicit MainWidget(QWidget *parent = 0);
+    explicit MainWidget(QWidget *parent = nullptr);
     ~MainWidget();
     void ResizeAll(unsigned new_button_w, unsigned new_button_h);
     
@@ -75,8 +75,8 @@ private:
     void FreeLayouts(void);
     void CreateWidgets();
     void CreateButtons(Pnl atype);
-    void SetSizeOfWidgets(unsigned button_w, unsigned button_h);
-    void ResizeWidgets(unsigned w, unsigned h, Pnl atype);
+    void SetSizeOfWidgets(int button_w, int button_h);
+    void ResizeWidgets(int w, int h, Pnl atype);
     void UpdateDisplay(ud how_update = ud::Empty);
     bool AddToken(const QString& stok);
     void DefaultKeysMap(void);
@@ -84,7 +84,7 @@ private:
     void AssignKeyToButton(QString button_value, int key, unsigned int mod = 0);
     QCalcWidget* FindWidgetByKey(sKeyMod km);
     sKeyMod FindKeyByValue(QString value);
-    void SendKey(int Key, int Mod = 0);
+    void SendKey(int Key, unsigned int Mod = 0);
     void ClickToWidget(QWidget *widget, int msec = 30);
     void SetMode(SModes mode, bool on);
     void Alert(void);
@@ -127,11 +127,11 @@ private:
     QLabel *lblMem;
 
     int shape = QFrame::WinPanel | QFrame::Sunken;
-    unsigned spacing = SPACING;
+    int spacing = SPACING;
 
     CalcParser *parser = new CalcParser;
 
-    unsigned button_func_w = 0;
+    int button_func_w = 0;
 
     double inMemory;
 

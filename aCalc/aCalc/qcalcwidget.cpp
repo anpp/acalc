@@ -1,6 +1,6 @@
 #include "qcalcwidget.h"
 
-QCalcWidget::QCalcWidget(QWidget *widget, unsigned i, unsigned j, QString key, QString value, unsigned n_rows, unsigned n_cols, bool bsoftsize)
+QCalcWidget::QCalcWidget(QWidget *widget, int i, int j, QString key, QString value, int n_rows, int n_cols, bool bsoftsize)
     :QObject(widget), widget(NULL), nopable(false), sReplaceValue(""), wasReplace(false)
 {
     Init(widget, i, j, n_rows, n_cols, key, value);
@@ -8,7 +8,7 @@ QCalcWidget::QCalcWidget(QWidget *widget, unsigned i, unsigned j, QString key, Q
     SetSize(WIDTH_BUT, HEIGHT_BUT);
 }
 
-QCalcWidget::QCalcWidget(QWidget *widget, unsigned i, unsigned j, Pnl atype, QString key, QString value, unsigned n_rows, unsigned n_cols, bool bsoftsize)
+QCalcWidget::QCalcWidget(QWidget *widget, int i, int j, Pnl atype, QString key, QString value, int n_rows, int n_cols, bool bsoftsize)
     :QObject(widget), widget(NULL), nopable(false), sReplaceValue(""), wasReplace(false)
 {    
     SetType(atype);
@@ -17,7 +17,7 @@ QCalcWidget::QCalcWidget(QWidget *widget, unsigned i, unsigned j, Pnl atype, QSt
     SetSize(WIDTH_BUT, HEIGHT_BUT);
 }
 
-void QCalcWidget::Init(QWidget *widget, unsigned i, unsigned j, unsigned n_rows, unsigned n_cols, QString key, QString value)
+void QCalcWidget::Init(QWidget *widget, int i, int j, int n_rows, int n_cols, QString key, QString value)
 {
     QFont Font("arial", 10);
 
@@ -60,7 +60,7 @@ void QCalcWidget::Init(QWidget *widget, unsigned i, unsigned j, unsigned n_rows,
         else
             if(s == "QRadioButton" || s == "QCheckBox")
             {
-                sKeyText = ((QAbstractButton*)(this->widget))->text();
+                sKeyText = static_cast<QAbstractButton*>(this->widget)->text();
                 connect(widget, SIGNAL(clicked()), SLOT(sendSignalServClick()));
             }
     }
@@ -74,7 +74,7 @@ void QCalcWidget::SetText(const QString& text)
         if(lblW)
             lblW->setText("<CENTER>" + text + "</CENTER>");
         else
-            ((QAbstractButton*)(this->widget))->setText(text);
+            static_cast<QAbstractButton*>(this->widget)->setText(text);
     }
 }
 
@@ -102,7 +102,7 @@ void QCalcWidget::SetTextColor(QColor *color)
     }
 }
 
-void QCalcWidget::SetSize(unsigned w, unsigned h)
+void QCalcWidget::SetSize(int w, int h)
 {
     if(bsoftsize)
         return;

@@ -10,9 +10,9 @@ public:
     CValue(e_type_var type = e_type_var::FLOAT);
     ~CValue();
 
-    bool SetValue(long double val);
+    bool SetValue(double val);
     bool SetValue(String val);
-    long double ValueFloat();
+    double ValueFloat();
     String ValueString();
     void SetType(e_type_var new_type);
     e_type_var Type();

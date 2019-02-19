@@ -1,6 +1,6 @@
 #include "settings.h"
 
-QString sSettingKind[] = {QObject::tr("appearance"), QObject::tr("misc"), QObject::tr("screen")};
+static QString sSettingKind[] = {QObject::tr("appearance"), QObject::tr("misc"), QObject::tr("screen")};
 
 
 //----------------------------------------------------------------------------------------------------------------------
