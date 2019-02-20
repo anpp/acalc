@@ -680,6 +680,7 @@ void MainWidget::CreateWidgets()
     Display->setFrameStyle(QFrame::NoFrame);
     Display->setLineWrapMode(QTextEdit::NoWrap);
     Display->setFixedHeight(Display->height() + DISPLAY_SCROLLAREA);
+    Display->setVerticalScrollBarPolicy(Qt::ScrollBarAlwaysOff);
 
     //dispFont.setPointSize(10);
     wResult->setFont(dispFont);
@@ -1086,8 +1087,8 @@ void MainWidget::UpdateDisplay(ud how_update)
     QTextBlockFormat textBlockFormat = cursor.blockFormat();
     textBlockFormat.setAlignment(Qt::AlignRight);
     textBlockFormat.setIndent(0);
-    cursor.movePosition(QTextCursor::End);
     cursor.mergeBlockFormat(textBlockFormat);
+    cursor.movePosition(QTextCursor::End);
 
     Display->setTextCursor(cursor);
 
