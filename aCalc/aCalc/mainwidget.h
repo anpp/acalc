@@ -25,6 +25,7 @@
 #include <QTime>
 #include <QMessageBox>
 #include <algorithm>
+#include <QTextEdit>
 
 #include "qcalcwidget.h"
 #include "common.h"
@@ -96,7 +97,7 @@ private:
     QFrame *wDisplay;
     QFrame *wMode;
     QFrame *wBottom;
-    QLabel *Display;
+    QTextEdit *Display;
     QLabel *wResult;
 
     std::vector<QCalcWidget*> vec_btns;

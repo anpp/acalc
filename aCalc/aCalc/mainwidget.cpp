@@ -669,18 +669,23 @@ void MainWidget::CreateWidgets()
     wDisplay = new QFrame(this);
     wMode = new QFrame(this);
     wBottom = new QFrame(this);
-    Display = new QLabel(this);
+    Display = new QTextEdit(this);
     wResult = new QLabel(this);
 
     QFont dispFont("monospace", 10);
     Display->setFont(dispFont);
     Display->setAlignment(Qt::AlignRight);
-    Display->setStyleSheet("QLabel {background-color: white}");
+    Display->setStyleSheet("QTextEdit {background-color: white}");
+    Display->setReadOnly(true);
+    Display->setFrameStyle(QFrame::NoFrame);
+    Display->setLineWrapMode(QTextEdit::NoWrap);
+    Display->setFixedHeight(Display->height() + DISPLAY_SCROLLAREA);
 
     //dispFont.setPointSize(10);
     wResult->setFont(dispFont);
     wResult->setAlignment(Qt::AlignRight);
     wResult->setStyleSheet("QLabel {background-color: white}");
+    wResult->setFixedHeight(Display->height());
 
     wBottom->setContentsMargins(0, 0, 0, 0);
     wMode->setContentsMargins(0, 0, 0, 0);
@@ -856,7 +861,7 @@ void MainWidget::SetSizeOfWidgets(int button_w, int button_h)
         button_func_w = (wBottom->width() - spacing * (pb.getCols(Pnl::Func) + 1)) / pb.getCols(Pnl::Func);
         pb.setSizeButton(Pnl::Func, button_func_w, func_button_h);
 
-        wDisplay->setFixedSize(wBottom->width(), button_h + i_top + i_bottom);
+        wDisplay->setFixedSize(wBottom->width(), wResult->height() + Display->height() + i_top + i_bottom);
 
         pb.setSizeButton(Pnl::Scale, button_func_w, func_button_h);
         pb.setSizeButton(Pnl::FuncModes, button_func_w, func_button_h);
@@ -873,7 +878,7 @@ void MainWidget::SetSizeOfWidgets(int button_w, int button_h)
     case CalcView::Simple:
         pb.setSizeButton(Pnl::Op, button_w, button_h, button_w + spacing);
         wBottom->setFixedSize(pb.getPanel(Pnl::Dig)->width() + pb.getPanel(Pnl::Op)->width() + spacing, pb.getPanel(Pnl::Dig)->height());
-        wDisplay->setFixedSize(wBottom->width(), button_h + i_top + i_bottom);
+        wDisplay->setFixedSize(wBottom->width(), wResult->height() + Display->height() + i_top + i_bottom);
         wMode->setFixedSize(wBottom->width(), func_button_h + i_top + i_bottom);
         ResizeWidgets(button_w, wMode->height(), Pnl::ServButtons);
 
@@ -1077,6 +1082,15 @@ void MainWidget::UpdateDisplay(ud how_update)
     errors = parser->listErrors();
 
     Display->setText(expression);
+    QTextCursor cursor = Display->textCursor();
+    QTextBlockFormat textBlockFormat = cursor.blockFormat();
+    textBlockFormat.setAlignment(Qt::AlignRight);
+    textBlockFormat.setIndent(0);
+    cursor.movePosition(QTextCursor::End);
+    cursor.mergeBlockFormat(textBlockFormat);
+
+    Display->setTextCursor(cursor);
+
     if(how_update == ud::Errors)
         wResult->setText(errors);
     else

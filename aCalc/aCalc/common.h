@@ -6,6 +6,7 @@
 #define HEIGHT_BUT 35
 #define SPACING 5
 #define DEFAULT_DPI 96
+#define DISPLAY_SCROLLAREA 6
 
 
 enum consts: int {DIFF_HEIGHT = 10, MIN_HEIGHT = 5};
