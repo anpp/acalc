@@ -25,13 +25,13 @@
 #include <QTime>
 #include <QMessageBox>
 #include <algorithm>
-#include <QTextEdit>
 
 #include "qcalcwidget.h"
 #include "common.h"
 #include "../CalcIt/calcparser.h"
 #include "settings.h"
 #include "pnlbutton.h"
+#include "calcdisplay.h"
 
 
 namespace Ui {
@@ -94,11 +94,9 @@ private:
 
     Ui::MainWidget *ui;
 
-    QFrame *wDisplay;
+    CalcDisplay *wDisplay;
     QFrame *wMode;
     QFrame *wBottom;
-    QTextEdit *Display;
-    QLabel *wResult;
 
     std::vector<QCalcWidget*> vec_btns;
 

@@ -171,7 +171,7 @@ void MainWidget::slotAbout(void)
 void MainWidget::slotCopy(void)
 {
   QString s = parser->GetExpression();
-  if(!wResult->text().isEmpty())
+  if(!wDisplay->result().isEmpty())
   {
       if(parser->Run())
           s = s + " = " + parser->DoubleToString(parser->GetResult(), PRECISION_FOR_DOUBLE);
@@ -359,7 +359,7 @@ void MainWidget::mousePressEvent(QMouseEvent *mpe)
 
     curr_GlobalPos = mpe->globalPos();
     if(mpe->button() == Qt::RightButton && !QWhatsThis::inWhatsThisMode())
-        if(curr_widget)
+        if(curr_widget && curr_widget != &wDisplay->getTextEdit())
             MenuOnButton->exec(mpe->globalPos());
 
 }
@@ -517,7 +517,7 @@ void MainWidget::FreeLayouts(void)
     this->repaint();
     delete wBottom->layout();
     delete wMode->layout();
-    delete wDisplay->layout();
+    wDisplay->deleteLayout();
     delete this->layout();
 }
 
@@ -539,8 +539,7 @@ void MainWidget::LayoutOriginal(void)
     QVBoxLayout *lMain = new QVBoxLayout();
     QVBoxLayout *lMenu = new QVBoxLayout();
     QHBoxLayout *lBottom = new QHBoxLayout();
-    QBoxLayout *lMemAbc = new QVBoxLayout();
-    QGridLayout *lDisplay = new QGridLayout();
+    QBoxLayout *lMemAbc = new QVBoxLayout();    
 
     lMain->setContentsMargins(0, 0, 0, 0);
     lMain->setSpacing(spacing);
@@ -570,13 +569,9 @@ void MainWidget::LayoutOriginal(void)
 
     InitModesLayouts();
 
-    lDisplay->setMargin(0);
-    lDisplay->setSpacing(0);
-    lDisplay->addWidget(Display, 0, 0);
-    lDisplay->addWidget(wResult, 1, 0);
 
+    wDisplay->Layout();
     wBottom->setLayout(lBottom);
-    wDisplay->setLayout(lDisplay);
 
     this->setLayout(lMain);
 }
@@ -585,7 +580,6 @@ void MainWidget::LayoutOriginal(void)
 //----------------------------------------------------------------------------------------------------------------------
 void MainWidget::LayoutSimple(void)
 {
-    QGridLayout *lDisplay = new QGridLayout();
     QVBoxLayout *lMain = new QVBoxLayout();
     QVBoxLayout *lMenu = new QVBoxLayout();
     QHBoxLayout *lBottom = new QHBoxLayout();
@@ -609,12 +603,6 @@ void MainWidget::LayoutSimple(void)
     lBottom->addWidget(pb.getPanel(Pnl::Dig), Qt::AlignLeft);
     lBottom->addWidget(pb.getPanel(Pnl::Op), Qt::AlignLeft);
 
-
-    lDisplay->setMargin(0);
-    lDisplay->setSpacing(0);
-    lDisplay->addWidget(Display, 0, 0);
-    lDisplay->addWidget(wResult, 1, 0);
-
     lMode->setContentsMargins(0, 0, spacing, 0);
     lMode->setSpacing(spacing);
     lMode->addStretch();
@@ -622,7 +610,7 @@ void MainWidget::LayoutSimple(void)
 
     wBottom->setLayout(lBottom);
     wMode->setLayout(lMode);
-    wDisplay->setLayout(lDisplay);
+    wDisplay->Layout();
     this->setLayout(lMain);
 }
 
@@ -666,27 +654,9 @@ void MainWidget::InitModesLayouts()
 //----------------------------------------------------------------------------------------------------------------------
 void MainWidget::CreateWidgets()
 {
-    wDisplay = new QFrame(this);
+    wDisplay = new CalcDisplay(this);
     wMode = new QFrame(this);
     wBottom = new QFrame(this);
-    Display = new QTextEdit(this);
-    wResult = new QLabel(this);
-
-    QFont dispFont("monospace", 10);
-    Display->setFont(dispFont);
-    Display->setAlignment(Qt::AlignRight);
-    Display->setStyleSheet("QTextEdit {background-color: white}");
-    Display->setReadOnly(true);
-    Display->setFrameStyle(QFrame::NoFrame);
-    Display->setLineWrapMode(QTextEdit::NoWrap);
-    Display->setFixedHeight(Display->height() + DISPLAY_SCROLLAREA);
-    Display->setVerticalScrollBarPolicy(Qt::ScrollBarAlwaysOff);
-
-    //dispFont.setPointSize(10);
-    wResult->setFont(dispFont);
-    wResult->setAlignment(Qt::AlignRight);
-    wResult->setStyleSheet("QLabel {background-color: white}");
-    wResult->setFixedHeight(Display->height());
 
     wBottom->setContentsMargins(0, 0, 0, 0);
     wMode->setContentsMargins(0, 0, 0, 0);
@@ -862,7 +832,7 @@ void MainWidget::SetSizeOfWidgets(int button_w, int button_h)
         button_func_w = (wBottom->width() - spacing * (pb.getCols(Pnl::Func) + 1)) / pb.getCols(Pnl::Func);
         pb.setSizeButton(Pnl::Func, button_func_w, func_button_h);
 
-        wDisplay->setFixedSize(wBottom->width(), wResult->height() + Display->height() + i_top + i_bottom);
+        wDisplay->setFixedWidth(wBottom->width());
 
         pb.setSizeButton(Pnl::Scale, button_func_w, func_button_h);
         pb.setSizeButton(Pnl::FuncModes, button_func_w, func_button_h);
@@ -874,18 +844,18 @@ void MainWidget::SetSizeOfWidgets(int button_w, int button_h)
 
         this->setFixedSize(wBottom->width() + i_left + i_right,
                            wBottom->height() + pb.getPanel(Pnl::Func)->height() + wMode->height() +
-                           wDisplay->height() +  spacing * 4 + MenuBar->height() + i_top + i_bottom);
+                           wDisplay->height() +  spacing * 4 + MenuBar->height() + i_top * 2 + i_bottom * 2);
         break;
     case CalcView::Simple:
         pb.setSizeButton(Pnl::Op, button_w, button_h, button_w + spacing);
         wBottom->setFixedSize(pb.getPanel(Pnl::Dig)->width() + pb.getPanel(Pnl::Op)->width() + spacing, pb.getPanel(Pnl::Dig)->height());
-        wDisplay->setFixedSize(wBottom->width(), wResult->height() + Display->height() + i_top + i_bottom);
+        wDisplay->setFixedWidth(wBottom->width());
         wMode->setFixedSize(wBottom->width(), func_button_h + i_top + i_bottom);
         ResizeWidgets(button_w, wMode->height(), Pnl::ServButtons);
 
         this->setFixedSize(wBottom->width() + i_left + i_right,
                            wBottom->height() + wMode->height() +
-                           wDisplay->height() +  spacing * 3 + MenuBar->height() + i_top + i_bottom);
+                           wDisplay->height() +  spacing * 3 + MenuBar->height() + i_top * 2 + i_bottom * 2);
 
         break;
     case CalcView::Programmable:
@@ -1082,24 +1052,16 @@ void MainWidget::UpdateDisplay(ud how_update)
     expression = parser->GetExpression("", true);
     errors = parser->listErrors();
 
-    Display->setText(expression);
-    QTextCursor cursor = Display->textCursor();
-    QTextBlockFormat textBlockFormat = cursor.blockFormat();
-    textBlockFormat.setAlignment(Qt::AlignRight);
-    textBlockFormat.setIndent(0);
-    cursor.mergeBlockFormat(textBlockFormat);
-    cursor.movePosition(QTextCursor::End);
-
-    Display->setTextCursor(cursor);
+    wDisplay->setExpression(expression);
 
     if(how_update == ud::Errors)
-        wResult->setText(errors);
+        wDisplay->setResult(errors);
     else
         if(how_update == ud::Result)
-            wResult->setText("= " + parser->DoubleToString(parser->GetResult(), PRECISION_FOR_DOUBLE));
+            wDisplay->setResult("= " + parser->DoubleToString(parser->GetResult(), PRECISION_FOR_DOUBLE));
     else
             if(how_update == ud::Empty)
-                wResult->setText("");
+                wDisplay->setResult("");
 
     if(!lblMem->text().isEmpty())
         lblMem->setText(parser->DoubleToString(inMemory, 6));
