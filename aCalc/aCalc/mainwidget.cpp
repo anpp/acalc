@@ -359,7 +359,7 @@ void MainWidget::mousePressEvent(QMouseEvent *mpe)
 
     curr_GlobalPos = mpe->globalPos();
     if(mpe->button() == Qt::RightButton && !QWhatsThis::inWhatsThisMode())
-        if(curr_widget && curr_widget != &wDisplay->getTextEdit())
+        if(curr_widget)
             MenuOnButton->exec(mpe->globalPos());
 
 }

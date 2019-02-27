@@ -19,7 +19,6 @@ public:
     void setExpression(const QString& expression);
     void setResult(const QString& result);
     void deleteLayout();
-    const QWidget& getTextEdit(){return *wExpression;}
 private:
     QTextEdit *wExpression;
     QLabel *wResult;
