@@ -7,12 +7,13 @@ static QString sSettingKind[] = {QObject::tr("appearance"), QObject::tr("misc"),
 Settings::Settings(QWidget* widget_owner, const QString& organization, const QString& application) :
     owner(widget_owner), qsettings(organization, application), default_return(false)
 {    
-    vec_settings = {new Setting{QObject::tr("button_width"), kindset::appearance, WIDTH_BUT, QVariant(QVariant::Int), spin},
-                    new Setting{QObject::tr("button_height"), kindset::appearance, HEIGHT_BUT, QVariant(QVariant::Int), spin},
-                    new Setting{QObject::tr("appview"), kindset::appearance, static_cast<int>(CalcView::Original), QVariant(QVariant::Int), combo},
+    vec_settings = {new Setting{QObject::tr("button_width"), kindset::appearance, WIDTH_BUT, QVariant(QVariant::Int), spin, 0,  nullptr},
+                    new Setting{QObject::tr("button_height"), kindset::appearance, HEIGHT_BUT, QVariant(QVariant::Int), spin, 0, nullptr},
+                    new Setting{QObject::tr("appview"), kindset::appearance, static_cast<int>(CalcView::Original), QVariant(QVariant::Int), combo, 3,
+                        sViews},
 
-                    new Setting{QObject::tr("posx"), kindset::screen, 0, QVariant(QVariant::Int), text},
-                    new Setting{QObject::tr("posy"), kindset::screen, 0, QVariant(QVariant::Int), text}};
+                    new Setting{QObject::tr("posx"), kindset::screen, 0, QVariant(QVariant::Int), text, 0, nullptr},
+                    new Setting{QObject::tr("posy"), kindset::screen, 0, QVariant(QVariant::Int), text, 0, nullptr}};
 
     for(auto s: vec_settings) {mapset[s->title] = s;}
 }

@@ -10,6 +10,10 @@
 #include <QVariant>
 #include "common.h"
 
+static QString sViews[] = {QObject::tr("Original"), QObject::tr("Simple"), QObject::tr("Programmable")};
+static QString sLanguages[] = {QObject::tr("English"), QObject::tr("Russian")};
+static QString sShortLanguages[] = {"en", "ru"};
+
 
 enum kindset: int {appearance = 0, misc, screen};
 enum editorset {text = 0, spin, combo};
@@ -21,6 +25,8 @@ struct Setting
     QVariant default_value;
     QVariant value;
     editorset editor;
+    int comboNum;
+    QString* combovalues;
 };
 
 

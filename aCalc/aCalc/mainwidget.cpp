@@ -4,9 +4,6 @@
 #include "dialogsettings.h"
 #include "functors.h"
 
-static QString sViews[] = {QObject::tr("Original"), QObject::tr("Simple"), QObject::tr("Programmable")};
-static QString sLanguages[] = {QObject::tr("English"), QObject::tr("Russian")};
-static QString sShortLanguages[] = {"en", "ru"};
 
 inline int GetHFButton(int h)
 {
@@ -264,8 +261,9 @@ void MainWidget::slotSettings(void)
   DialogSettings* dialog_settings = new DialogSettings(&settings, this);
   if (dialog_settings->exec() == QDialog::Accepted)
   {
+      SetView(settings.getSetting("appview").toInt());
       ResizeAll(settings.getSetting("button_width").toUInt(), settings.getSetting("button_height").toUInt());
-      settings.saveSettingsByKind(kindset::appearance);
+      settings.saveSettingsByKind(kindset::appearance);      
   }
   delete dialog_settings;
 }
@@ -816,7 +814,7 @@ void MainWidget::SetSizeOfWidgets(int button_w, int button_h)
 
     i_left = i_right = i_top = i_bottom = 0;
 
-    this->getContentsMargins(&i_left, &i_top, &i_right, &i_bottom);
+    //this->getContentsMargins(&i_left, &i_top, &i_right, &i_bottom);
 
     pb.setSizeButton(Pnl::Dig, button_w, button_h);
 

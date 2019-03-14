@@ -67,6 +67,8 @@ void DialogSettings::loadSettingsGrids()
         dsg->tblSettings.setHorizontalHeaderLabels(sl_labels_horz);
         dsg->tblSettings.verticalHeader()->setFixedWidth(100);
         dsg->tblSettings.horizontalHeader()->setDefaultAlignment(Qt::AlignLeft);
+        dsg->tblSettings.setStyleSheet("QTableWidget{selection-background-color: transparent; background-color: transparent; border-top: 1px solid gray}");
+        dsg->tblSettings.setVerticalScrollMode(QAbstractItemView::ScrollPerPixel);
         //dsg->tblSettings.horizontalHeader()->setSectionResizeMode(QHeaderView::ResizeToContents);
 
         dsg->tblSettings.setFixedHeight(dsg->tblSettings.rowHeight(0) * dsg->tblSettings.rowCount() +
@@ -84,6 +86,7 @@ void DialogSettings::setEditor(QTableWidget* tblSettings, Setting* s, int row)
     if(!tblSettings) return;
     QSpinBox* spinbox = nullptr;
     QLineEdit* edit = nullptr;
+    QComboBox* combobox = nullptr;
     switch (s->editor) {
     case spin:
         spinbox = new QSpinBox();
@@ -97,9 +100,36 @@ void DialogSettings::setEditor(QTableWidget* tblSettings, Setting* s, int row)
         edit->setText(settings->getSetting(s->title).toString());
         mapSetControl[s->title] = edit;
         break;
-    default:
+    case combo:
+        combobox = new QComboBox();
+        tblSettings->setCellWidget(row, 0, combobox);
+        if(s->combovalues != nullptr)
+        {
+            for(int i = 0; i < s->comboNum; ++i)
+                combobox->addItem(s->combovalues[i]);
+            combobox->setCurrentIndex(settings->getSetting(s->title).toInt());
+        }
+        mapSetControl[s->title] = combobox;
+
         break;
     }
+}
+
+void DialogSettings::resizeTable()
+{
+    for (DSGrid* dsg: vec_tbl) {dsg->tblSettings.setColumnWidth(0, dsg->tblSettings.width() - dsg->tblSettings.verticalHeader()->width() - SPACING); }
+}
+
+void DialogSettings::resizeEvent(QResizeEvent *event)
+{
+    this->QWidget::resizeEvent(event);
+    resizeTable();
+}
+
+void DialogSettings::showEvent(QShowEvent *event)
+{
+    this->QWidget::showEvent(event);
+    resizeTable();
 }
 
 //----------------------------------------------------------------------------------------------------------------------
@@ -114,6 +144,8 @@ void DialogSettings::slotOk()
                 settings->setSetting(s, static_cast<QSpinBox*>(mapSetControl[s])->value());
             if(classname == "QLineEdit")
                 settings->setSetting(s, static_cast<QLineEdit*>(mapSetControl[s])->text().toInt());
+            if(classname == "QComboBox")
+                settings->setSetting(s, static_cast<QComboBox*>(mapSetControl[s])->currentIndex());
         }
     }
     accept();

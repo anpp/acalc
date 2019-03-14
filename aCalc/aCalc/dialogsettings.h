@@ -8,6 +8,7 @@
 #include <QTableWidget>
 #include <QHeaderView>
 #include <QSpinBox>
+#include <QComboBox>
 #include <QVector>
 #include <QSet>
 #include <QLineEdit>
@@ -35,6 +36,7 @@ public:
 private:
     void loadSettingsGrids();
     void setEditor(QTableWidget* tblSettings, Setting* s, int row);
+    void resizeTable();
 
     QVBoxLayout vl;
     QHBoxLayout hl;
@@ -45,6 +47,10 @@ private:
     QVector<DSGrid*> vec_tbl;
     QSet<kindset> set_kindset;
     QMap<QString, QWidget*> mapSetControl;
+
+protected:
+    void resizeEvent (QResizeEvent *event);
+    void showEvent(QShowEvent *event);
 
 public slots:
     void slotOk();
