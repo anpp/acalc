@@ -2,6 +2,65 @@
 <!DOCTYPE TS>
 <TS version="2.1" language="ru_RU">
 <context>
+    <name>MainWidget</name>
+    <message>
+        <source>MainWidget</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Calculator</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>View</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Edit</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Help</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Languages</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>&amp;Copy</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>&amp;Paste</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Settings</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Contex help</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>What is this?</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>About...</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>About</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>AboutProgram</source>
+        <translation type="unfinished"></translation>
+    </message>
+</context>
+<context>
     <name>QObject</name>
     <message>
         <source>7</source>
@@ -464,6 +523,70 @@ Hot Key: &lt;B&gt;Delete&lt;/B&gt;</translation>
 &lt;BR&gt;
 &lt;BR&gt;
 Hot Key: &lt;B&gt;ESC&lt;/B&gt;</translation>
+    </message>
+    <message>
+        <source>appearance</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>misc</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>screen</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Languages</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>button_width</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>button_height</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>appview</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>posx</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>posy</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Language</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Original</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Simple</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Programmable</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Default</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>English</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Russian</source>
+        <translation type="unfinished"></translation>
     </message>
 </context>
 </TS>

@@ -37,6 +37,7 @@ private:
     void loadSettingsGrids();
     void setEditor(QTableWidget* tblSettings, Setting* s, int row);
     void resizeTable();
+    void setLocaleTexts();
 
     QVBoxLayout vl;
     QHBoxLayout hl;

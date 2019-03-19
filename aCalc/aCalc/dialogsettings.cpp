@@ -57,12 +57,12 @@ void DialogSettings::loadSettingsGrids()
         {
             if (ks == s->kind)
             {
-                sl_labels_vert << s->title;
+                sl_labels_vert << QObject::tr(s->title.toStdString().c_str());
                 dsg->tblSettings.setRowCount(++n_rows);
                 setEditor(&dsg->tblSettings, s, dsg->tblSettings.rowCount() - 1);
             }
         }
-        sl_labels_horz << settings->getSettingsName(ks);
+        sl_labels_horz << QObject::tr(settings->getSettingsName(ks).toStdString().c_str());
         dsg->tblSettings.setVerticalHeaderLabels(sl_labels_vert);
         dsg->tblSettings.setHorizontalHeaderLabels(sl_labels_horz);
         dsg->tblSettings.verticalHeader()->setFixedWidth(100);
@@ -105,8 +105,8 @@ void DialogSettings::setEditor(QTableWidget* tblSettings, Setting* s, int row)
         tblSettings->setCellWidget(row, 0, combobox);
         if(s->combovalues != nullptr)
         {
-            for(int i = 0; i < s->comboNum; ++i)
-                combobox->addItem(s->combovalues[i]);
+            for(auto i = 0; i < s->comboNum; ++i)
+                combobox->addItem(QObject::tr(s->combovalues[i].toStdString().c_str()));
             combobox->setCurrentIndex(settings->getSetting(s->title).toInt());
         }
         mapSetControl[s->title] = combobox;
@@ -118,6 +118,11 @@ void DialogSettings::setEditor(QTableWidget* tblSettings, Setting* s, int row)
 void DialogSettings::resizeTable()
 {
     for (DSGrid* dsg: vec_tbl) {dsg->tblSettings.setColumnWidth(0, dsg->tblSettings.width() - dsg->tblSettings.verticalHeader()->width() - SPACING); }
+}
+
+void DialogSettings::setLocaleTexts()
+{
+
 }
 
 void DialogSettings::resizeEvent(QResizeEvent *event)

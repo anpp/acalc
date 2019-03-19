@@ -39,7 +39,7 @@ MainWidget::MainWidget(QWidget *parent) :
     SendKey(Qt::Key_F3); //Rad
     SendKey(Qt::Key_F6); //Dec
 
-    SetView(settings.getSetting("appview").toInt());
+    SetView(settings.getSetting("appview").toInt(), true);
 
     UpdateDisplay();
     this->setFocus();
@@ -146,6 +146,7 @@ void MainWidget::SetLocaleTexts()
 void MainWidget::slotView(QAction* action)
 {
     if(action == nullptr) return;
+    settings.setSetting("appview", ActionViews.indexOf(action));
     SetView(ActionViews.indexOf(action));
 }
 
@@ -153,6 +154,7 @@ void MainWidget::slotView(QAction* action)
 void MainWidget::slotLanguage(QAction* action)
 {
     if(action == nullptr) return;
+    settings.setSetting("Language", ActionLanguages.indexOf(action));
     SetLocale(static_cast<Langs>(ActionLanguages.indexOf(action)));
 }
 
@@ -261,8 +263,9 @@ void MainWidget::slotSettings(void)
   DialogSettings* dialog_settings = new DialogSettings(&settings, this);
   if (dialog_settings->exec() == QDialog::Accepted)
   {
-      SetView(settings.getSetting("appview").toInt());
       ResizeAll(settings.getSetting("button_width").toUInt(), settings.getSetting("button_height").toUInt());
+      SetView(settings.getSetting("appview").toInt());
+      SetLocale(static_cast<Langs>(settings.getSetting("Language").toInt()));
       settings.saveSettingsByKind(kindset::appearance);      
   }
   delete dialog_settings;
@@ -397,8 +400,16 @@ void MainWidget::InitLocale()
 
     Langs lang = Langs::En;
     QLocale locale;
-    if(locale.language() == QLocale::Russian)
-        lang = Langs::Ru;
+
+    if(settings.getSetting("Language").toInt() == 0)
+    {
+        if(locale.language() == QLocale::Russian)
+            lang = Langs::Ru;
+        if(locale.language() == QLocale::English)
+            lang = Langs::En;
+    }
+    else
+        lang = static_cast<Langs>(settings.getSetting("Language").toInt());
 
     SetLocale(lang);
 }
@@ -418,15 +429,17 @@ void MainWidget::SetLocale(Langs indexLang)
 
 
 //----------------------------------------------------------------------------------------------------------------------
-void MainWidget::SetView(int indexView)
+void MainWidget::SetView(int indexView, bool isFirst)
 {
-    settings.setSetting("appview", indexView);
-    if(!InitLayouts())
-        QApplication::exit(-1);
-
     int index = 0;
     for (QAction *action: ActionViews){
         action->setChecked(indexView == index++);
+    }
+
+    if(settings.isChanged("appview") || isFirst)
+    {
+        if(!InitLayouts())
+            QApplication::exit(-1);
     }
 }
 
@@ -814,7 +827,7 @@ void MainWidget::SetSizeOfWidgets(int button_w, int button_h)
 
     i_left = i_right = i_top = i_bottom = 0;
 
-    //this->getContentsMargins(&i_left, &i_top, &i_right, &i_bottom);
+    this->getContentsMargins(&i_left, &i_top, &i_right, &i_bottom);
 
     pb.setSizeButton(Pnl::Dig, button_w, button_h);
 

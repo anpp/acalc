@@ -4,83 +4,68 @@
 <context>
     <name>MainWidget</name>
     <message>
-        <location filename="mainwidget.cpp" line="34"/>
+        <location filename="mainwidget.cpp" line="122"/>
         <source>Calculator</source>
         <translation>aCalc</translation>
     </message>
     <message>
-        <location filename="mainwidget.cpp" line="92"/>
+        <location filename="mainwidget.cpp" line="124"/>
         <source>View</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="mainwidget.cpp" line="93"/>
+        <location filename="mainwidget.cpp" line="125"/>
         <source>Edit</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="mainwidget.cpp" line="94"/>
+        <location filename="mainwidget.cpp" line="126"/>
         <source>Help</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="mainwidget.cpp" line="95"/>
+        <location filename="mainwidget.cpp" line="127"/>
         <source>Languages</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="mainwidget.cpp" line="108"/>
-        <source>English</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location filename="mainwidget.cpp" line="109"/>
-        <source>Russian</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location filename="mainwidget.cpp" line="111"/>
+        <location filename="mainwidget.cpp" line="128"/>
         <source>&amp;Copy</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="mainwidget.cpp" line="112"/>
+        <location filename="mainwidget.cpp" line="129"/>
         <source>&amp;Paste</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="mainwidget.cpp" line="115"/>
+        <location filename="mainwidget.cpp" line="130"/>
         <source>Settings</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="mainwidget.cpp" line="117"/>
+        <location filename="mainwidget.cpp" line="131"/>
         <source>Contex help</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="mainwidget.cpp" line="118"/>
+        <location filename="mainwidget.cpp" line="133"/>
         <source>About...</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="mainwidget.cpp" line="121"/>
+        <location filename="mainwidget.cpp" line="132"/>
         <source>What is this?</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="mainwidget.cpp" line="152"/>
+        <location filename="mainwidget.cpp" line="165"/>
         <source>About</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="mainwidget.cpp" line="152"/>
+        <location filename="mainwidget.cpp" line="165"/>
         <source>AboutProgram</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location filename="mainwidget.cpp" line="1177"/>
-        <source>Result: </source>
         <translation type="unfinished"></translation>
     </message>
     <message>
@@ -272,168 +257,233 @@
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="buttexts.h" line="18"/>
+        <location filename="buttexts.h" line="20"/>
         <source>A</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="buttexts.h" line="18"/>
+        <location filename="buttexts.h" line="20"/>
         <source>B</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="buttexts.h" line="18"/>
+        <location filename="buttexts.h" line="20"/>
         <source>C</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="buttexts.h" line="18"/>
+        <location filename="buttexts.h" line="20"/>
         <source>D</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="buttexts.h" line="18"/>
+        <location filename="buttexts.h" line="20"/>
         <source>E</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="buttexts.h" line="18"/>
+        <location filename="buttexts.h" line="20"/>
         <source>F</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="buttexts.h" line="21"/>
+        <location filename="buttexts.h" line="23"/>
         <source>MS</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="buttexts.h" line="21"/>
+        <location filename="buttexts.h" line="23"/>
         <source>MR</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="buttexts.h" line="21"/>
+        <location filename="buttexts.h" line="23"/>
         <source>MC</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="buttexts.h" line="30"/>
+        <location filename="buttexts.h" line="32"/>
         <source>sin(</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="buttexts.h" line="30"/>
+        <location filename="buttexts.h" line="32"/>
         <source>cos(</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="buttexts.h" line="30"/>
+        <location filename="buttexts.h" line="32"/>
         <source>tan(</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="buttexts.h" line="30"/>
+        <location filename="buttexts.h" line="32"/>
         <source>ctan(</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="buttexts.h" line="30"/>
+        <location filename="buttexts.h" line="32"/>
         <source>ln(</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="buttexts.h" line="30"/>
+        <location filename="buttexts.h" line="32"/>
         <source>log(</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="buttexts.h" line="30"/>
+        <location filename="buttexts.h" line="32"/>
         <source>^2</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="buttexts.h" line="31"/>
+        <location filename="buttexts.h" line="33"/>
         <source>asin(</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="buttexts.h" line="31"/>
+        <location filename="buttexts.h" line="33"/>
         <source>acos(</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="buttexts.h" line="31"/>
+        <location filename="buttexts.h" line="33"/>
         <source>atan(</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="buttexts.h" line="31"/>
+        <location filename="buttexts.h" line="33"/>
         <source>actan(</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="buttexts.h" line="31"/>
+        <location filename="buttexts.h" line="33"/>
         <source>exp(</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="buttexts.h" line="31"/>
+        <location filename="buttexts.h" line="33"/>
         <source>exp</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="buttexts.h" line="31"/>
+        <location filename="buttexts.h" line="33"/>
         <source>^3</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="buttexts.h" line="32"/>
+        <location filename="buttexts.h" line="34"/>
         <source>pi</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="buttexts.h" line="32"/>
+        <location filename="buttexts.h" line="34"/>
         <source>dms(</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="buttexts.h" line="32"/>
+        <location filename="buttexts.h" line="34"/>
         <source>(</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="buttexts.h" line="32"/>
+        <location filename="buttexts.h" line="34"/>
         <source>)</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="buttexts.h" line="32"/>
+        <location filename="buttexts.h" line="34"/>
         <source>1/x</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="buttexts.h" line="32"/>
+        <location filename="buttexts.h" line="34"/>
         <source>fact(</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="buttexts.h" line="32"/>
+        <location filename="buttexts.h" line="34"/>
         <source>^</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="mainwidget.cpp" line="6"/>
+        <location filename="settings.h" line="13"/>
         <source>Original</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="mainwidget.cpp" line="6"/>
+        <location filename="settings.h" line="13"/>
         <source>Simple</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="mainwidget.cpp" line="6"/>
+        <location filename="settings.h" line="13"/>
         <source>Programmable</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="settings.h" line="14"/>
+        <source>Default</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="settings.h" line="14"/>
+        <source>English</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="settings.h" line="14"/>
+        <source>Russian</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="settings.cpp" line="3"/>
+        <source>appearance</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="settings.cpp" line="3"/>
+        <source>misc</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="settings.cpp" line="3"/>
+        <source>screen</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="settings.cpp" line="3"/>
+        <source>Languages</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="settings.cpp" line="10"/>
+        <source>button_width</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="settings.cpp" line="11"/>
+        <source>button_height</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="settings.cpp" line="12"/>
+        <source>appview</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="settings.cpp" line="15"/>
+        <source>posx</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="settings.cpp" line="16"/>
+        <source>posy</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="settings.cpp" line="18"/>
+        <source>Language</source>
         <translation type="unfinished"></translation>
     </message>
 </context>

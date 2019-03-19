@@ -20,6 +20,6 @@ enum class Scales: int {Hex = 0, Dec, Oct, Bin};
 enum class Serv: int {BackSpace = 0, CE, Esc};
 
 enum class CalcView: int {Original = 0, Simple, Programmable};
-enum class Langs: int {En = 0, Ru};
+enum class Langs: int {Nop = 0, En, Ru};
 
 #endif // COMMON_H

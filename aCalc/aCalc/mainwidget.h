@@ -64,7 +64,7 @@ private:
     void InitLocale();
     void LoadLocale(const QString& sloc);
     void SetLocale(Langs indexLang);
-    void SetView(int indexView);
+    void SetView(int indexView, bool isFirst = false);
     void CreateMenus(void);
     void SetLocaleTexts(void);
     bool InitLayouts();

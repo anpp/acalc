@@ -1,6 +1,6 @@
 #include "settings.h"
 
-static QString sSettingKind[] = {QObject::tr("appearance"), QObject::tr("misc"), QObject::tr("screen")};
+static QString sSettingKind[] = {QObject::tr("appearance"), QObject::tr("misc"), QObject::tr("screen"), QObject::tr("Languages")};
 
 
 //----------------------------------------------------------------------------------------------------------------------
@@ -9,11 +9,14 @@ Settings::Settings(QWidget* widget_owner, const QString& organization, const QSt
 {    
     vec_settings = {new Setting{QObject::tr("button_width"), kindset::appearance, WIDTH_BUT, QVariant(QVariant::Int), spin, 0,  nullptr},
                     new Setting{QObject::tr("button_height"), kindset::appearance, HEIGHT_BUT, QVariant(QVariant::Int), spin, 0, nullptr},
-                    new Setting{QObject::tr("appview"), kindset::appearance, static_cast<int>(CalcView::Original), QVariant(QVariant::Int), combo, 3,
-                        sViews},
+                    new Setting{QObject::tr("appview"), kindset::appearance, static_cast<int>(CalcView::Original), QVariant(QVariant::Int), combo,
+                                sizeof(sViews) / sizeof(sViews[0]), sViews},
 
                     new Setting{QObject::tr("posx"), kindset::screen, 0, QVariant(QVariant::Int), text, 0, nullptr},
-                    new Setting{QObject::tr("posy"), kindset::screen, 0, QVariant(QVariant::Int), text, 0, nullptr}};
+                    new Setting{QObject::tr("posy"), kindset::screen, 0, QVariant(QVariant::Int), text, 0, nullptr},
+
+                    new Setting{QObject::tr("Language"), kindset::appearance, 0, static_cast<int>(Langs::En), combo,
+                            sizeof(sLanguages) / sizeof(sLanguages[0]), sLanguages}};
 
     for(auto s: vec_settings) {mapset[s->title] = s;}
 }
@@ -28,7 +31,8 @@ Settings::~Settings()
 
 
 //----------------------------------------------------------------------------------------------------------------------
-void Settings::loadSettingsByKind(kindset ks){
+void Settings::loadSettingsByKind(kindset ks)
+{
     qsettings.beginGroup("/" + sSettingKind[static_cast<int>(ks)]);
     for(Setting* s: vec_settings){
         if (s->kind == ks)
@@ -39,7 +43,8 @@ void Settings::loadSettingsByKind(kindset ks){
 
 
 //----------------------------------------------------------------------------------------------------------------------
-void Settings::saveSettingsByKind(kindset ks){
+void Settings::saveSettingsByKind(kindset ks)
+{
     qsettings.beginGroup("/" + sSettingKind[static_cast<int>(ks)]);
     for (Setting* s: vec_settings){
         if (s->kind == ks)
@@ -51,7 +56,8 @@ void Settings::saveSettingsByKind(kindset ks){
 
 
 //----------------------------------------------------------------------------------------------------------------------
-void Settings::loadSettingsScreen(){
+void Settings::loadSettingsScreen()
+{
     if(owner)
     {
         loadSettingsByKind(kindset::screen);
@@ -61,7 +67,8 @@ void Settings::loadSettingsScreen(){
 
 
 //----------------------------------------------------------------------------------------------------------------------
-void Settings::saveSettingsScreen(){
+void Settings::saveSettingsScreen()
+{
     if(owner)
     {
         setSetting("posx", owner->x());
@@ -72,7 +79,8 @@ void Settings::saveSettingsScreen(){
 
 
 //----------------------------------------------------------------------------------------------------------------------
-const QVariant& Settings::getSetting(const QString& title){
+const QVariant& Settings::getSetting(const QString& title)
+{
     QMap<QString, Setting*>::iterator mit = mapset.find(title);
     if(mit != mapset.end())
     {
@@ -81,7 +89,18 @@ const QVariant& Settings::getSetting(const QString& title){
             return s->default_value;
         return  s->value;
     }
-        return default_return;
+    return default_return;
+}
+
+bool Settings::isChanged(const QString &title)
+{
+    QMap<QString, Setting*>::iterator mit = mapset.find(title);
+    if(mit != mapset.end())
+    {
+        Setting* s = *mit;
+        return s->bChanged;
+    }
+    return false;
 }
 
 
@@ -91,6 +110,7 @@ void Settings::setSetting(const QString& title, QVariant value){
     if(mit != mapset.end())
     {
         Setting* s = *mit;
+        s->bChanged = (s->value != value);
         s->value = value;
     }
 }
