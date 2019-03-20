@@ -4,7 +4,6 @@
 #include "dialogsettings.h"
 #include "functors.h"
 
-
 inline int GetHFButton(int h)
 {
     return h - DIFF_HEIGHT > MIN_HEIGHT? h - DIFF_HEIGHT: MIN_HEIGHT;
@@ -40,7 +39,7 @@ MainWidget::MainWidget(QWidget *parent) :
     SendKey(Qt::Key_F6); //Dec
 
     UpdateDisplay();
-    this->setFocus();
+    this->setFocus();    
 }
 
 
@@ -390,8 +389,21 @@ bool MainWidget::event(QEvent *e)
 
 void MainWidget::showEvent(QShowEvent *event)
 {
-    this->QWidget::showEvent(event);
     SetView(settings.getSetting("appview").toInt(), true);
+    this->QWidget::showEvent(event);
+    //qDebug() << settings.getSetting("posy").toInt();
+}
+
+void MainWidget::resizeEvent(QResizeEvent *event)
+{
+    this->QWidget::resizeEvent(event);
+}
+
+
+void MainWidget::moveEvent(QMoveEvent *event)
+{
+    this->QWidget::moveEvent(event);
+    settings.saveSettingsScreen();
 }
 
 

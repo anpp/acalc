@@ -12,11 +12,15 @@ Settings::Settings(QWidget* widget_owner, const QString& organization, const QSt
                     new Setting{QObject::tr("appview"), kindset::appearance, static_cast<int>(CalcView::Original), QVariant(QVariant::Int), combo,
                                 sizeof(sViews) / sizeof(sViews[0]), sViews},
 
-                    new Setting{QObject::tr("posx"), kindset::screen, 0, QVariant(QVariant::Int), text, 0, nullptr},
-                    new Setting{QObject::tr("posy"), kindset::screen, 0, QVariant(QVariant::Int), text, 0, nullptr},
+                    new Setting{"posx", kindset::screen, 0, QVariant(QVariant::Int), text, 0, nullptr},
+                    new Setting{"posy", kindset::screen, 0, QVariant(QVariant::Int), text, 0, nullptr},
 
-                    new Setting{QObject::tr("Language"), kindset::appearance, 0, static_cast<int>(Langs::Nop), combo,
-                            sizeof(sLanguages) / sizeof(sLanguages[0]), sLanguages}};
+                    new Setting{QObject::tr("Language"), kindset::appearance, static_cast<int>(Langs::Nop), static_cast<int>(Langs::Nop), combo,
+                            sizeof(sLanguages) / sizeof(sLanguages[0]), sLanguages},
+
+                    new Setting{QObject::tr("Logging"), kindset::misc, static_cast<int>(Logging::Disable), static_cast<int>(Logging::Disable), check,
+                            0, nullptr}
+                   };
 
     for(auto s: vec_settings) {mapset[s->title] = s;}
 }
@@ -70,7 +74,7 @@ void Settings::loadSettingsScreen()
 void Settings::saveSettingsScreen()
 {
     if(owner)
-    {
+    {        
         setSetting("posx", owner->x());
         setSetting("posy", owner->y());
         saveSettingsByKind(kindset::screen);

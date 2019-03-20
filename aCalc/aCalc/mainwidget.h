@@ -61,6 +61,8 @@ protected:
     void mousePressEvent(QMouseEvent *mpe);
     bool event(QEvent *e);
     void showEvent(QShowEvent *event);
+    void resizeEvent (QResizeEvent *event);
+    void moveEvent(QMoveEvent *event);
 private:
     void InitLocale();
     void LoadLocale(const QString& sloc);

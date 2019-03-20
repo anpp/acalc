@@ -12,6 +12,7 @@
 #include <QVector>
 #include <QSet>
 #include <QLineEdit>
+#include <QCheckBox>
 #include "settings.h"
 
 

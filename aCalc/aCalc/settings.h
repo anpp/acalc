@@ -16,7 +16,7 @@ static QString sShortLanguages[] = {"none", "en", "ru"};
 
 
 enum kindset: int {appearance = 0, misc, screen};
-enum editorset {text = 0, spin, combo};
+enum editorset {text = 0, spin, combo, check};
 
 struct Setting
 {
@@ -55,12 +55,14 @@ public:
 
     void loadSettings(){
         loadSettingsByKind(kindset::appearance);
+        loadSettingsByKind(kindset::misc);
         loadSettingsScreen();
     }
 
     void saveSettings(){
         saveSettingsByKind(kindset::appearance);
-        saveSettingsScreen();
+        saveSettingsByKind(kindset::misc);
+        //saveSettingsScreen();
     }
 
     const QVector<Setting*>& getListSettings() {return vec_settings;}

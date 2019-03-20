@@ -21,5 +21,6 @@ enum class Serv: int {BackSpace = 0, CE, Esc};
 
 enum class CalcView: int {Original = 0, Simple, Programmable};
 enum class Langs: int {Nop = 0, En, Ru};
+enum class Logging: int {Disable = 0, Enable};
 
 #endif // COMMON_H

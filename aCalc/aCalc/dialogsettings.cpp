@@ -87,6 +87,7 @@ void DialogSettings::setEditor(QTableWidget* tblSettings, Setting* s, int row)
     QSpinBox* spinbox = nullptr;
     QLineEdit* edit = nullptr;
     QComboBox* combobox = nullptr;
+    QCheckBox* checkbox = nullptr;
     switch (s->editor) {
     case spin:
         spinbox = new QSpinBox();
@@ -110,7 +111,12 @@ void DialogSettings::setEditor(QTableWidget* tblSettings, Setting* s, int row)
             combobox->setCurrentIndex(settings->getSetting(s->title).toInt());
         }
         mapSetControl[s->title] = combobox;
-
+        break;
+    case check:
+        checkbox = new QCheckBox();
+        tblSettings->setCellWidget(row, 0, edit);
+        checkbox->setChecked(settings->getSetting(s->title).toInt() == 1);
+        mapSetControl[s->title] = checkbox;
         break;
     }
 }
