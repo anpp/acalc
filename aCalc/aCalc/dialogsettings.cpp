@@ -120,11 +120,6 @@ void DialogSettings::resizeTable()
     for (DSGrid* dsg: vec_tbl) {dsg->tblSettings.setColumnWidth(0, dsg->tblSettings.width() - dsg->tblSettings.verticalHeader()->width() - SPACING); }
 }
 
-void DialogSettings::setLocaleTexts()
-{
-
-}
-
 void DialogSettings::resizeEvent(QResizeEvent *event)
 {
     this->QWidget::resizeEvent(event);

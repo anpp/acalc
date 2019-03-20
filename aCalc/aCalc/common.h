@@ -4,7 +4,7 @@
 
 #define WIDTH_BUT  35
 #define HEIGHT_BUT 35
-#define SPACING 5
+#define SPACING 4
 #define DEFAULT_DPI 96
 #define DISPLAY_SCROLLAREA 6
 

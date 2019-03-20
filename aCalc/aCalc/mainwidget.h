@@ -60,6 +60,7 @@ protected:
     void keyPressEvent(QKeyEvent* pe);
     void mousePressEvent(QMouseEvent *mpe);
     bool event(QEvent *e);
+    void showEvent(QShowEvent *event);
 private:
     void InitLocale();
     void LoadLocale(const QString& sloc);
@@ -143,7 +144,7 @@ private:
 
     bool bPasting = false;
 
-    Settings settings{this, "anp", "acalc"};
+    Settings settings{this, "acalc", "acalc"};
     PnlButton pb{this};
 
 public slots:

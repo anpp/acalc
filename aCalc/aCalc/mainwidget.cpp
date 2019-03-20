@@ -27,7 +27,7 @@ MainWidget::MainWidget(QWidget *parent) :
     QApplication::setStyle("breeze");
 
     CreateMenus();    
-    CreateWidgets();
+    CreateWidgets();    
     InitLocale();
     DefaultKeysMap();
 
@@ -38,8 +38,6 @@ MainWidget::MainWidget(QWidget *parent) :
 
     SendKey(Qt::Key_F3); //Rad
     SendKey(Qt::Key_F6); //Dec
-
-    SetView(settings.getSetting("appview").toInt(), true);
 
     UpdateDisplay();
     this->setFocus();
@@ -262,9 +260,9 @@ void MainWidget::slotSettings(void)
 {
   DialogSettings* dialog_settings = new DialogSettings(&settings, this);
   if (dialog_settings->exec() == QDialog::Accepted)
-  {
-      ResizeAll(settings.getSetting("button_width").toUInt(), settings.getSetting("button_height").toUInt());
+  {      
       SetView(settings.getSetting("appview").toInt());
+      ResizeAll(settings.getSetting("button_width").toUInt(), settings.getSetting("button_height").toUInt());
       SetLocale(static_cast<Langs>(settings.getSetting("Language").toInt()));
       settings.saveSettingsByKind(kindset::appearance);      
   }
@@ -388,6 +386,12 @@ bool MainWidget::event(QEvent *e)
         curr_widget->update();
 
     return QWidget::event(e);
+}
+
+void MainWidget::showEvent(QShowEvent *event)
+{
+    this->QWidget::showEvent(event);
+    SetView(settings.getSetting("appview").toInt(), true);
 }
 
 
@@ -855,7 +859,7 @@ void MainWidget::SetSizeOfWidgets(int button_w, int button_h)
 
         this->setFixedSize(wBottom->width() + i_left + i_right,
                            wBottom->height() + pb.getPanel(Pnl::Func)->height() + wMode->height() +
-                           wDisplay->height() +  spacing * 4 + MenuBar->height() + i_top * 2 + i_bottom * 2);
+                           wDisplay->height() +  spacing * 4 + MenuBar->height() + i_top + i_bottom);
         break;
     case CalcView::Simple:
         pb.setSizeButton(Pnl::Op, button_w, button_h, button_w + spacing);
@@ -866,7 +870,7 @@ void MainWidget::SetSizeOfWidgets(int button_w, int button_h)
 
         this->setFixedSize(wBottom->width() + i_left + i_right,
                            wBottom->height() + wMode->height() +
-                           wDisplay->height() +  spacing * 3 + MenuBar->height() + i_top * 2 + i_bottom * 2);
+                           wDisplay->height() +  spacing * 3 + MenuBar->height() + i_top + i_bottom);
 
         break;
     case CalcView::Programmable:

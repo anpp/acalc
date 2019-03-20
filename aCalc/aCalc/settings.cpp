@@ -15,7 +15,7 @@ Settings::Settings(QWidget* widget_owner, const QString& organization, const QSt
                     new Setting{QObject::tr("posx"), kindset::screen, 0, QVariant(QVariant::Int), text, 0, nullptr},
                     new Setting{QObject::tr("posy"), kindset::screen, 0, QVariant(QVariant::Int), text, 0, nullptr},
 
-                    new Setting{QObject::tr("Language"), kindset::appearance, 0, static_cast<int>(Langs::En), combo,
+                    new Setting{QObject::tr("Language"), kindset::appearance, 0, static_cast<int>(Langs::Nop), combo,
                             sizeof(sLanguages) / sizeof(sLanguages[0]), sLanguages}};
 
     for(auto s: vec_settings) {mapset[s->title] = s;}
