@@ -23,7 +23,7 @@ CalcDisplay::CalcDisplay(QWidget *parent) : QFrame(parent)
     wResult->setContentsMargins(0 ,0, 0, 0);
     wResult->setAlignment(Qt::AlignRight);
     wResult->setStyleSheet("QLabel {background-color: white}");
-    wResult->setFixedHeight(wResult->height());
+    wResult->setFixedHeight(wResult->height() + SPACING);
     this->setFixedHeight(wExpression->height() + wResult->height());
 }
 

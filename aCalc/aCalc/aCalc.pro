@@ -30,7 +30,8 @@ SOURCES += main.cpp\
     settings.cpp \
     ../CalcIt/function.cpp \
     pnlbutton.cpp \
-    calcdisplay.cpp
+    calcdisplay.cpp \
+    logger.cpp
 
 HEADERS  += mainwidget.h \
     common.h \
@@ -47,7 +48,8 @@ HEADERS  += mainwidget.h \
     settings.h \
     ../CalcIt/function.h \
     pnlbutton.h \
-    calcdisplay.h
+    calcdisplay.h \
+    logger.h
 
 FORMS    += mainwidget.ui
 

@@ -23,7 +23,8 @@ MainWidget::MainWidget(QWidget *parent) :
 
     setWindowIcon(QIcon(":/Icons/Icons/Calculator-50.png"));
 
-    QApplication::setStyle("fusion");
+    //QApplication::setStyle("fusion");
+    QApplication::setStyle("freeze");
 
     CreateMenus();    
     CreateWidgets();    
@@ -38,6 +39,8 @@ MainWidget::MainWidget(QWidget *parent) :
     SendKey(Qt::Key_F3); //Rad
     SendKey(Qt::Key_F6); //Dec
 
+    EnableLogging();
+
     UpdateDisplay();
     this->setFocus();    
 }
@@ -47,6 +50,7 @@ MainWidget::MainWidget(QWidget *parent) :
 MainWidget::~MainWidget()
 {
     settings.saveSettings();
+    delete logger;
 
     delete ui;
     delete parser;
@@ -64,7 +68,25 @@ void MainWidget::ReCreateMouseEvents()
     mePress = new QMouseEvent(QEvent::MouseButtonPress, posMousePress, Qt::LeftButton,
                                            Qt::LeftButton, Qt::NoModifier);
     meRelease = new QMouseEvent(QEvent::MouseButtonRelease, posMousePress, Qt::LeftButton,
-                                      Qt::LeftButton, Qt::NoModifier);
+                                Qt::LeftButton, Qt::NoModifier);
+}
+
+bool MainWidget::isLogging()
+{
+    return (settings.getSetting("Logging").toBool());
+}
+
+void MainWidget::EnableLogging()
+{
+    if(isLogging())
+    {
+        if(!logger)
+            logger = new Logger();
+    }else
+    {
+        delete logger;
+        logger = nullptr;
+    }
 }
 
 
@@ -265,6 +287,7 @@ void MainWidget::slotSettings(void)
       SetLocale(static_cast<Langs>(settings.getSetting("Language").toInt()));
       settings.saveSettingsByKind(kindset::appearance);      
       settings.saveSettingsByKind(kindset::misc);
+      EnableLogging();
   }
   delete dialog_settings;
 }
@@ -936,9 +959,11 @@ bool MainWidget::AddToken(const QString& stok)
 //----------------------------------------------------------------------------------------------------------------------
 void MainWidget::ProcessClick(const QString& sButtonValue)
 {
+    bool accessRun;
     if(sButtonValue == "=")
     {
-        if(parser->Run())
+        accessRun = parser->Run();
+        if(accessRun)
             UpdateDisplay(ud::Result);
         else
             UpdateDisplay(ud::Errors);
@@ -1076,6 +1101,7 @@ void MainWidget::UpdateDisplay(ud how_update)
 {
     QString expression;
     QString errors;
+    QString result;
 
     expression = parser->GetExpression("", true);
     errors = parser->listErrors();
@@ -1086,7 +1112,13 @@ void MainWidget::UpdateDisplay(ud how_update)
         wDisplay->setResult(errors);
     else
         if(how_update == ud::Result)
-            wDisplay->setResult("= " + parser->DoubleToString(parser->GetResult(), PRECISION_FOR_DOUBLE));
+        {
+            result = parser->DoubleToString(parser->GetResult(), PRECISION_FOR_DOUBLE);
+            wDisplay->setResult("= " + result);
+
+            if(isLogging())
+                logger->Add(parser->GetExpression() +  " = " + result);
+        }
     else
             if(how_update == ud::Empty)
                 wDisplay->setResult("");

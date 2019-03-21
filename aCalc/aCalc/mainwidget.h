@@ -32,6 +32,7 @@
 #include "settings.h"
 #include "pnlbutton.h"
 #include "calcdisplay.h"
+#include "logger.h"
 
 
 namespace Ui {
@@ -93,6 +94,8 @@ private:
     void SetMode(SModes mode, bool on);
     void Alert(void);
     void ReCreateMouseEvents();
+    bool isLogging();
+    void EnableLogging();
 
 
     Ui::MainWidget *ui;
@@ -136,6 +139,8 @@ private:
     int button_func_w = 0;
 
     double inMemory;
+
+    Logger *logger = nullptr;
 
     QWidget *curr_widget = nullptr;
     QPoint curr_GlobalPos;
