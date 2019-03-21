@@ -5,6 +5,7 @@
 #include <QLabel>
 #include <QTextEdit>
 #include <QGridLayout>
+#include <QScrollBar>
 
 #include "common.h"
 

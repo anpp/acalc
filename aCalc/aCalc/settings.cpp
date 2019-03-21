@@ -74,7 +74,7 @@ void Settings::loadSettingsScreen()
 void Settings::saveSettingsScreen()
 {
     if(owner)
-    {        
+    {
         setSetting("posx", owner->x());
         setSetting("posy", owner->y());
         saveSettingsByKind(kindset::screen);

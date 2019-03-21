@@ -23,7 +23,7 @@ MainWidget::MainWidget(QWidget *parent) :
 
     setWindowIcon(QIcon(":/Icons/Icons/Calculator-50.png"));
 
-    QApplication::setStyle("breeze");
+    QApplication::setStyle("fusion");
 
     CreateMenus();    
     CreateWidgets();    
@@ -264,6 +264,7 @@ void MainWidget::slotSettings(void)
       ResizeAll(settings.getSetting("button_width").toUInt(), settings.getSetting("button_height").toUInt());
       SetLocale(static_cast<Langs>(settings.getSetting("Language").toInt()));
       settings.saveSettingsByKind(kindset::appearance);      
+      settings.saveSettingsByKind(kindset::misc);
   }
   delete dialog_settings;
 }

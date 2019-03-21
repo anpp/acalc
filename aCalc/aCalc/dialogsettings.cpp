@@ -114,7 +114,7 @@ void DialogSettings::setEditor(QTableWidget* tblSettings, Setting* s, int row)
         break;
     case check:
         checkbox = new QCheckBox();
-        tblSettings->setCellWidget(row, 0, edit);
+        tblSettings->setCellWidget(row, 0, checkbox);
         checkbox->setChecked(settings->getSetting(s->title).toInt() == 1);
         mapSetControl[s->title] = checkbox;
         break;
@@ -152,6 +152,8 @@ void DialogSettings::slotOk()
                 settings->setSetting(s, static_cast<QLineEdit*>(mapSetControl[s])->text().toInt());
             if(classname == "QComboBox")
                 settings->setSetting(s, static_cast<QComboBox*>(mapSetControl[s])->currentIndex());
+            if(classname == "QCheckBox")
+                settings->setSetting(s, QVariant(static_cast<QCheckBox*>(mapSetControl[s])->isChecked()).toInt());
         }
     }
     accept();
