@@ -25,6 +25,7 @@
 #include <QTime>
 #include <QMessageBox>
 #include <algorithm>
+#include <QDir>
 
 #include "qcalcwidget.h"
 #include "common.h"
@@ -139,6 +140,9 @@ private:
     int button_func_w = 0;
 
     double inMemory;
+
+    QString log_dirname = QDir::homePath() +  "/.acalc";
+    QString log_filename = "acalc.log";
 
     Logger *logger = nullptr;
 

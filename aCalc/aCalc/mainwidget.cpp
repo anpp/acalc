@@ -81,7 +81,7 @@ void MainWidget::EnableLogging()
     if(isLogging())
     {
         if(!logger)
-            logger = new Logger();
+            logger = new Logger(log_dirname, log_filename);
     }else
     {
         delete logger;

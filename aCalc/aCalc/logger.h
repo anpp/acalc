@@ -13,12 +13,11 @@ class Logger
     QFile logfile;
     std::vector<QString> last_logs;
 
-    QString dirname = QDir::homePath() +  "/.acalc";
-    QString filename = dirname + "/acalc.log";
+    QString filename;
 
     bool isError = false;
 public:
-    Logger();
+    Logger(const QString& dirname, const QString& filename);
     ~Logger();
     void Add(const QString& value);
 
