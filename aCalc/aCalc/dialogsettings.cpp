@@ -8,18 +8,22 @@ DialogSettings::DialogSettings(Settings* app_settings, QWidget *parent) :
     this->settings = app_settings;
 
     loadSettingsGrids();
-
-    for (DSGrid* dsg: vec_tbl) { vl.addWidget(&dsg->tblSettings);}
+    for (DSGrid* dsg: vec_tbl) { twSettings.addTab(&dsg->tblSettings, QObject::tr(sSettingKind[dsg->kind].toStdString().c_str()));}
 
     vl.setSpacing(SPACING);
     vl.setMargin(SPACING);
+    hl.addStretch();
     hl.addWidget(&btnOk);
     hl.addWidget(&btnCancel);
     this->setLayout(&vl);
+    vl.addWidget(&twSettings);
     vl.addLayout(&hl);
 
     connect(&btnOk, SIGNAL(clicked()), SLOT(slotOk()));
     connect(&btnCancel, SIGNAL(clicked()), SLOT(reject()));
+    connect(&twSettings, SIGNAL(currentChanged(int)), SLOT(slotResize()));
+
+    this->setGeometry(settings->getSetting("posx").toInt() + OFFSET, settings->getSetting("posy").toInt() + OFFSET, WIDTH_COLUMN + WIDTH_VHEADER + SPACING * 2, this->height());
 }
 
 
@@ -36,10 +40,11 @@ void DialogSettings::loadSettingsGrids()
     if (!settings) return;
 
     DSGrid* dsg;
-    QStringList sl_labels_vert, sl_labels_horz;
+    QStringList sl_labels_vert;
     int n_rows;
 
-    for (Setting* s: settings->getListSettings()){ set_kindset << s->kind;}
+    //for (Setting* s: settings->getListSettings()){ set_kindset << s->kind;}
+    for (Setting* s: settings->getListSettings()){ if(set_kindset.indexOf(s->kind) < 0) set_kindset.append(s->kind);}
 
     for (kindset ks: set_kindset)
     {
@@ -47,7 +52,6 @@ void DialogSettings::loadSettingsGrids()
 
         n_rows = 0;
         sl_labels_vert.clear();
-        sl_labels_horz.clear();
 
         dsg = new DSGrid;
         dsg->kind = ks;
@@ -62,10 +66,9 @@ void DialogSettings::loadSettingsGrids()
                 setEditor(&dsg->tblSettings, s, dsg->tblSettings.rowCount() - 1);
             }
         }
-        sl_labels_horz << QObject::tr(settings->getSettingsName(ks).toStdString().c_str());
+        dsg->tblSettings.horizontalHeader()->hide();
         dsg->tblSettings.setVerticalHeaderLabels(sl_labels_vert);
-        dsg->tblSettings.setHorizontalHeaderLabels(sl_labels_horz);
-        dsg->tblSettings.verticalHeader()->setFixedWidth(100);
+        dsg->tblSettings.verticalHeader()->setFixedWidth(WIDTH_VHEADER);
         dsg->tblSettings.horizontalHeader()->setDefaultAlignment(Qt::AlignLeft);
         dsg->tblSettings.setStyleSheet("QTableWidget{selection-background-color: transparent; background-color: transparent; border-top: 1px solid gray}");
         dsg->tblSettings.setVerticalScrollMode(QAbstractItemView::ScrollPerPixel);
@@ -126,6 +129,7 @@ void DialogSettings::resizeTable()
     for (DSGrid* dsg: vec_tbl) {dsg->tblSettings.setColumnWidth(0, dsg->tblSettings.width() - dsg->tblSettings.verticalHeader()->width() - SPACING); }
 }
 
+
 void DialogSettings::resizeEvent(QResizeEvent *event)
 {
     this->QWidget::resizeEvent(event);
@@ -157,4 +161,9 @@ void DialogSettings::slotOk()
         }
     }
     accept();
+}
+
+void DialogSettings::slotResize()
+{
+    resizeTable();
 }

@@ -13,8 +13,12 @@
 #include <QSet>
 #include <QLineEdit>
 #include <QCheckBox>
+#include <QTabWidget>
 #include "settings.h"
 
+#define WIDTH_VHEADER 160
+#define WIDTH_COLUMN 200
+#define OFFSET 50
 
 
 struct DSGrid
@@ -27,18 +31,16 @@ struct DSGrid
 class DialogSettings : public QDialog
 {
     Q_OBJECT
-
 public:
     explicit DialogSettings(Settings* app_settings, QWidget *parent = nullptr);
     ~DialogSettings();
-
-
 
 private:
     void loadSettingsGrids();
     void setEditor(QTableWidget* tblSettings, Setting* s, int row);
     void resizeTable();
 
+    QTabWidget twSettings;
     QVBoxLayout vl;
     QHBoxLayout hl;
     QPushButton btnOk;
@@ -46,7 +48,7 @@ private:
     Settings* settings;
 
     QVector<DSGrid*> vec_tbl;
-    QSet<kindset> set_kindset;
+    QVector<kindset> set_kindset;
     QMap<QString, QWidget*> mapSetControl;
 
 protected:
@@ -55,6 +57,7 @@ protected:
 
 public slots:
     void slotOk();
+    void slotResize();
 
 };
 

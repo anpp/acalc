@@ -13,6 +13,7 @@
 static QString sViews[] = {QObject::tr("Original"), QObject::tr("Simple"), QObject::tr("Programmable")};
 static QString sLanguages[] = {QObject::tr("Default"), QObject::tr("English"), QObject::tr("Russian")};
 static QString sShortLanguages[] = {"none", "en", "ru"};
+static QString sSettingKind[] = {QObject::tr("appearance"), QObject::tr("misc"), QObject::tr("screen"), QObject::tr("Languages")};
 
 
 enum kindset: int {appearance = 0, misc, screen};

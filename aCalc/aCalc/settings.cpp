@@ -1,7 +1,5 @@
 #include "settings.h"
 
-static QString sSettingKind[] = {QObject::tr("appearance"), QObject::tr("misc"), QObject::tr("screen"), QObject::tr("Languages")};
-
 
 //----------------------------------------------------------------------------------------------------------------------
 Settings::Settings(QWidget* widget_owner, const QString& organization, const QString& application) :

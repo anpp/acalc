@@ -4,27 +4,27 @@
 <context>
     <name>MainWidget</name>
     <message>
-        <location filename="mainwidget.cpp" line="122"/>
+        <location filename="mainwidget.cpp" line="141"/>
         <source>Calculator</source>
         <translation>Калькулятор aCalc</translation>
     </message>
     <message>
-        <location filename="mainwidget.cpp" line="124"/>
+        <location filename="mainwidget.cpp" line="143"/>
         <source>View</source>
         <translation>Вид</translation>
     </message>
     <message>
-        <location filename="mainwidget.cpp" line="125"/>
+        <location filename="mainwidget.cpp" line="144"/>
         <source>Edit</source>
         <translation>Правка</translation>
     </message>
     <message>
-        <location filename="mainwidget.cpp" line="126"/>
+        <location filename="mainwidget.cpp" line="145"/>
         <source>Help</source>
         <translation>Помощь</translation>
     </message>
     <message>
-        <location filename="mainwidget.cpp" line="127"/>
+        <location filename="mainwidget.cpp" line="146"/>
         <source>Languages</source>
         <translation>Языки</translation>
     </message>
@@ -37,42 +37,42 @@
         <translation type="vanished">Русский</translation>
     </message>
     <message>
-        <location filename="mainwidget.cpp" line="128"/>
+        <location filename="mainwidget.cpp" line="147"/>
         <source>&amp;Copy</source>
         <translation>Скопировать</translation>
     </message>
     <message>
-        <location filename="mainwidget.cpp" line="129"/>
+        <location filename="mainwidget.cpp" line="148"/>
         <source>&amp;Paste</source>
         <translation>Вставить</translation>
     </message>
     <message>
-        <location filename="mainwidget.cpp" line="130"/>
+        <location filename="mainwidget.cpp" line="149"/>
         <source>Settings</source>
         <translation>Настройки...</translation>
     </message>
     <message>
-        <location filename="mainwidget.cpp" line="131"/>
+        <location filename="mainwidget.cpp" line="150"/>
         <source>Contex help</source>
         <translation>Контекстная справка</translation>
     </message>
     <message>
-        <location filename="mainwidget.cpp" line="133"/>
+        <location filename="mainwidget.cpp" line="152"/>
         <source>About...</source>
         <translation>О калькуляторе</translation>
     </message>
     <message>
-        <location filename="mainwidget.cpp" line="132"/>
+        <location filename="mainwidget.cpp" line="151"/>
         <source>What is this?</source>
         <translation>Что это такое?</translation>
     </message>
     <message>
-        <location filename="mainwidget.cpp" line="165"/>
+        <location filename="mainwidget.cpp" line="184"/>
         <source>About</source>
         <translation>О Калькуляторе</translation>
     </message>
     <message>
-        <location filename="mainwidget.cpp" line="165"/>
+        <location filename="mainwidget.cpp" line="184"/>
         <source>AboutProgram</source>
         <translation>Калькулятор выражений aCalc. </translation>
     </message>
@@ -449,52 +449,47 @@
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="settings.cpp" line="3"/>
+        <location filename="settings.h" line="16"/>
         <source>appearance</source>
         <translation>Внешний вид</translation>
     </message>
     <message>
-        <location filename="settings.cpp" line="3"/>
+        <location filename="settings.h" line="16"/>
         <source>misc</source>
         <translation>Разное</translation>
     </message>
     <message>
-        <location filename="settings.cpp" line="3"/>
+        <location filename="settings.h" line="16"/>
         <source>screen</source>
         <translation>Экран</translation>
     </message>
     <message>
-        <location filename="settings.cpp" line="3"/>
+        <location filename="settings.h" line="16"/>
         <source>Languages</source>
         <translation>Языки</translation>
     </message>
     <message>
-        <location filename="settings.cpp" line="10"/>
+        <location filename="settings.cpp" line="8"/>
         <source>button_width</source>
         <translation>Ширина кнопок</translation>
     </message>
     <message>
-        <location filename="settings.cpp" line="11"/>
+        <location filename="settings.cpp" line="9"/>
         <source>button_height</source>
         <translation>Высота кнопок</translation>
     </message>
     <message>
-        <location filename="settings.cpp" line="12"/>
+        <location filename="settings.cpp" line="10"/>
         <source>appview</source>
         <translation>Вид</translation>
     </message>
     <message>
-        <location filename="settings.cpp" line="15"/>
-        <source>posx</source>
-        <translation type="unfinished"></translation>
+        <location filename="settings.cpp" line="19"/>
+        <source>Logging</source>
+        <translation>Логирование</translation>
     </message>
     <message>
         <location filename="settings.cpp" line="16"/>
-        <source>posy</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location filename="settings.cpp" line="18"/>
         <source>Language</source>
         <translation>Язык</translation>
     </message>
