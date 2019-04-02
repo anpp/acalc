@@ -4,67 +4,67 @@
 <context>
     <name>MainWidget</name>
     <message>
-        <location filename="mainwidget.cpp" line="141"/>
+        <location filename="mainwidget.cpp" line="153"/>
         <source>Calculator</source>
         <translation>aCalc</translation>
     </message>
     <message>
-        <location filename="mainwidget.cpp" line="143"/>
+        <location filename="mainwidget.cpp" line="155"/>
         <source>View</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="mainwidget.cpp" line="144"/>
+        <location filename="mainwidget.cpp" line="156"/>
         <source>Edit</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="mainwidget.cpp" line="145"/>
+        <location filename="mainwidget.cpp" line="157"/>
         <source>Help</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="mainwidget.cpp" line="146"/>
+        <location filename="mainwidget.cpp" line="158"/>
         <source>Languages</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="mainwidget.cpp" line="147"/>
+        <location filename="mainwidget.cpp" line="159"/>
         <source>&amp;Copy</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="mainwidget.cpp" line="148"/>
+        <location filename="mainwidget.cpp" line="160"/>
         <source>&amp;Paste</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="mainwidget.cpp" line="149"/>
+        <location filename="mainwidget.cpp" line="161"/>
         <source>Settings</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="mainwidget.cpp" line="150"/>
+        <location filename="mainwidget.cpp" line="162"/>
         <source>Contex help</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="mainwidget.cpp" line="152"/>
+        <location filename="mainwidget.cpp" line="164"/>
         <source>About...</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="mainwidget.cpp" line="151"/>
+        <location filename="mainwidget.cpp" line="163"/>
         <source>What is this?</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="mainwidget.cpp" line="184"/>
+        <location filename="mainwidget.cpp" line="196"/>
         <source>About</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="mainwidget.cpp" line="184"/>
+        <location filename="mainwidget.cpp" line="196"/>
         <source>AboutProgram</source>
         <translation type="unfinished"></translation>
     </message>
@@ -453,7 +453,7 @@
     </message>
     <message>
         <location filename="settings.h" line="16"/>
-        <source>Languages</source>
+        <source>state</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
@@ -477,8 +477,68 @@
         <translation type="unfinished"></translation>
     </message>
     <message>
+        <location filename="settings.cpp" line="22"/>
+        <source>memory</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
         <location filename="settings.cpp" line="16"/>
         <source>Language</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../CalcIt/calcparser.cpp" line="4"/>
+        <source>Unknown error!</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../CalcIt/calcparser.cpp" line="4"/>
+        <source>Syntax error</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../CalcIt/calcparser.cpp" line="4"/>
+        <source>Unclosed parenthesis</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../CalcIt/calcparser.cpp" line="5"/>
+        <source>Unknown function</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../CalcIt/calcparser.cpp" line="5"/>
+        <source>Division by zero!</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../CalcIt/calcparser.cpp" line="6"/>
+        <source>Invalid argument</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../CalcIt/calcparser.cpp" line="6"/>
+        <source>Value is too large</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../CalcIt/calcparser.cpp" line="6"/>
+        <source>Undefined variable</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../CalcIt/calcparser.cpp" line="7"/>
+        <source>Empty parentheses</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../CalcIt/calcparser.cpp" line="7"/>
+        <source>Type mismatch</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../CalcIt/calcparser.cpp" line="7"/>
+        <source>Readonly variable</source>
         <translation type="unfinished"></translation>
     </message>
 </context>

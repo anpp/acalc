@@ -13,11 +13,11 @@
 static QString sViews[] = {QObject::tr("Original"), QObject::tr("Simple"), QObject::tr("Programmable")};
 static QString sLanguages[] = {QObject::tr("Default"), QObject::tr("English"), QObject::tr("Russian")};
 static QString sShortLanguages[] = {"none", "en", "ru"};
-static QString sSettingKind[] = {QObject::tr("appearance"), QObject::tr("misc"), QObject::tr("screen"), QObject::tr("Languages")};
+static QString sSettingKind[] = {QObject::tr("appearance"), QObject::tr("misc"), QObject::tr("screen"), QObject::tr("state")};
 
 
-enum kindset: int {appearance = 0, misc, screen};
-enum editorset {text = 0, spin, combo, check};
+enum kindset: int {appearance = 0, misc, screen, state};
+enum editorset {none = 0, text, spin, combo, check};
 
 struct Setting
 {
@@ -28,7 +28,7 @@ struct Setting
     editorset editor;
     int comboNum;
     QString* combovalues;
-    bool bChanged = false;
+    bool isChanged = false;
 };
 
 
@@ -47,7 +47,7 @@ public:
     void saveSettingsByKind(kindset ks);
 
     void loadSettingsScreen();
-    void saveSettingsScreen();
+    void saveSettingsScreen(int x, int y);
 
     const QVariant& getSetting(const QString& title);
     bool isChanged(const QString& title);
@@ -57,12 +57,14 @@ public:
     void loadSettings(){
         loadSettingsByKind(kindset::appearance);
         loadSettingsByKind(kindset::misc);
+        loadSettingsByKind(kindset::state);
         loadSettingsScreen();
     }
 
     void saveSettings(){
         saveSettingsByKind(kindset::appearance);
         saveSettingsByKind(kindset::misc);
+        saveSettingsByKind(kindset::state);
         //saveSettingsScreen();
     }
 

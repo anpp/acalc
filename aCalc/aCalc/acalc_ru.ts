@@ -4,27 +4,27 @@
 <context>
     <name>MainWidget</name>
     <message>
-        <location filename="mainwidget.cpp" line="141"/>
+        <location filename="mainwidget.cpp" line="153"/>
         <source>Calculator</source>
         <translation>Калькулятор aCalc</translation>
     </message>
     <message>
-        <location filename="mainwidget.cpp" line="143"/>
+        <location filename="mainwidget.cpp" line="155"/>
         <source>View</source>
         <translation>Вид</translation>
     </message>
     <message>
-        <location filename="mainwidget.cpp" line="144"/>
+        <location filename="mainwidget.cpp" line="156"/>
         <source>Edit</source>
         <translation>Правка</translation>
     </message>
     <message>
-        <location filename="mainwidget.cpp" line="145"/>
+        <location filename="mainwidget.cpp" line="157"/>
         <source>Help</source>
         <translation>Помощь</translation>
     </message>
     <message>
-        <location filename="mainwidget.cpp" line="146"/>
+        <location filename="mainwidget.cpp" line="158"/>
         <source>Languages</source>
         <translation>Языки</translation>
     </message>
@@ -37,42 +37,42 @@
         <translation type="vanished">Русский</translation>
     </message>
     <message>
-        <location filename="mainwidget.cpp" line="147"/>
+        <location filename="mainwidget.cpp" line="159"/>
         <source>&amp;Copy</source>
         <translation>Скопировать</translation>
     </message>
     <message>
-        <location filename="mainwidget.cpp" line="148"/>
+        <location filename="mainwidget.cpp" line="160"/>
         <source>&amp;Paste</source>
         <translation>Вставить</translation>
     </message>
     <message>
-        <location filename="mainwidget.cpp" line="149"/>
+        <location filename="mainwidget.cpp" line="161"/>
         <source>Settings</source>
         <translation>Настройки...</translation>
     </message>
     <message>
-        <location filename="mainwidget.cpp" line="150"/>
+        <location filename="mainwidget.cpp" line="162"/>
         <source>Contex help</source>
         <translation>Контекстная справка</translation>
     </message>
     <message>
-        <location filename="mainwidget.cpp" line="152"/>
+        <location filename="mainwidget.cpp" line="164"/>
         <source>About...</source>
         <translation>О калькуляторе</translation>
     </message>
     <message>
-        <location filename="mainwidget.cpp" line="151"/>
+        <location filename="mainwidget.cpp" line="163"/>
         <source>What is this?</source>
         <translation>Что это такое?</translation>
     </message>
     <message>
-        <location filename="mainwidget.cpp" line="184"/>
+        <location filename="mainwidget.cpp" line="196"/>
         <source>About</source>
         <translation>О Калькуляторе</translation>
     </message>
     <message>
-        <location filename="mainwidget.cpp" line="184"/>
+        <location filename="mainwidget.cpp" line="196"/>
         <source>AboutProgram</source>
         <translation>Калькулятор выражений aCalc. </translation>
     </message>
@@ -117,6 +117,11 @@
         <location filename="settings.h" line="14"/>
         <source>Russian</source>
         <translation type="unfinished">Русский</translation>
+    </message>
+    <message>
+        <location filename="settings.h" line="16"/>
+        <source>state</source>
+        <translation type="unfinished"></translation>
     </message>
     <message>
         <location filename="buttexts.h" line="7"/>
@@ -464,9 +469,8 @@
         <translation>Экран</translation>
     </message>
     <message>
-        <location filename="settings.h" line="16"/>
         <source>Languages</source>
-        <translation>Языки</translation>
+        <translation type="vanished">Языки</translation>
     </message>
     <message>
         <location filename="settings.cpp" line="8"/>
@@ -489,9 +493,69 @@
         <translation>Логирование</translation>
     </message>
     <message>
+        <location filename="settings.cpp" line="22"/>
+        <source>memory</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
         <location filename="settings.cpp" line="16"/>
         <source>Language</source>
         <translation>Язык</translation>
+    </message>
+    <message>
+        <location filename="../CalcIt/calcparser.cpp" line="4"/>
+        <source>Unknown error!</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../CalcIt/calcparser.cpp" line="4"/>
+        <source>Syntax error</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../CalcIt/calcparser.cpp" line="4"/>
+        <source>Unclosed parenthesis</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../CalcIt/calcparser.cpp" line="5"/>
+        <source>Unknown function</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../CalcIt/calcparser.cpp" line="5"/>
+        <source>Division by zero!</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../CalcIt/calcparser.cpp" line="6"/>
+        <source>Invalid argument</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../CalcIt/calcparser.cpp" line="6"/>
+        <source>Value is too large</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../CalcIt/calcparser.cpp" line="6"/>
+        <source>Undefined variable</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../CalcIt/calcparser.cpp" line="7"/>
+        <source>Empty parentheses</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../CalcIt/calcparser.cpp" line="7"/>
+        <source>Type mismatch</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../CalcIt/calcparser.cpp" line="7"/>
+        <source>Readonly variable</source>
+        <translation type="unfinished"></translation>
     </message>
 </context>
 </TS>

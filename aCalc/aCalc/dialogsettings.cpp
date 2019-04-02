@@ -43,13 +43,10 @@ void DialogSettings::loadSettingsGrids()
     QStringList sl_labels_vert;
     int n_rows;
 
-    //for (Setting* s: settings->getListSettings()){ set_kindset << s->kind;}
-    for (Setting* s: settings->getListSettings()){ if(set_kindset.indexOf(s->kind) < 0) set_kindset.append(s->kind);}
+    vec_kindset << kindset::appearance << kindset::misc;
 
-    for (kindset ks: set_kindset)
-    {
-        if(ks == kindset::screen) continue;
-
+    for (kindset ks: vec_kindset)
+    {        
         n_rows = 0;
         sl_labels_vert.clear();
 

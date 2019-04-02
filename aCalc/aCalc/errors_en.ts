@@ -64,47 +64,47 @@
     <name>QObject</name>
     <message>
         <source>Unknown error!</source>
-        <translation type="vanished">Unknown error!</translation>
+        <translation>Unknown error!</translation>
     </message>
     <message>
         <source>Syntax error</source>
-        <translation type="vanished">Syntax error</translation>
+        <translation>Syntax error</translation>
     </message>
     <message>
         <source>Unclosed parenthesis</source>
-        <translation type="vanished">Unclosed parenthesis</translation>
+        <translation>Unclosed parenthesis</translation>
     </message>
     <message>
         <source>Unknown function</source>
-        <translation type="vanished">Unknown function</translation>
+        <translation>Unknown function</translation>
     </message>
     <message>
         <source>Division by zero!</source>
-        <translation type="vanished">Division by zero!</translation>
+        <translation>Division by zero!</translation>
     </message>
     <message>
         <source>Invalid argument</source>
-        <translation type="vanished">Invalid argument</translation>
+        <translation>Invalid argument</translation>
     </message>
     <message>
         <source>Value is too large</source>
-        <translation type="vanished">Value is too large</translation>
+        <translation>Value is too large</translation>
     </message>
     <message>
         <source>Undefined variable</source>
-        <translation type="vanished">Undefined variable</translation>
+        <translation>Undefined variable</translation>
     </message>
     <message>
         <source>Empty parentheses</source>
-        <translation type="vanished">Empty parentheses</translation>
+        <translation>Empty parentheses</translation>
     </message>
     <message>
         <source>Type mismatch</source>
-        <translation type="vanished">Type mismatch</translation>
+        <translation>Type mismatch</translation>
     </message>
     <message>
         <source>Readonly variable</source>
-        <translation type="vanished">Readonly variable</translation>
+        <translation>Readonly variable</translation>
     </message>
     <message>
         <source>Inv</source>
@@ -383,10 +383,6 @@
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <source>Languages</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
         <source>button_width</source>
         <translation type="unfinished"></translation>
     </message>
@@ -428,6 +424,14 @@
     </message>
     <message>
         <source>Logging</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>memory</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>state</source>
         <translation type="unfinished"></translation>
     </message>
 </context>

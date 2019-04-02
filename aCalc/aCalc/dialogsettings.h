@@ -10,7 +10,6 @@
 #include <QSpinBox>
 #include <QComboBox>
 #include <QVector>
-#include <QSet>
 #include <QLineEdit>
 #include <QCheckBox>
 #include <QTabWidget>
@@ -48,7 +47,7 @@ private:
     Settings* settings;
 
     QVector<DSGrid*> vec_tbl;
-    QVector<kindset> set_kindset;
+    QVector<kindset> vec_kindset;
     QMap<QString, QWidget*> mapSetControl;
 
 protected:

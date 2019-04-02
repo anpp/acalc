@@ -1,18 +1,13 @@
 #include "calcparser.h"
-#include <QObject>
-
-#define tr(text) QObject::tr(text)
 
 
-static String _Errors[] = {tr("Unknown error!"), tr("Syntax error"), tr("Unclosed parenthesis"),
-     tr("Unknown function"), tr("Division by zero!"),
-     tr("Invalid argument"), tr("Value is too large"), tr("Undefined variable"),
-     tr("Empty parentheses"), tr("Type mismatch"), tr("Readonly variable")};
-
+static String _Errors[] = {QObject::tr("Unknown error!"), QObject::tr("Syntax error"), QObject::tr("Unclosed parenthesis"),
+     QObject::tr("Unknown function"), QObject::tr("Division by zero!"),
+     QObject::tr("Invalid argument"), QObject::tr("Value is too large"), QObject::tr("Undefined variable"),
+     QObject::tr("Empty parentheses"), QObject::tr("Type mismatch"), QObject::tr("Readonly variable")};
 
 
 static String VarTypes[] = {"float", "string"};
-
 
 
 
@@ -880,7 +875,7 @@ const String CalcParser::listErrors()
         if(t->Err() != errors::SUCCESS)
         {
             if(static_cast<unsigned int>(t->Err()) < sizeof(_Errors) / sizeof(String))
-                errs.append(tr(_Errors[static_cast<int>(t->Err())].toStdString().c_str()));
+                errs.append(QObject::tr(_Errors[static_cast<int>(t->Err())].toStdString().c_str()));
             else
                 errs.append("?");
             errs += "\n";

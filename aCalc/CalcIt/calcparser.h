@@ -1,6 +1,7 @@
 #ifndef CALCPARSER_H
 #define CALCPARSER_H
 
+#include <QObject>
 #include <locale.h>
 #include "consts.h"
 #include "def.h"
@@ -8,7 +9,6 @@
 #include "variable.h"
 #include "cvalue.h"
 #include "function.h"
-
 
 
 class CalcParser

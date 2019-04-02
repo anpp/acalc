@@ -601,10 +601,6 @@
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <source>Languages</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
         <source>button_width</source>
         <translation type="unfinished"></translation>
     </message>
@@ -646,6 +642,58 @@
     </message>
     <message>
         <source>Logging</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Unknown error!</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Syntax error</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Unclosed parenthesis</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Unknown function</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Division by zero!</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Invalid argument</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Value is too large</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Undefined variable</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Empty parentheses</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Type mismatch</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Readonly variable</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>memory</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>state</source>
         <translation type="unfinished"></translation>
     </message>
 </context>

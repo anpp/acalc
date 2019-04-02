@@ -97,7 +97,8 @@ private:
     void ReCreateMouseEvents();
     bool isLogging();
     void EnableLogging();
-
+    void LoadMemory();
+    void SaveMemory(const QString& value);
 
     Ui::MainWidget *ui;
 

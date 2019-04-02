@@ -64,47 +64,47 @@
     <name>QObject</name>
     <message>
         <source>Unknown error!</source>
-        <translation type="vanished">Неизвестная ошибка!</translation>
+        <translation>Неизвестная ошибка!</translation>
     </message>
     <message>
         <source>Syntax error</source>
-        <translation type="vanished">Синтаксическая ошибка</translation>
+        <translation>Синтаксическая ошибка</translation>
     </message>
     <message>
         <source>Unclosed parenthesis</source>
-        <translation type="vanished">Незакрытые скобки</translation>
+        <translation>Незакрытые скобки</translation>
     </message>
     <message>
         <source>Unknown function</source>
-        <translation type="vanished">Неизвестная функция</translation>
+        <translation>Неизвестная функция</translation>
     </message>
     <message>
         <source>Division by zero!</source>
-        <translation type="vanished">Деление на ноль!</translation>
+        <translation>Деление на ноль!</translation>
     </message>
     <message>
         <source>Invalid argument</source>
-        <translation type="vanished">Недопустимый аргумент функции</translation>
+        <translation>Недопустимый аргумент функции</translation>
     </message>
     <message>
         <source>Value is too large</source>
-        <translation type="vanished">Значение слишком велико</translation>
+        <translation>Значение слишком велико</translation>
     </message>
     <message>
         <source>Undefined variable</source>
-        <translation type="vanished">Неопределенная переменная</translation>
+        <translation>Неопределенная переменная</translation>
     </message>
     <message>
         <source>Empty parentheses</source>
-        <translation type="vanished">Пустые скобки</translation>
+        <translation>Пустые скобки</translation>
     </message>
     <message>
         <source>Type mismatch</source>
-        <translation type="vanished">Несовпадение типов</translation>
+        <translation>Несовпадение типов</translation>
     </message>
     <message>
         <source>Readonly variable</source>
-        <translation type="vanished">Переменная только для чтения</translation>
+        <translation>Переменная только для чтения</translation>
     </message>
     <message>
         <source>Inv</source>
@@ -383,10 +383,6 @@
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <source>Languages</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
         <source>button_width</source>
         <translation type="unfinished"></translation>
     </message>
@@ -428,6 +424,14 @@
     </message>
     <message>
         <source>Logging</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>memory</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>state</source>
         <translation type="unfinished"></translation>
     </message>
 </context>

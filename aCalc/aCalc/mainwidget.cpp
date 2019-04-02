@@ -42,6 +42,7 @@ MainWidget::MainWidget(QWidget *parent) :
     EnableLogging();
 
     UpdateDisplay();
+    LoadMemory();
     this->setFocus();    
 }
 
@@ -87,6 +88,18 @@ void MainWidget::EnableLogging()
         delete logger;
         logger = nullptr;
     }
+}
+
+void MainWidget::LoadMemory()
+{
+    lblMem->setText(settings.getSetting("memory").toString());
+    inMemory = settings.getSetting("memory").toDouble();
+}
+
+void MainWidget::SaveMemory(const QString& value)
+{
+   settings.setSetting("memory", value);
+   settings.saveSettingsByKind(kindset::state);
 }
 
 
@@ -427,7 +440,7 @@ void MainWidget::resizeEvent(QResizeEvent *event)
 void MainWidget::moveEvent(QMoveEvent *event)
 {
     this->QWidget::moveEvent(event);
-    settings.saveSettingsScreen();
+    settings.saveSettingsScreen(event->pos().x(), event->pos().y());
 }
 
 
@@ -993,6 +1006,7 @@ void MainWidget::ProcessClickMem(const QString& sButtonValue)
         {
             inMemory = parser->GetResult();
             lblMem->setText(parser->DoubleToString(inMemory, 6));
+            SaveMemory(lblMem->text());
         }
         else
             UpdateDisplay(ud::Errors);
@@ -1016,6 +1030,7 @@ void MainWidget::ProcessClickMem(const QString& sButtonValue)
     {
         lblMem->setText("");
         inMemory = 0;
+        SaveMemory(lblMem->text());
     }
 
 }
