@@ -118,6 +118,8 @@ void DialogSettings::setEditor(QTableWidget* tblSettings, Setting* s, int row)
         checkbox->setChecked(settings->getSetting(s->title).toInt() == 1);
         mapSetControl[s->title] = checkbox;
         break;
+    default:
+        break;
     }
 }
 

@@ -4,7 +4,7 @@
 #include <QWidget>
 #include <QLabel>
 #include <QTextEdit>
-#include <QGridLayout>
+#include <QVBoxLayout>
 #include <QScrollBar>
 
 #include "common.h"

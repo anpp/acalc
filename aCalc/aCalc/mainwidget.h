@@ -26,6 +26,7 @@
 #include <QMessageBox>
 #include <algorithm>
 #include <QDir>
+#include <QComboBox>
 
 #include "qcalcwidget.h"
 #include "common.h"
@@ -96,9 +97,12 @@ private:
     void Alert(void);
     void ReCreateMouseEvents();
     bool isLogging();
+    bool isLogList();
     void EnableLogging();
+    void EnableLogList();
     void LoadMemory();
     void SaveMemory(const QString& value);
+    bool SetMemory(QString value, CalcParser* p = nullptr);
 
     Ui::MainWidget *ui;
 
@@ -158,6 +162,8 @@ private:
 
     Settings settings{this, "acalc", "acalc"};
     PnlButton pb{this};
+
+    QComboBox *cbxlogList = nullptr;
 
 public slots:
     void ProcessClick(const QString& sButtonValue);

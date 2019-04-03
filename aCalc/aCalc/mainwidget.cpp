@@ -40,6 +40,7 @@ MainWidget::MainWidget(QWidget *parent) :
     SendKey(Qt::Key_F6); //Dec
 
     EnableLogging();
+    EnableLogList();
 
     UpdateDisplay();
     LoadMemory();
@@ -72,16 +73,20 @@ void MainWidget::ReCreateMouseEvents()
                                 Qt::LeftButton, Qt::NoModifier);
 }
 
+
+//----------------------------------------------------------------------------------------------------------------------
 bool MainWidget::isLogging()
 {
     return (settings.getSetting("Logging").toBool());
 }
 
+
+//----------------------------------------------------------------------------------------------------------------------
 void MainWidget::EnableLogging()
 {
     if(isLogging())
     {
-        if(!logger)
+        if(logger == nullptr)
             logger = new Logger(log_dirname, log_filename);
     }else
     {
@@ -90,12 +95,30 @@ void MainWidget::EnableLogging()
     }
 }
 
-void MainWidget::LoadMemory()
+
+//----------------------------------------------------------------------------------------------------------------------
+bool MainWidget::isLogList()
 {
-    lblMem->setText(settings.getSetting("memory").toString());
-    inMemory = settings.getSetting("memory").toDouble();
+    return (settings.getSetting("logList").toBool() && cbxlogList != nullptr);
 }
 
+
+//----------------------------------------------------------------------------------------------------------------------
+void MainWidget::EnableLogList()
+{
+    if(cbxlogList != nullptr)
+        cbxlogList->setVisible(settings.getSetting("logList").toBool());
+}
+
+
+//----------------------------------------------------------------------------------------------------------------------
+void MainWidget::LoadMemory()
+{
+    SetMemory(settings.getSetting("memory").toString());
+}
+
+
+//----------------------------------------------------------------------------------------------------------------------
 void MainWidget::SaveMemory(const QString& value)
 {
    settings.setSetting("memory", value);
@@ -295,12 +318,15 @@ void MainWidget::slotSettings(void)
   DialogSettings* dialog_settings = new DialogSettings(&settings, this);
   if (dialog_settings->exec() == QDialog::Accepted)
   {      
+      EnableLogging();
+      EnableLogList();
+
       SetView(settings.getSetting("appview").toInt());
       ResizeAll(settings.getSetting("button_width").toUInt(), settings.getSetting("button_height").toUInt());
       SetLocale(static_cast<Langs>(settings.getSetting("Language").toInt()));
-      settings.saveSettingsByKind(kindset::appearance);      
+
+      settings.saveSettingsByKind(kindset::appearance);
       settings.saveSettingsByKind(kindset::misc);
-      EnableLogging();
   }
   delete dialog_settings;
 }
@@ -614,6 +640,7 @@ void MainWidget::LayoutOriginal(void)
 
 
     lMain->addLayout(lMenu);
+    lMain->addWidget(cbxlogList);
     lMain->addWidget(wDisplay);
     lMain->addWidget(wMode);
     lMain->addWidget(pb.getPanel(Pnl::Func));
@@ -658,6 +685,7 @@ void MainWidget::LayoutSimple(void)
     lMenu->addWidget(MenuBar);
 
     lMain->addLayout(lMenu);
+    lMain->addWidget(cbxlogList);
     lMain->addWidget(wDisplay);
     lMain->addWidget(wMode);
     lMain->addWidget(wBottom);
@@ -721,6 +749,10 @@ void MainWidget::CreateWidgets()
     wDisplay = new CalcDisplay(this);
     wMode = new QFrame(this);
     wBottom = new QFrame(this);
+
+    cbxlogList = new QComboBox(this);
+    cbxlogList->setFixedHeight(cbxlogList->height());
+
 
     wBottom->setContentsMargins(0, 0, 0, 0);
     wMode->setContentsMargins(0, 0, 0, 0);
@@ -895,9 +927,6 @@ void MainWidget::SetSizeOfWidgets(int button_w, int button_h)
 
         button_func_w = (wBottom->width() - spacing * (pb.getCols(Pnl::Func) + 1)) / pb.getCols(Pnl::Func);
         pb.setSizeButton(Pnl::Func, button_func_w, func_button_h);
-
-        wDisplay->setFixedWidth(wBottom->width());
-
         pb.setSizeButton(Pnl::Scale, button_func_w, func_button_h);
         pb.setSizeButton(Pnl::FuncModes, button_func_w, func_button_h);
         pb.getPanel(Pnl::Drg)->setFixedSize(wBottom->width() - pb.getPanel(Pnl::Scale)->width() - spacing,
@@ -908,17 +937,19 @@ void MainWidget::SetSizeOfWidgets(int button_w, int button_h)
 
         this->setFixedSize(wBottom->width() + i_left + i_right,
                            wBottom->height() + pb.getPanel(Pnl::Func)->height() + wMode->height() +
-                           wDisplay->height() +  spacing * 4 + MenuBar->height() + i_top + i_bottom);
+                           (isLogList()? cbxlogList->height() + spacing: 0) +
+                           wDisplay->height() + spacing * 4 + MenuBar->height() + i_top + i_bottom);
         break;
     case CalcView::Simple:
         pb.setSizeButton(Pnl::Op, button_w, button_h, button_w + spacing);
         wBottom->setFixedSize(pb.getPanel(Pnl::Dig)->width() + pb.getPanel(Pnl::Op)->width() + spacing, pb.getPanel(Pnl::Dig)->height());
-        wDisplay->setFixedWidth(wBottom->width());
+
         wMode->setFixedSize(wBottom->width(), func_button_h + i_top + i_bottom);
         ResizeWidgets(button_w, wMode->height(), Pnl::ServButtons);
 
         this->setFixedSize(wBottom->width() + i_left + i_right,
                            wBottom->height() + wMode->height() +
+                           (isLogList()? cbxlogList->height() + spacing: 0) +
                            wDisplay->height() +  spacing * 3 + MenuBar->height() + i_top + i_bottom);
 
         break;
@@ -996,18 +1027,39 @@ void MainWidget::ProcessClick(const QString& sButtonValue)
 
 
 //----------------------------------------------------------------------------------------------------------------------
+bool MainWidget::SetMemory(QString value, CalcParser* p)
+{
+  CalcParser* l_parser = nullptr;
+  bool result = false;
+
+  l_parser = (p == nullptr? new CalcParser(&value): p);
+
+  if(l_parser->Run())
+  {
+      inMemory = l_parser->GetResult();
+      if(value == "")
+          lblMem->setText("");
+      else
+          lblMem->setText(l_parser->DoubleToString(inMemory, 6));
+      result = true;
+  }
+
+  if(p == nullptr)
+      delete l_parser;
+
+  return result;
+}
+
+
+//----------------------------------------------------------------------------------------------------------------------
 void MainWidget::ProcessClickMem(const QString& sButtonValue)
 {
     QString stok = sButtonValue;
 
     if(stok == sMem[0])
     {
-        if(parser->Run())
-        {
-            inMemory = parser->GetResult();
-            lblMem->setText(parser->DoubleToString(inMemory, 6));
-            SaveMemory(lblMem->text());
-        }
+        if(SetMemory("0", parser))
+            SaveMemory(parser->GetExpression());
         else
             UpdateDisplay(ud::Errors);
 
@@ -1030,7 +1082,7 @@ void MainWidget::ProcessClickMem(const QString& sButtonValue)
     {
         lblMem->setText("");
         inMemory = 0;
-        SaveMemory(lblMem->text());
+        SaveMemory("");
     }
 
 }

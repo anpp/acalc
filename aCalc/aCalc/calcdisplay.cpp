@@ -29,12 +29,12 @@ CalcDisplay::CalcDisplay(QWidget *parent) : QFrame(parent)
 
 void CalcDisplay::Layout()
 {
-    QGridLayout *lDisplay = new QGridLayout();
+    QVBoxLayout *lDisplay = new QVBoxLayout();
 
     lDisplay->setMargin(0);
     lDisplay->setSpacing(0);
-    lDisplay->addWidget(wExpression, 0, 0);
-    lDisplay->addWidget(wResult, 1, 0);
+    lDisplay->addWidget(wExpression);
+    lDisplay->addWidget(wResult);
     this->setLayout(lDisplay);
 }
 

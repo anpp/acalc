@@ -18,6 +18,8 @@ Settings::Settings(QWidget* widget_owner, const QString& organization, const QSt
 
                     new Setting{QObject::tr("Logging"), kindset::misc, static_cast<int>(Logging::Disable), static_cast<int>(Logging::Disable), check,
                             0, nullptr},
+                    new Setting{QObject::tr("logList"), kindset::misc, static_cast<int>(Logging::Disable), static_cast<int>(Logging::Disable), check,
+                            0, nullptr},
 
                     new Setting{QObject::tr("memory"), kindset::state, "", QVariant(QVariant::String), none,
                             0, nullptr}
