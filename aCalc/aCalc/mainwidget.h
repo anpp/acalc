@@ -103,6 +103,9 @@ private:
     void LoadMemory();
     void SaveMemory(const QString& value);
     bool SetMemory(QString value, CalcParser* p = nullptr);
+    void LoadExpression();
+    void SaveExpression(const QString& value);
+    void pasteExpression(const QString& exp);
 
     Ui::MainWidget *ui;
 

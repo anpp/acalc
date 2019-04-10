@@ -22,6 +22,8 @@ Settings::Settings(QWidget* widget_owner, const QString& organization, const QSt
                             0, nullptr},
 
                     new Setting{QObject::tr("memory"), kindset::state, "", QVariant(QVariant::String), none,
+                            0, nullptr},
+                    new Setting{QObject::tr("expression"), kindset::state, "", QVariant(QVariant::String), none,
                             0, nullptr}
 
                    };

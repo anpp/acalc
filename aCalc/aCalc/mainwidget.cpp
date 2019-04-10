@@ -42,8 +42,9 @@ MainWidget::MainWidget(QWidget *parent) :
     EnableLogging();
     EnableLogList();
 
-    UpdateDisplay();
     LoadMemory();
+    LoadExpression();
+
     this->setFocus();    
 }
 
@@ -51,6 +52,7 @@ MainWidget::MainWidget(QWidget *parent) :
 //----------------------------------------------------------------------------------------------------------------------
 MainWidget::~MainWidget()
 {
+    SaveExpression(parser->GetExpression() + (wDisplay->result().isEmpty()? "": " ="));
     settings.saveSettings();
     delete logger;
 
@@ -237,11 +239,41 @@ void MainWidget::slotCopy(void)
 
 //----------------------------------------------------------------------------------------------------------------------
 void MainWidget::slotPaste(void)
-{
-    QString value, num_val;
+{    
     QString pasteString = QApplication::clipboard()->text();
     if(pasteString.isEmpty() || "" == pasteString)
         return;
+
+    pasteExpression(pasteString);
+}
+
+
+//----------------------------------------------------------------------------------------------------------------------
+void MainWidget::slotSettings(void)
+{
+  DialogSettings* dialog_settings = new DialogSettings(&settings, this);
+  if (dialog_settings->exec() == QDialog::Accepted)
+  {      
+      EnableLogging();
+      EnableLogList();
+
+      SetView(settings.getSetting("appview").toInt());
+      ResizeAll(settings.getSetting("button_width").toUInt(), settings.getSetting("button_height").toUInt());
+      SetLocale(static_cast<Langs>(settings.getSetting("Language").toInt()));
+
+      settings.saveSettingsByKind(kindset::appearance);
+      settings.saveSettingsByKind(kindset::misc);
+  }
+  delete dialog_settings;
+}
+
+
+
+//----------------------------------------------------------------------------------------------------------------------
+void MainWidget::pasteExpression(const QString &exp)
+{
+    QString value, num_val;
+    QString expression = exp;
 
     SendKey(Qt::Key_Escape);
 
@@ -251,7 +283,7 @@ void MainWidget::slotPaste(void)
     sKeyMod km = {0, 0};
     QCalcWidget *w = nullptr;
 
-    tempParser.SetParams(&pasteString, 0, parser->DRG());
+    tempParser.SetParams(&expression, 0, parser->DRG());
     Tokens = tempParser.RefTokens();
 
     bPasting = true;
@@ -309,26 +341,6 @@ void MainWidget::slotPaste(void)
         }
     }
     bPasting = false;
-}
-
-
-//----------------------------------------------------------------------------------------------------------------------
-void MainWidget::slotSettings(void)
-{
-  DialogSettings* dialog_settings = new DialogSettings(&settings, this);
-  if (dialog_settings->exec() == QDialog::Accepted)
-  {      
-      EnableLogging();
-      EnableLogList();
-
-      SetView(settings.getSetting("appview").toInt());
-      ResizeAll(settings.getSetting("button_width").toUInt(), settings.getSetting("button_height").toUInt());
-      SetLocale(static_cast<Langs>(settings.getSetting("Language").toInt()));
-
-      settings.saveSettingsByKind(kindset::appearance);
-      settings.saveSettingsByKind(kindset::misc);
-  }
-  delete dialog_settings;
 }
 
 
@@ -996,6 +1008,8 @@ bool MainWidget::AddToken(const QString& stok)
     res = parser->AddToken(&s);
     if(!res)
         Alert();
+    else
+        SaveExpression(parser->GetExpression());
     return res;
 }
 
@@ -1021,7 +1035,7 @@ void MainWidget::ProcessClick(const QString& sButtonValue)
             s = "^" + parser->DoubleToString(3);
 
         AddToken(s);
-        UpdateDisplay();
+        UpdateDisplay();        
     }
 }
 
@@ -1049,6 +1063,23 @@ bool MainWidget::SetMemory(QString value, CalcParser* p)
 
   return result;
 }
+
+
+//----------------------------------------------------------------------------------------------------------------------
+void MainWidget::LoadExpression()
+{
+    QString exp = settings.getSetting("expression").toString();
+    if(!exp.isEmpty() && exp != "0")
+        pasteExpression(exp);
+}
+
+
+//----------------------------------------------------------------------------------------------------------------------
+void MainWidget::SaveExpression(const QString &value)
+{
+    settings.setSetting("expression", value);
+}
+
 
 
 //----------------------------------------------------------------------------------------------------------------------
@@ -1170,10 +1201,10 @@ void MainWidget::UpdateDisplay(ud how_update)
     QString errors;
     QString result;
 
-    expression = parser->GetExpression("", true);
+    expression = parser->GetExpression();
     errors = parser->listErrors();
 
-    wDisplay->setExpression(expression);
+    wDisplay->setExpression(parser->GetExpression("", true));
 
     if(how_update == ud::Errors)
         wDisplay->setResult(errors);
@@ -1184,7 +1215,7 @@ void MainWidget::UpdateDisplay(ud how_update)
             wDisplay->setResult("= " + result);
 
             if(isLogging())
-                logger->Add(parser->GetExpression() +  " = " + result);
+                logger->Add(expression +  " = " + result);
         }
     else
             if(how_update == ud::Empty)
