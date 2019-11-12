@@ -762,7 +762,7 @@ void MainWidget::CreateWidgets()
     wMode = new QFrame(this);
     wBottom = new QFrame(this);
 
-    cbxlogList = new QComboBox(this);
+    cbxlogList = new QLogComboBox(log_dirname, log_filename, this);
     cbxlogList->setFixedHeight(cbxlogList->height());
 
 
@@ -796,7 +796,7 @@ void MainWidget::CreateButtons(Pnl atype)
     auto max_i = pb.getRows(atype);
     auto max_j = pb.getCols(atype);
 
-    QColor *color = pb.getColor(atype);;
+    QColor *color = pb.getColor(atype);
     std::vector<QCalcWidget*>::iterator it;
 
     switch(atype)

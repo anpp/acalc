@@ -16,10 +16,12 @@ class Logger
     QString filename;
 
     bool isError = false;
+    QIODevice::OpenMode flags;
 public:
-    Logger(const QString& dirname, const QString& filename);
+    Logger(const QString& dirname, const QString& filename, QIODevice::OpenMode flags = QIODevice::Append);
     ~Logger();
     void Add(const QString& value);
+    const QStringList& ReadLast(int rate);
 
 };
 

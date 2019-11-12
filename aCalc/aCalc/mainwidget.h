@@ -50,6 +50,27 @@ struct sKeyMod {
 };
 
 
+
+class QLogComboBox : public QComboBox
+{
+    Q_OBJECT
+public:
+    explicit QLogComboBox(const QString& dirname, const QString& filename, QWidget *parent = nullptr) : QComboBox(parent)
+    {
+        log_reader = new Logger(dirname, filename, QIODevice::ReadOnly);
+    }
+protected:
+    void showPopup()
+    {
+        this->clear();
+        this->addItems(log_reader->ReadLast(25));
+        QComboBox::showPopup();
+    }
+private:
+    Logger *log_reader;
+};
+
+
 class MainWidget : public QWidget
 {
     Q_OBJECT
@@ -166,7 +187,7 @@ private:
     Settings settings{this, "acalc", "acalc"};
     PnlButton pb{this};
 
-    QComboBox *cbxlogList = nullptr;
+    QLogComboBox *cbxlogList = nullptr;
 
 public slots:
     void ProcessClick(const QString& sButtonValue);

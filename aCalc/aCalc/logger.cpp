@@ -1,7 +1,7 @@
 #include "logger.h"
 #include <QDebug>
 
-Logger::Logger(const QString& dirname, const QString& filename)
+Logger::Logger(const QString& dirname, const QString& filename, QIODevice::OpenMode flags)
 {
     //qDebug() << filename;    
     this->filename = dirname + "/" + filename;
@@ -12,9 +12,9 @@ Logger::Logger(const QString& dirname, const QString& filename)
         isError = !logdir.mkdir(dirname);
         if(isError) return;
     }
-
+    this->flags = flags;
     logfile.setFileName(this->filename);
-    isError = !logfile.open(QIODevice::Append);
+    isError = !logfile.open(this->flags);
     if(isError) return;
 }
 
@@ -33,4 +33,12 @@ void Logger::Add(const QString &value)
     QTextStream ts(&logfile);
     ts << value_to_log << endl;
     //qDebug() << value;
+}
+
+const QStringList &Logger::ReadLast(int rate)
+{
+  QStringList *sl = new QStringList();
+  sl->append("1");
+  sl->append("2");
+  return *sl;
 }
