@@ -55,19 +55,20 @@ class QLogComboBox : public QComboBox
 {
     Q_OBJECT
 public:
-    explicit QLogComboBox(const QString& dirname, const QString& filename, QWidget *parent = nullptr) : QComboBox(parent)
+    explicit QLogComboBox(QWidget *parent = nullptr) : QComboBox(parent)
     {
-        log_reader = new Logger(dirname, filename, QIODevice::ReadOnly);
+        setFixedHeight(height());
+        this->setFont(QFont("arial", 10));
     }
 protected:
     void showPopup()
     {
-        this->clear();
-        this->addItems(log_reader->ReadLast(25));
+        emit OnPopup();
+        this->setItemData(0, Qt::AlignRight, Qt::TextAlignmentRole);
         QComboBox::showPopup();
     }
-private:
-    Logger *log_reader;
+signals:
+    void OnPopup(void);
 };
 
 
@@ -174,6 +175,7 @@ private:
     QString log_filename = "acalc.log";
 
     Logger *logger = nullptr;
+    Logger log_reader;
 
     QWidget *curr_widget = nullptr;
     QPoint curr_GlobalPos;
@@ -188,6 +190,7 @@ private:
     PnlButton pb{this};
 
     QLogComboBox *cbxlogList = nullptr;
+    bool without_logging = false;
 
 public slots:
     void ProcessClick(const QString& sButtonValue);
@@ -204,6 +207,7 @@ public slots:
     void slotAbout(void);
     void slotSettings(void);
     void slotLanguage(QAction* action);
+    void slotOnPopupLogList(void);
 
 };
 

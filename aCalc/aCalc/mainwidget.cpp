@@ -13,7 +13,7 @@ inline int GetHFButton(int h)
 //----------------------------------------------------------------------------------------------------------------------
 MainWidget::MainWidget(QWidget *parent) :
         QWidget(parent, Qt::WindowMinimizeButtonHint | Qt::WindowCloseButtonHint),
-    ui(new Ui::MainWidget)
+    ui(new Ui::MainWidget), log_reader(log_dirname, log_filename, true)
 {
     ui->setupUi(this);
 
@@ -213,6 +213,12 @@ void MainWidget::slotLanguage(QAction* action)
     if(action == nullptr) return;
     settings.setSetting("Language", ActionLanguages.indexOf(action));
     SetLocale(static_cast<Langs>(ActionLanguages.indexOf(action)));
+}
+
+void MainWidget::slotOnPopupLogList()
+{
+    cbxlogList->clear();
+    cbxlogList->addItems(log_reader.ReadLast(10));
 }
 
 
@@ -762,8 +768,8 @@ void MainWidget::CreateWidgets()
     wMode = new QFrame(this);
     wBottom = new QFrame(this);
 
-    cbxlogList = new QLogComboBox(log_dirname, log_filename, this);
-    cbxlogList->setFixedHeight(cbxlogList->height());
+    cbxlogList = new QLogComboBox(this);
+    connect(cbxlogList, SIGNAL(OnPopup()), SLOT(slotOnPopupLogList()));
 
 
     wBottom->setContentsMargins(0, 0, 0, 0);
@@ -1070,7 +1076,11 @@ void MainWidget::LoadExpression()
 {
     QString exp = settings.getSetting("expression").toString();
     if(!exp.isEmpty() && exp != "0")
+    {
+        without_logging = true;
         pasteExpression(exp);
+        without_logging = false;
+    }
 }
 
 
@@ -1214,7 +1224,7 @@ void MainWidget::UpdateDisplay(ud how_update)
             result = parser->DoubleToString(parser->GetResult(), PRECISION_FOR_DOUBLE);
             wDisplay->setResult("= " + result);
 
-            if(isLogging())
+            if(isLogging() && !without_logging)
                 logger->Add(expression +  " = " + result);
         }
     else

@@ -18,7 +18,7 @@ class Logger
     bool isError = false;
     QIODevice::OpenMode flags;
 public:
-    Logger(const QString& dirname, const QString& filename, QIODevice::OpenMode flags = QIODevice::Append);
+    Logger(const QString& dirname, const QString& filename, bool for_read = false);
     ~Logger();
     void Add(const QString& value);
     const QStringList& ReadLast(int rate);
