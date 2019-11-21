@@ -8,7 +8,7 @@
 #define DEFAULT_DPI 96
 
 
-enum consts: int {DIFF_HEIGHT = 10, MIN_HEIGHT = 5};
+enum consts: int {DIFF_HEIGHT = 10, MIN_HEIGHT = 5, DEF_LOG_RATE = 50};
 
 enum class Pnl {Dig, Op, Abc, Mem, /*MemDisp,*/ Func, Scale, Drg, FuncModes, ServButtons, Nop};
 

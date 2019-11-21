@@ -20,6 +20,8 @@ Settings::Settings(QWidget* widget_owner, const QString& organization, const QSt
                             0, nullptr},
                     new Setting{QObject::tr("logList"), kindset::misc, static_cast<int>(Loging::Disable), static_cast<int>(Loging::Disable), check,
                             0, nullptr},
+                    new Setting{QObject::tr("log_rate"), kindset::misc, DEF_LOG_RATE, QVariant(QVariant::Int), spin,
+                            0, nullptr},
 
                     new Setting{QObject::tr("memory"), kindset::state, "", QVariant(QVariant::String), none,
                             0, nullptr},

@@ -201,7 +201,7 @@ void MainWidget::slotLanguage(QAction* action)
 void MainWidget::slotOnPopupLogList()
 {
     cbxlogList->clear();
-    cbxlogList->addItems(loger.ReadLast(10));
+    cbxlogList->addItems(loger.ReadLast(settings.getSetting("log_rate").toInt()));
 }
 
 
