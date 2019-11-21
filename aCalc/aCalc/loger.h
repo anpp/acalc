@@ -8,7 +8,7 @@
 #include <QDir>
 #include "common.h"
 
-class Logger
+class Loger
 {
     QFile logfile;
     std::vector<QString> last_logs;
@@ -16,10 +16,9 @@ class Logger
     QString filename;
 
     bool isError = false;
-    QIODevice::OpenMode flags;
 public:
-    Logger(const QString& dirname, const QString& filename, bool for_read = false);
-    ~Logger();
+    Loger(const QString& dirname, const QString& filename);
+    ~Loger();
     void Add(const QString& value);
     const QStringList& ReadLast(int rate);
 

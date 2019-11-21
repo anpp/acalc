@@ -34,7 +34,7 @@
 #include "settings.h"
 #include "pnlbutton.h"
 #include "calcdisplay.h"
-#include "logger.h"
+#include "loger.h"
 
 
 namespace Ui {
@@ -118,9 +118,8 @@ private:
     void SetMode(SModes mode, bool on);
     void Alert(void);
     void ReCreateMouseEvents();
-    bool isLogging();
+    bool isLoging();
     bool isLogList();
-    void EnableLogging();
     void EnableLogList();
     void LoadMemory();
     void SaveMemory(const QString& value);
@@ -174,8 +173,7 @@ private:
     QString log_dirname = QDir::homePath() +  "/.acalc";
     QString log_filename = "acalc.log";
 
-    Logger *logger = nullptr;
-    Logger log_reader;
+    Loger loger;
 
     QWidget *curr_widget = nullptr;
     QPoint curr_GlobalPos;

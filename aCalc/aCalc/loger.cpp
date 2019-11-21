@@ -1,7 +1,7 @@
-#include "logger.h"
+#include "loger.h"
 #include <QDebug>
 
-Logger::Logger(const QString& dirname, const QString& filename, bool for_read)
+Loger::Loger(const QString& dirname, const QString& filename)
 {
     //qDebug() << filename;
     this->filename = dirname + "/" + filename;
@@ -12,19 +12,18 @@ Logger::Logger(const QString& dirname, const QString& filename, bool for_read)
         isError = !logdir.mkdir(dirname);
         if(isError) return;
     }
-    flags = (for_read? QIODevice::ReadOnly: QIODevice::Append);
     logfile.setFileName(this->filename);
-    isError = !logfile.open(flags);
+    isError = !logfile.open(QIODevice::Append);
     if(isError) return;
 }
 
-Logger::~Logger()
+Loger::~Loger()
 {
     if(logfile.isOpen())
         logfile.close();
 }
 
-void Logger::Add(const QString &value)
+void Loger::Add(const QString &value)
 {
     if(isError) return;
     QString value_to_log = "[" + QDateTime::currentDateTime().toString("dd.MM.yyyy hh:mm:ss") + "] " + value;
@@ -35,19 +34,18 @@ void Logger::Add(const QString &value)
     //qDebug() << value;
 }
 
-const QStringList &Logger::ReadLast(int rate)
+const QStringList &Loger::ReadLast(int rate)
 {
     QStringList *sl = new QStringList();
     QStringList file_strings;
+    QFile file;
 
-    if(isError)
-        isError = !logfile.open(flags);
-
-    if(!isError)
+    file.setFileName(filename);
+    if(file.open(QIODevice::ReadOnly))
     {
-        logfile.seek(0);
-        while(!logfile.atEnd())
-            file_strings << logfile.readLine();
+        file.seek(0);
+        while(!file.atEnd())
+            file_strings << file.readLine();
 
         auto count_string = file_strings.count();
         auto fact_rate = count_string < rate? count_string: rate;
@@ -55,5 +53,6 @@ const QStringList &Logger::ReadLast(int rate)
         for(auto i = 0; i < fact_rate; ++i)
             sl->append(file_strings[file_strings.count() - i - 1]);
     }
+    file.close();
     return *sl;
 }

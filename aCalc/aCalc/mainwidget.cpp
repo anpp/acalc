@@ -13,7 +13,7 @@ inline int GetHFButton(int h)
 //----------------------------------------------------------------------------------------------------------------------
 MainWidget::MainWidget(QWidget *parent) :
         QWidget(parent, Qt::WindowMinimizeButtonHint | Qt::WindowCloseButtonHint),
-    ui(new Ui::MainWidget), log_reader(log_dirname, log_filename, true)
+    ui(new Ui::MainWidget), loger(log_dirname, log_filename)
 {
     ui->setupUi(this);
 
@@ -39,7 +39,6 @@ MainWidget::MainWidget(QWidget *parent) :
     SendKey(Qt::Key_F3); //Rad
     SendKey(Qt::Key_F6); //Dec
 
-    EnableLogging();
     EnableLogList();
 
     LoadMemory();
@@ -54,7 +53,6 @@ MainWidget::~MainWidget()
 {
     SaveExpression(parser->GetExpression() + (wDisplay->result().isEmpty()? "": " ="));
     settings.saveSettings();
-    delete logger;
 
     delete ui;
     delete parser;
@@ -77,24 +75,9 @@ void MainWidget::ReCreateMouseEvents()
 
 
 //----------------------------------------------------------------------------------------------------------------------
-bool MainWidget::isLogging()
+bool MainWidget::isLoging()
 {
     return (settings.getSetting("Logging").toBool());
-}
-
-
-//----------------------------------------------------------------------------------------------------------------------
-void MainWidget::EnableLogging()
-{
-    if(isLogging())
-    {
-        if(logger == nullptr)
-            logger = new Logger(log_dirname, log_filename);
-    }else
-    {
-        delete logger;
-        logger = nullptr;
-    }
 }
 
 
@@ -218,7 +201,7 @@ void MainWidget::slotLanguage(QAction* action)
 void MainWidget::slotOnPopupLogList()
 {
     cbxlogList->clear();
-    cbxlogList->addItems(log_reader.ReadLast(10));
+    cbxlogList->addItems(loger.ReadLast(10));
 }
 
 
@@ -260,7 +243,6 @@ void MainWidget::slotSettings(void)
   DialogSettings* dialog_settings = new DialogSettings(&settings, this);
   if (dialog_settings->exec() == QDialog::Accepted)
   {      
-      EnableLogging();
       EnableLogList();
 
       SetView(settings.getSetting("appview").toInt());
@@ -1224,8 +1206,8 @@ void MainWidget::UpdateDisplay(ud how_update)
             result = parser->DoubleToString(parser->GetResult(), PRECISION_FOR_DOUBLE);
             wDisplay->setResult("= " + result);
 
-            if(isLogging() && !without_logging)
-                logger->Add(expression +  " = " + result);
+            if(isLoging() && !without_logging)
+                loger.Add(expression +  " = " + result);
         }
     else
             if(how_update == ud::Empty)

@@ -20,6 +20,7 @@ TEMPLATE = app
 
 
 SOURCES += main.cpp\
+    loger.cpp \
         mainwidget.cpp \
     qcalcwidget.cpp \
     ../CalcIt/cvalue.cpp \
@@ -30,11 +31,11 @@ SOURCES += main.cpp\
     settings.cpp \
     ../CalcIt/function.cpp \
     pnlbutton.cpp \
-    calcdisplay.cpp \
-    logger.cpp
+    calcdisplay.cpp
 
 HEADERS  += mainwidget.h \
     common.h \
+    loger.h \
     qcalcwidget.h \
     ../CalcIt/cvalue.h \
     ../CalcIt/calcparser.h \
@@ -48,8 +49,7 @@ HEADERS  += mainwidget.h \
     settings.h \
     ../CalcIt/function.h \
     pnlbutton.h \
-    calcdisplay.h \
-    logger.h
+    calcdisplay.h
 
 FORMS    += mainwidget.ui
 
