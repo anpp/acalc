@@ -16,9 +16,9 @@ Settings::Settings(QWidget* widget_owner, const QString& organization, const QSt
                     new Setting{QObject::tr("Language"), kindset::appearance, static_cast<int>(Langs::Nop), static_cast<int>(Langs::Nop), combo,
                             sizeof(sLanguages) / sizeof(sLanguages[0]), sLanguages},
 
-                    new Setting{QObject::tr("Logging"), kindset::misc, static_cast<int>(Logging::Disable), static_cast<int>(Logging::Disable), check,
+                    new Setting{QObject::tr("Loging"), kindset::misc, static_cast<int>(Loging::Disable), static_cast<int>(Loging::Disable), check,
                             0, nullptr},
-                    new Setting{QObject::tr("logList"), kindset::misc, static_cast<int>(Logging::Disable), static_cast<int>(Logging::Disable), check,
+                    new Setting{QObject::tr("logList"), kindset::misc, static_cast<int>(Loging::Disable), static_cast<int>(Loging::Disable), check,
                             0, nullptr},
 
                     new Setting{QObject::tr("memory"), kindset::state, "", QVariant(QVariant::String), none,

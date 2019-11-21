@@ -77,7 +77,7 @@ void MainWidget::ReCreateMouseEvents()
 //----------------------------------------------------------------------------------------------------------------------
 bool MainWidget::isLoging()
 {
-    return (settings.getSetting("Logging").toBool());
+    return (settings.getSetting("Loging").toBool());
 }
 
 
