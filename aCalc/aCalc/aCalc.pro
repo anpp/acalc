@@ -28,6 +28,7 @@ SOURCES += main.cpp\
     ../CalcIt/variable.cpp \
     ../CalcIt/calcparser.cpp \
     dialogsettings.cpp \
+    qlogcombobox.cpp \
     settings.cpp \
     ../CalcIt/function.cpp \
     pnlbutton.cpp \
@@ -46,6 +47,7 @@ HEADERS  += mainwidget.h \
     buttexts.h \
     dialogsettings.h \
     functors.h \
+    qlogcombobox.h \
     settings.h \
     ../CalcIt/function.h \
     pnlbutton.h \

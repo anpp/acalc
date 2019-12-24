@@ -39,6 +39,7 @@ const QStringList &Loger::ReadLast(int rate)
     QStringList *sl = new QStringList();
     QStringList file_strings;
     QFile file;
+    QString item;
 
     file.setFileName(filename);
     if(file.open(QIODevice::ReadOnly))
@@ -51,7 +52,10 @@ const QStringList &Loger::ReadLast(int rate)
         auto fact_rate = count_string < rate? count_string: rate;
 
         for(auto i = 0; i < fact_rate; ++i)
-            sl->append(file_strings[file_strings.count() - i - 1]);
+        {
+            item = file_strings[file_strings.count() - i - 1];
+            sl->append(item);
+        }
     }
     file.close();
     return *sl;

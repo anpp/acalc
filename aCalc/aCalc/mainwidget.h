@@ -26,7 +26,6 @@
 #include <QMessageBox>
 #include <algorithm>
 #include <QDir>
-#include <QComboBox>
 
 #include "qcalcwidget.h"
 #include "common.h"
@@ -35,6 +34,7 @@
 #include "pnlbutton.h"
 #include "calcdisplay.h"
 #include "loger.h"
+#include "qlogcombobox.h"
 
 
 namespace Ui {
@@ -51,25 +51,6 @@ struct sKeyMod {
 
 
 
-class QLogComboBox : public QComboBox
-{
-    Q_OBJECT
-public:
-    explicit QLogComboBox(QWidget *parent = nullptr) : QComboBox(parent)
-    {
-        setFixedHeight(height());
-        this->setFont(QFont("arial", 10));
-    }
-protected:
-    void showPopup()
-    {
-        emit OnPopup();
-        this->setItemData(0, Qt::AlignRight, Qt::TextAlignmentRole);
-        QComboBox::showPopup();
-    }
-signals:
-    void OnPopup(void);
-};
 
 
 class MainWidget : public QWidget
