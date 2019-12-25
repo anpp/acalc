@@ -169,6 +169,7 @@ private:
     PnlButton pb{this};
 
     QLogComboBox *cbxlogList = nullptr;
+    LogTableModel logModel;
     bool without_logging = false;
 
 public slots:

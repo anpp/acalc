@@ -54,6 +54,7 @@ MainWidget::~MainWidget()
     SaveExpression(parser->GetExpression() + (wDisplay->result().isEmpty()? "": " ="));
     settings.saveSettings();
 
+    delete cbxlogList;
     delete ui;
     delete parser;
     delete mePress;
@@ -200,8 +201,10 @@ void MainWidget::slotLanguage(QAction* action)
 
 void MainWidget::slotOnPopupLogList()
 {
-    cbxlogList->clear();
-    cbxlogList->addItems(loger.ReadLast(settings.getSetting("log_rate").toInt()));
+    //cbxlogList->clear();
+    //cbxlogList->addItems(loger.ReadLast(settings.getSetting("log_rate").toInt()));
+    logModel.clear();
+    logModel.addItems(loger.ReadLast(settings.getSetting("log_rate").toInt()));
 }
 
 
@@ -751,6 +754,7 @@ void MainWidget::CreateWidgets()
     wBottom = new QFrame(this);
 
     cbxlogList = new QLogComboBox(this);
+    cbxlogList->setModel(&logModel);
     connect(cbxlogList, SIGNAL(OnPopup()), SLOT(slotOnPopupLogList()));
 
 

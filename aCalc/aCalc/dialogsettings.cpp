@@ -103,6 +103,7 @@ void DialogSettings::setEditor(QTableWidget* tblSettings, Setting* s, int row)
         break;
     case combo:
         combobox = new QComboBox();
+        combobox->setStyleSheet("QComboBox { combobox-popup: 0 }");
         tblSettings->setCellWidget(row, 0, combobox);
         if(s->combovalues != nullptr)
         {
