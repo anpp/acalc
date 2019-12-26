@@ -53,12 +53,18 @@ public:
     {
         return m_rows.size();
     }
+
     int columnCount(const QModelIndex&) const
     {
         return m_cols;
     }
-    void addItems(const QStringList& texts)
+
+    void addItems(const QStringList& texts, bool to_begin = false)
     {
+        if (texts.size() ==0)
+            return;
+
+        this->beginInsertRows(QModelIndex(), m_rows.size(), m_rows.size() + texts.size() - 1);
         for(auto s: texts)
         {
             QStringList sl = s.split("]");
@@ -67,12 +73,22 @@ public:
 
             first = first.right(first.size() - 1);
             second = second.right(second.size() - 1);
-            m_rows.push_back(std::make_pair(first, second));
+            if(to_begin)
+                m_rows.insert(0, std::make_pair(first, second));
+            else
+                m_rows.push_back(std::make_pair(first, second));
         }
+        this->endInsertRows();
     }
+
     void clear()
     {
+        if (m_rows.size() == 0)
+                return;
+
+        this->beginRemoveRows(QModelIndex(), 0, m_rows.size() - 1);
         m_rows.clear();
+        this->endRemoveRows();
     }
 };
 

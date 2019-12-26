@@ -423,15 +423,27 @@
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <source>Logging</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
         <source>memory</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
         <source>state</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Loging</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>logList</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>log_rate</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>expression</source>
         <translation type="unfinished"></translation>
     </message>
 </context>

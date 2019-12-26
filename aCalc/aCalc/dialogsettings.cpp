@@ -1,3 +1,4 @@
+
 #include "dialogsettings.h"
 
 
@@ -91,6 +92,7 @@ void DialogSettings::setEditor(QTableWidget* tblSettings, Setting* s, int row)
     switch (s->editor) {
     case spin:
         spinbox = new QSpinBox();
+        spinbox->setMaximum(1000);
         tblSettings->setCellWidget(row, 0, spinbox);
         spinbox->setValue(settings->getSetting(s->title).toInt());
         mapSetControl[s->title] = spinbox;

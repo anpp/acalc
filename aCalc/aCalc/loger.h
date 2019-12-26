@@ -14,6 +14,7 @@ class Loger
     std::vector<QString> last_logs;
 
     QString filename;
+    unsigned long last_pos{0};
 
     bool isError = false;
 public:
@@ -21,6 +22,7 @@ public:
     ~Loger();
     void Add(const QString& value);
     const QStringList& ReadLast(int rate);
+    const QStringList& ReadLast();
 
 };
 

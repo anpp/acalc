@@ -188,6 +188,7 @@ public slots:
     void slotSettings(void);
     void slotLanguage(QAction* action);
     void slotOnPopupLogList(void);
+    void slotActivatedLogList(const QString& value);
 
 };
 

@@ -5,6 +5,7 @@ QLogComboBox::QLogComboBox(QWidget *parent) : QComboBox(parent), sg(this)
     this->setFixedHeight(height());
     this->setStyleSheet("QComboBox { combobox-popup: 0 }");
     this->setFont(QFont("arial", 10));
+    this->setEditable(false);
     tv.setVerticalScrollMode(QAbstractItemView::ScrollPerPixel);
     tv.horizontalHeader()->hide();
 

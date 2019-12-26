@@ -201,10 +201,24 @@ void MainWidget::slotLanguage(QAction* action)
 
 void MainWidget::slotOnPopupLogList()
 {
-    //cbxlogList->clear();
-    //cbxlogList->addItems(loger.ReadLast(settings.getSetting("log_rate").toInt()));
-    logModel.clear();
-    logModel.addItems(loger.ReadLast(settings.getSetting("log_rate").toInt()));
+    if(logModel.rowCount(QModelIndex()) == 0)
+    {
+        logModel.clear();
+        logModel.addItems(loger.ReadLast(settings.getSetting("log_rate").toInt()));
+    }
+    else
+        logModel.addItems(loger.ReadLast(), true);
+}
+
+void MainWidget::slotActivatedLogList(const QString &value)
+{
+    if(!value.isEmpty())
+    {
+        auto log_value = value;
+        if(log_value.contains('='))
+            log_value = log_value.left(log_value.indexOf('=') - 1);
+        pasteExpression(log_value);
+    }
 }
 
 
@@ -243,6 +257,8 @@ void MainWidget::slotPaste(void)
 //----------------------------------------------------------------------------------------------------------------------
 void MainWidget::slotSettings(void)
 {
+  int save_log_rate = settings.getSetting("log_rate").toInt();
+
   DialogSettings* dialog_settings = new DialogSettings(&settings, this);
   if (dialog_settings->exec() == QDialog::Accepted)
   {      
@@ -254,6 +270,9 @@ void MainWidget::slotSettings(void)
 
       settings.saveSettingsByKind(kindset::appearance);
       settings.saveSettingsByKind(kindset::misc);
+
+      if(settings.getSetting("log_rate").toInt() != save_log_rate)
+        logModel.clear();
   }
   delete dialog_settings;
 }
@@ -756,6 +775,7 @@ void MainWidget::CreateWidgets()
     cbxlogList = new QLogComboBox(this);
     cbxlogList->setModel(&logModel);
     connect(cbxlogList, SIGNAL(OnPopup()), SLOT(slotOnPopupLogList()));
+    connect(cbxlogList, SIGNAL(activated(const QString&)), SLOT(slotActivatedLogList(const QString&)));
 
 
     wBottom->setContentsMargins(0, 0, 0, 0);

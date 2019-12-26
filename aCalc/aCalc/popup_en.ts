@@ -577,10 +577,6 @@ Hot Key: &lt;B&gt;ESC&lt;/B&gt;</translation>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <source>Logging</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
         <source>Unknown error!</source>
         <translation type="unfinished"></translation>
     </message>
@@ -630,6 +626,22 @@ Hot Key: &lt;B&gt;ESC&lt;/B&gt;</translation>
     </message>
     <message>
         <source>state</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Loging</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>logList</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>log_rate</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>expression</source>
         <translation type="unfinished"></translation>
     </message>
 </context>
