@@ -202,10 +202,7 @@ void MainWidget::slotLanguage(QAction* action)
 void MainWidget::slotOnPopupLogList()
 {
     if(logModel.rowCount(QModelIndex()) == 0)
-    {
-        logModel.clear();
         logModel.addItems(loger.ReadLast(settings.getSetting("log_rate").toInt()));
-    }
     else
         logModel.addItems(loger.ReadLast(), true);
 }
@@ -257,21 +254,20 @@ void MainWidget::slotPaste(void)
 //----------------------------------------------------------------------------------------------------------------------
 void MainWidget::slotSettings(void)
 {
-  int save_log_rate = settings.getSetting("log_rate").toInt();
-
   DialogSettings* dialog_settings = new DialogSettings(&settings, this);
   if (dialog_settings->exec() == QDialog::Accepted)
   {      
       EnableLogList();
 
-      SetView(settings.getSetting("appview").toInt());
+      if(settings.getSetting("appview").toInt() != 2) //programming
+        SetView(settings.getSetting("appview").toInt());
       ResizeAll(settings.getSetting("button_width").toUInt(), settings.getSetting("button_height").toUInt());
       SetLocale(static_cast<Langs>(settings.getSetting("Language").toInt()));
 
       settings.saveSettingsByKind(kindset::appearance);
       settings.saveSettingsByKind(kindset::misc);
 
-      if(settings.getSetting("log_rate").toInt() != save_log_rate)
+      if(settings.isChanged("log_rate"))
         logModel.clear();
   }
   delete dialog_settings;
