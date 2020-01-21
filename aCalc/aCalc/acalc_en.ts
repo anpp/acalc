@@ -4,67 +4,72 @@
 <context>
     <name>MainWidget</name>
     <message>
-        <location filename="mainwidget.cpp" line="163"/>
+        <location filename="mainwidget.cpp" line="164"/>
         <source>Calculator</source>
         <translation>aCalc</translation>
     </message>
     <message>
-        <location filename="mainwidget.cpp" line="165"/>
+        <location filename="mainwidget.cpp" line="166"/>
         <source>View</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="mainwidget.cpp" line="166"/>
+        <location filename="mainwidget.cpp" line="167"/>
         <source>Edit</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="mainwidget.cpp" line="167"/>
+        <location filename="mainwidget.cpp" line="168"/>
         <source>Help</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="mainwidget.cpp" line="168"/>
+        <location filename="mainwidget.cpp" line="169"/>
         <source>Languages</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="mainwidget.cpp" line="169"/>
+        <location filename="mainwidget.cpp" line="170"/>
         <source>&amp;Copy</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="mainwidget.cpp" line="170"/>
+        <location filename="mainwidget.cpp" line="171"/>
         <source>&amp;Paste</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="mainwidget.cpp" line="171"/>
+        <location filename="mainwidget.cpp" line="172"/>
         <source>Settings</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="mainwidget.cpp" line="172"/>
-        <source>Contex help</source>
+        <location filename="mainwidget.cpp" line="173"/>
+        <source>Variables</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
         <location filename="mainwidget.cpp" line="174"/>
+        <source>Contex help</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="mainwidget.cpp" line="176"/>
         <source>About...</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="mainwidget.cpp" line="173"/>
+        <location filename="mainwidget.cpp" line="175"/>
         <source>What is this?</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="mainwidget.cpp" line="217"/>
+        <location filename="mainwidget.cpp" line="227"/>
         <source>About</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="mainwidget.cpp" line="217"/>
+        <location filename="mainwidget.cpp" line="227"/>
         <source>AboutProgram</source>
         <translation type="unfinished"></translation>
     </message>

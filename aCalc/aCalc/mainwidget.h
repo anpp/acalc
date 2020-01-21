@@ -127,6 +127,7 @@ private:
     QMenu *MenuLanguages;
     QAction *ActionCopy;
     QAction *ActionPaste;
+    QAction *ActionVariables;
     QAction *ActionSettings;
     QAction *ActionContextHelp;
     QAction *ActionAbout;
@@ -186,6 +187,7 @@ public slots:
     void slotView(QAction* action);
     void slotAbout(void);
     void slotSettings(void);
+    void slotVariables(void);
     void slotLanguage(QAction* action);
     void slotOnPopupLogList(void);
     void slotActivatedLogList(const QString& value);

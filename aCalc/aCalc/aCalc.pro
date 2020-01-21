@@ -20,6 +20,7 @@ TEMPLATE = app
 
 
 SOURCES += main.cpp\
+    dialogvariables.cpp \
     loger.cpp \
         mainwidget.cpp \
     qcalcwidget.cpp \
@@ -36,6 +37,7 @@ SOURCES += main.cpp\
 
 HEADERS  += mainwidget.h \
     common.h \
+    dialogvariables.h \
     loger.h \
     qcalcwidget.h \
     ../CalcIt/cvalue.h \

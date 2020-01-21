@@ -4,27 +4,27 @@
 <context>
     <name>MainWidget</name>
     <message>
-        <location filename="mainwidget.cpp" line="163"/>
+        <location filename="mainwidget.cpp" line="164"/>
         <source>Calculator</source>
         <translation>Калькулятор aCalc</translation>
     </message>
     <message>
-        <location filename="mainwidget.cpp" line="165"/>
+        <location filename="mainwidget.cpp" line="166"/>
         <source>View</source>
         <translation>Вид</translation>
     </message>
     <message>
-        <location filename="mainwidget.cpp" line="166"/>
+        <location filename="mainwidget.cpp" line="167"/>
         <source>Edit</source>
         <translation>Правка</translation>
     </message>
     <message>
-        <location filename="mainwidget.cpp" line="167"/>
+        <location filename="mainwidget.cpp" line="168"/>
         <source>Help</source>
         <translation>Помощь</translation>
     </message>
     <message>
-        <location filename="mainwidget.cpp" line="168"/>
+        <location filename="mainwidget.cpp" line="169"/>
         <source>Languages</source>
         <translation>Языки</translation>
     </message>
@@ -37,42 +37,47 @@
         <translation type="vanished">Русский</translation>
     </message>
     <message>
-        <location filename="mainwidget.cpp" line="169"/>
+        <location filename="mainwidget.cpp" line="170"/>
         <source>&amp;Copy</source>
         <translation>Скопировать</translation>
     </message>
     <message>
-        <location filename="mainwidget.cpp" line="170"/>
+        <location filename="mainwidget.cpp" line="171"/>
         <source>&amp;Paste</source>
         <translation>Вставить</translation>
     </message>
     <message>
-        <location filename="mainwidget.cpp" line="171"/>
+        <location filename="mainwidget.cpp" line="172"/>
         <source>Settings</source>
         <translation>Настройки...</translation>
     </message>
     <message>
-        <location filename="mainwidget.cpp" line="172"/>
+        <location filename="mainwidget.cpp" line="173"/>
+        <source>Variables</source>
+        <translation>Переменные...</translation>
+    </message>
+    <message>
+        <location filename="mainwidget.cpp" line="174"/>
         <source>Contex help</source>
         <translation>Контекстная справка</translation>
     </message>
     <message>
-        <location filename="mainwidget.cpp" line="174"/>
+        <location filename="mainwidget.cpp" line="176"/>
         <source>About...</source>
         <translation>О калькуляторе</translation>
     </message>
     <message>
-        <location filename="mainwidget.cpp" line="173"/>
+        <location filename="mainwidget.cpp" line="175"/>
         <source>What is this?</source>
         <translation>Что это такое?</translation>
     </message>
     <message>
-        <location filename="mainwidget.cpp" line="217"/>
+        <location filename="mainwidget.cpp" line="227"/>
         <source>About</source>
         <translation>О Калькуляторе</translation>
     </message>
     <message>
-        <location filename="mainwidget.cpp" line="217"/>
+        <location filename="mainwidget.cpp" line="227"/>
         <source>AboutProgram</source>
         <translation>Калькулятор выражений aCalc. </translation>
     </message>

@@ -2,6 +2,7 @@
 #include "ui_mainwidget.h"
 #include "buttexts.h"
 #include "dialogsettings.h"
+#include "dialogvariables.h"
 #include "functors.h"
 
 inline int GetHFButton(int h)
@@ -147,7 +148,9 @@ void MainWidget::CreateMenus(void)
     ActionPaste = MenuEdit->addAction("", this, SLOT(slotPaste(void)), Qt::SHIFT + Qt::Key_Insert);
     MenuEdit->addSeparator();
     MenuEdit->addMenu(MenuLanguages);
-    ActionSettings = MenuEdit->addAction("", this, SLOT(slotSettings(void)));
+
+    ActionVariables = MenuEdit->addAction("", this, SLOT(slotVariables(void)));
+    ActionSettings = MenuEdit->addAction("", this, SLOT(slotSettings(void)));    
 
     ActionContextHelp = MenuHelp->addAction("", this, SLOT(slotEnterWhatIsThis(void)), Qt::SHIFT + Qt::Key_F1);
     ActionAbout = MenuHelp->addAction("", this, SLOT(slotAbout(void)));
@@ -169,6 +172,7 @@ void MainWidget::SetLocaleTexts()
     ActionCopy->setText(tr("&Copy"));
     ActionPaste->setText(tr("&Paste"));
     ActionSettings->setText(tr("Settings"));
+    ActionVariables->setText(tr("Variables"));
     ActionContextHelp->setText(tr("Contex help"));
     ActionWhatIs->setText(tr("What is this?"));
     ActionAbout->setText(tr("About..."));
@@ -273,6 +277,16 @@ void MainWidget::slotSettings(void)
   delete dialog_settings;
 }
 
+
+//----------------------------------------------------------------------------------------------------------------------
+void MainWidget::slotVariables(void)
+{
+  DialogVariables* dialog_variables = new DialogVariables(this);
+  if (dialog_variables->exec() == QDialog::Accepted)
+  {
+  }
+  delete dialog_variables;
+}
 
 
 //----------------------------------------------------------------------------------------------------------------------

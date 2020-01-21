@@ -59,6 +59,10 @@
         <source>AboutProgram</source>
         <translation type="unfinished"></translation>
     </message>
+    <message>
+        <source>Variables</source>
+        <translation type="unfinished"></translation>
+    </message>
 </context>
 <context>
     <name>QObject</name>
