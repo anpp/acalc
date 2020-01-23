@@ -67,6 +67,8 @@ public:
         this->beginInsertRows(QModelIndex(), m_rows.size(), m_rows.size() + texts.size() - 1);
         for(auto s: texts)
         {
+            if(!s.contains("]")) continue;
+
             QStringList sl = s.split("]");
             QString first = sl.at(0);
             QString second = sl.at(1);

@@ -59,7 +59,8 @@ const QStringList &Loger::ReadLast(int rate)
                 if((item[item.size() - 1] == '\n') || (item[item.size() - 1] == '\r') || (item[item.size() - 1] == '\t'))
                     item = item.left(item.size() - 1);
             }
-            sl->append(item);
+            if(item.contains("]"))
+                sl->append(item);
         }
     }
     file.close();

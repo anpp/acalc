@@ -819,7 +819,6 @@ void MainWidget::CreateButtons(Pnl atype)
     auto max_j = pb.getCols(atype);
 
     QColor *color = pb.getColor(atype);
-    std::vector<QCalcWidget*>::iterator it;
 
     switch(atype)
     {
