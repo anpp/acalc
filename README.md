@@ -3,3 +3,4 @@ parser-calculator
 
 Acalc is simple and pretty expression calculator, based on Qt 5 toolkit.
 It offers standard functions (sin, asinh, etc.), pre-defined constants, variables, hex/octal/binary I/O, original and user-friendly interface.
+![alt text](acalc.png "screen1")
