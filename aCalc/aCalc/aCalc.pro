@@ -12,7 +12,7 @@ QT       += core gui widgets
 QMAKE_CFLAGS += -std=c++14
 QMAKE_CXXFLAGS += -std=c++14
 
-#QMAKE_LFLAGS += -static -static-libgcc
+QMAKE_LFLAGS += -static -static-libgcc
 #LIBS += -static-libgcc
 
 TARGET = acalc
@@ -66,5 +66,7 @@ TRANSLATIONS = acalc_en.ts \
 
 RESOURCES += \
     aCalc.qrc
+
+win32: RC_ICONS = $$PWD/Icons/calculator.ico
 
 

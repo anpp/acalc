@@ -30,13 +30,13 @@ void Loger::Add(const QString &value)
     last_logs.push_back(value_to_log);
 
     QTextStream ts(&logfile);
-    ts << value_to_log << endl;
+    ts << value_to_log << Qt::endl;
     //qDebug() << value;
 }
 
-const QStringList &Loger::ReadLast(int rate)
+std::unique_ptr<QStringList> Loger::ReadLast(int rate)
 {
-    QStringList *sl = new QStringList();
+    std::unique_ptr<QStringList> sl = std::make_unique<QStringList>();
     QStringList file_strings;
     QFile file;
     QString item;
@@ -65,17 +65,16 @@ const QStringList &Loger::ReadLast(int rate)
     }
     file.close();
     last_pos = last_logs.size();
-    return *sl;
+    return sl;
 }
 
-const QStringList &Loger::ReadLast()
+std::unique_ptr<QStringList> Loger::ReadLast()
 {
-    QStringList *sl = new QStringList();
-    QString item;
+    std::unique_ptr<QStringList> sl = std::make_unique<QStringList>();
 
     for(auto i = last_pos; i < last_logs.size(); ++i)
         sl->append(last_logs[i]);
 
     last_pos = last_logs.size();
-    return *sl;
+    return sl;
 }

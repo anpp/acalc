@@ -10,8 +10,9 @@ Settings::Settings(QWidget* widget_owner, const QString& organization, const QSt
                     new Setting{QObject::tr("appview"), kindset::appearance, static_cast<int>(CalcView::Original), QVariant(QVariant::Int), combo,
                                 sizeof(sViews) / sizeof(sViews[0]), sViews},
 
-                    new Setting{"posx", kindset::screen, 0, QVariant(QVariant::Int), none, 0, nullptr},
-                    new Setting{"posy", kindset::screen, 0, QVariant(QVariant::Int), none, 0, nullptr},
+                    //new Setting{"posx", kindset::screen, 0, QVariant(QVariant::Int), none, 0, nullptr},
+                    //new Setting{"posy", kindset::screen, 0, QVariant(QVariant::Int), none, 0, nullptr},
+                    new Setting{"geometry", kindset::screen, 0, QVariant(QVariant::Int),none, false, nullptr},
 
                     new Setting{QObject::tr("Language"), kindset::appearance, static_cast<int>(Langs::Nop), static_cast<int>(Langs::Nop), combo,
                             sizeof(sLanguages) / sizeof(sLanguages[0]), sLanguages},
@@ -73,16 +74,16 @@ void Settings::loadSettingsScreen()
     if(owner)
     {
         loadSettingsByKind(kindset::screen);
-        owner->move(QPoint(getSetting("posx").toInt(), getSetting("posy").toInt()));
+        //owner->move(QPoint(getSetting("posx").toInt(), getSetting("posy").toInt()));
+        owner->restoreGeometry(getSetting("geometry").toByteArray());
     }
 }
 
 
 //----------------------------------------------------------------------------------------------------------------------
-void Settings::saveSettingsScreen(int x, int y)
+void Settings::saveSettingsScreen()
 {
-    setSetting("posx", x);
-    setSetting("posy", y);
+    setSetting("geometry", owner->saveGeometry());
     saveSettingsByKind(kindset::screen);
 }
 

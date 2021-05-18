@@ -22,10 +22,10 @@ MainWidget::MainWidget(QWidget *parent) :
 
     this->setContentsMargins(spacing / 2, 0, spacing / 2, spacing / 2);
 
-    setWindowIcon(QIcon(":/Icons/Icons/Calculator-50.png"));
+    setWindowIcon(QIcon(":/Icons/calculator.ico"));
 
-    //QApplication::setStyle("fusion");
-    QApplication::setStyle("freeze");
+    QApplication::setStyle("fusion");
+    //QApplication::setStyle("freeze");
 
     CreateMenus();    
     CreateWidgets();    
@@ -205,10 +205,18 @@ void MainWidget::slotLanguage(QAction* action)
 
 void MainWidget::slotOnPopupLogList()
 {
+    std::unique_ptr<QStringList> logs;
+    bool to_begin = false;
+
     if(logModel.rowCount(QModelIndex()) == 0)
-        logModel.addItems(loger.ReadLast(settings.getSetting("log_rate").toInt()));
+        logs = loger.ReadLast(settings.getSetting("log_rate").toInt());
     else
-        logModel.addItems(loger.ReadLast(), true);
+    {
+        logs = loger.ReadLast();
+        to_begin = true;
+    }
+
+    logModel.addItems(*logs.get(), to_begin);
 }
 
 void MainWidget::slotActivatedLogList(const QString &value)
@@ -486,19 +494,6 @@ void MainWidget::showEvent(QShowEvent *event)
 {
     SetView(settings.getSetting("appview").toInt(), true);
     this->QWidget::showEvent(event);
-    //qDebug() << settings.getSetting("posy").toInt();
-}
-
-void MainWidget::resizeEvent(QResizeEvent *event)
-{
-    this->QWidget::resizeEvent(event);
-}
-
-
-void MainWidget::moveEvent(QMoveEvent *event)
-{
-    this->QWidget::moveEvent(event);
-    settings.saveSettingsScreen(event->pos().x(), event->pos().y());
 }
 
 

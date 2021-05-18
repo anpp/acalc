@@ -47,7 +47,7 @@ public:
     void saveSettingsByKind(kindset ks);
 
     void loadSettingsScreen();
-    void saveSettingsScreen(int x, int y);
+    void saveSettingsScreen();
 
     const QVariant& getSetting(const QString& title);
     bool isChanged(const QString& title);
@@ -65,7 +65,7 @@ public:
         saveSettingsByKind(kindset::appearance);
         saveSettingsByKind(kindset::misc);
         saveSettingsByKind(kindset::state);
-        //saveSettingsScreen();
+        saveSettingsScreen();
     }
 
     const QVector<Setting*>& getListSettings() {return vec_settings;}

@@ -24,7 +24,7 @@ DialogSettings::DialogSettings(Settings* app_settings, QWidget *parent) :
     connect(&btnCancel, SIGNAL(clicked()), SLOT(reject()));
     connect(&twSettings, SIGNAL(currentChanged(int)), SLOT(slotResize()));
 
-    this->setGeometry(settings->getSetting("posx").toInt() + OFFSET, settings->getSetting("posy").toInt() + OFFSET, WIDTH_COLUMN + WIDTH_VHEADER + SPACING * 2, this->height());
+    this->setGeometry(parent->pos().x() + OFFSET, parent->pos().y() + OFFSET, WIDTH_COLUMN + WIDTH_VHEADER + SPACING * 2, this->height());
 }
 
 

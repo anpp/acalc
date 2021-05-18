@@ -6,6 +6,7 @@
 #include <QDateTime>
 #include <QFile>
 #include <QDir>
+#include <memory>
 #include "common.h"
 
 class Loger
@@ -21,8 +22,8 @@ public:
     Loger(const QString& dirname, const QString& filename);
     ~Loger();
     void Add(const QString& value);
-    const QStringList& ReadLast(int rate);
-    const QStringList& ReadLast();
+    std::unique_ptr<QStringList> ReadLast(int rate);
+    std::unique_ptr<QStringList> ReadLast();
 
 };
 
