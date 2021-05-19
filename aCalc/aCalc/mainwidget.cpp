@@ -14,9 +14,8 @@ inline int GetHFButton(int h)
 //----------------------------------------------------------------------------------------------------------------------
 MainWidget::MainWidget(QWidget *parent) :
         QWidget(parent, Qt::WindowMinimizeButtonHint | Qt::WindowCloseButtonHint),
-    ui(new Ui::MainWidget), loger(log_dirname, log_filename)
+    loger(log_dirname, log_filename)
 {
-    ui->setupUi(this);
 
     settings.loadSettings();
 
@@ -266,7 +265,9 @@ void MainWidget::slotPaste(void)
 //----------------------------------------------------------------------------------------------------------------------
 void MainWidget::slotSettings(void)
 {
-  DialogSettings* dialog_settings = new DialogSettings(&settings, this);
+  QPointer<DialogSettings> dialog_settings = new DialogSettings(&settings, this);
+  dialog_settings->setAttribute(Qt::WA_DeleteOnClose);
+
   if (dialog_settings->exec() == QDialog::Accepted)
   {      
       EnableLogList();
@@ -282,7 +283,6 @@ void MainWidget::slotSettings(void)
       if(settings.isChanged("log_rate"))
         logModel.clear();
   }
-  delete dialog_settings;
 }
 
 

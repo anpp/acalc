@@ -30,7 +30,8 @@ void Loger::Add(const QString &value)
     last_logs.push_back(value_to_log);
 
     QTextStream ts(&logfile);
-    ts << value_to_log << Qt::endl;
+    //ts << value_to_log << Qt::endl;
+    ts << value_to_log << endl;
     //qDebug() << value;
 }
 

@@ -1,4 +1,4 @@
-#ifndef MAINWIDGET_H
+﻿#ifndef MAINWIDGET_H
 #define MAINWIDGET_H
 
 #include <QWidget>
@@ -26,6 +26,7 @@
 #include <QMessageBox>
 #include <algorithm>
 #include <QDir>
+#include <QPointer>
 
 #include "qcalcwidget.h"
 #include "common.h"
