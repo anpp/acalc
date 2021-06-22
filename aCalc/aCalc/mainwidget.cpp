@@ -55,7 +55,6 @@ MainWidget::~MainWidget()
     settings.saveSettings();
 
     delete cbxlogList;
-    delete ui;
     delete parser;
     delete mePress;
     delete meRelease;

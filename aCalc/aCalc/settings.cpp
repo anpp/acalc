@@ -31,14 +31,14 @@ Settings::Settings(QWidget* widget_owner, const QString& organization, const QSt
 
                    };
 
-    for(auto s: vec_settings) {mapset[s->title] = s;}
+    foreach(auto s, vec_settings) {mapset[s->title] = s;}
 }
 
 
 //----------------------------------------------------------------------------------------------------------------------
 Settings::~Settings()
 {
-    for(auto s: vec_settings) {delete s;}
+    foreach(auto s, vec_settings) {delete s;}
 }
 
 
@@ -47,7 +47,7 @@ Settings::~Settings()
 void Settings::loadSettingsByKind(kindset ks)
 {
     qsettings.beginGroup("/" + sSettingKind[static_cast<int>(ks)]);
-    for(Setting* s: vec_settings){
+    foreach(Setting* s, vec_settings){
         if (s->kind == ks)
             s->value = qsettings.value("/" + s->title, s->default_value);
     }
@@ -59,7 +59,7 @@ void Settings::loadSettingsByKind(kindset ks)
 void Settings::saveSettingsByKind(kindset ks)
 {
     qsettings.beginGroup("/" + sSettingKind[static_cast<int>(ks)]);
-    for (Setting* s: vec_settings){
+    foreach (Setting* s, vec_settings){
         if (s->kind == ks)
             qsettings.setValue("/" + s->title, s->value);
     }

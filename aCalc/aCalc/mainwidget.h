@@ -38,18 +38,12 @@
 #include "qlogcombobox.h"
 
 
-namespace Ui {
-class MainWidget;
-}
-
-
 struct sKeyMod {
     int key;
     unsigned int mod;
 
     inline friend bool operator<(sKeyMod km1, sKeyMod km2){return (km1.key + static_cast<int>(km1.mod) < km2.key + static_cast<int>(km2.mod));}
 };
-
 
 
 
@@ -107,8 +101,6 @@ private:
     void LoadExpression();
     void SaveExpression(const QString& value);
     void pasteExpression(const QString& exp);
-
-    Ui::MainWidget *ui;
 
     CalcDisplay *wDisplay;
     QFrame *wMode;
