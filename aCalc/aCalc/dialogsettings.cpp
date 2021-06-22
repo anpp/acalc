@@ -21,8 +21,7 @@ DialogSettings::DialogSettings(Settings* app_settings, QWidget *parent) :
     vl.addLayout(&hl);
 
     connect(&btnOk, SIGNAL(clicked()), SLOT(slotOk()));
-    connect(&btnCancel, SIGNAL(clicked()), SLOT(reject()));
-    connect(&twSettings, SIGNAL(currentChanged(int)), SLOT(slotResize()));
+    connect(&btnCancel, SIGNAL(clicked()), SLOT(reject()));    
 
     this->setGeometry(parent->pos().x() + OFFSET, parent->pos().y() + OFFSET, WIDTH_COLUMN + WIDTH_VHEADER + SPACING * 2, this->height());
 }
@@ -149,7 +148,7 @@ void DialogSettings::slotOk()
 {
     if(settings)
     {
-        foreach(QString s, mapSetControl.keys())
+        for(auto& s: mapSetControl.keys())
         {
             QString classname = mapSetControl[s]->metaObject()->className();
             if(classname == "QSpinBox")
@@ -165,7 +164,3 @@ void DialogSettings::slotOk()
     accept();
 }
 
-void DialogSettings::slotResize()
-{
-    resizeTable();
-}
