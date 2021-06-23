@@ -1,5 +1,4 @@
 #include "mainwidget.h"
-#include "ui_mainwidget.h"
 #include "buttexts.h"
 #include "dialogsettings.h"
 #include "dialogvariables.h"
