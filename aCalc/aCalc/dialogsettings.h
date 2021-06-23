@@ -56,7 +56,6 @@ protected:
 
 public slots:
     void slotOk();
-    void slotResize();
 
 };
 

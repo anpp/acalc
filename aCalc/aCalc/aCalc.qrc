@@ -7,8 +7,7 @@
         <file>popup_ru.qm</file>
         <file>acalc_ru.qm</file>
     </qresource>
-    <qresource prefix="/Icons"/>
-    <qresource prefix="/">
+    <qresource prefix="/Icons">    
         <file>Icons/calculator.ico</file>
     </qresource>
 </RCC>
