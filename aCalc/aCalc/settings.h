@@ -35,7 +35,7 @@ struct Setting
 class Settings {
     QWidget* owner;
     QSettings qsettings;
-    QVector<Setting*> vec_settings;
+    std::vector<Setting*> vec_settings;
     QMap<QString, Setting*> mapset;
     QVariant default_return;
 
@@ -68,7 +68,7 @@ public:
         saveSettingsScreen();
     }
 
-    const QVector<Setting*>& getListSettings() {return vec_settings;}
+    const std::vector<Setting*>& getListSettings() {return vec_settings;}
     const QMap<QString, Setting*>& getMapSettings() {return mapset;}
 
     const QString& getSettingsName(kindset ks);

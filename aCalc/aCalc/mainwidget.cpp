@@ -382,7 +382,7 @@ void MainWidget::SendKey(int Key, unsigned int Mod)
 //----------------------------------------------------------------------------------------------------------------------
 void MainWidget::ClickToWidget(QWidget *widget, int msec)
 {
-    QTime time;
+    QElapsedTimer timer;
     if(widget)
     {
         if(!widget->isVisible())
@@ -391,8 +391,8 @@ void MainWidget::ClickToWidget(QWidget *widget, int msec)
         {
             if(!(mePress && meRelease)) return;
             QApplication::sendEvent(widget, mePress);
-            time.start();
-            for(; time.elapsed() < msec;){}
+            timer.start();
+            while (!timer.hasExpired(msec)) {}
             QApplication::sendEvent(widget, meRelease);
         }
     }
@@ -936,9 +936,12 @@ void MainWidget::SetSizeOfWidgets(int button_w, int button_h)
     int i_left, i_top, i_right, i_bottom;
     int func_button_h = GetHFButton(button_h);
 
-    i_left = i_right = i_top = i_bottom = 0;
 
-    this->getContentsMargins(&i_left, &i_top, &i_right, &i_bottom);
+    auto margins = this->contentsMargins();
+    i_left = margins.left();
+    i_top = margins.top();
+    i_right = margins.right();
+    i_bottom = margins.bottom();
 
     pb.setSizeButton(Pnl::Dig, button_w, button_h);
 
