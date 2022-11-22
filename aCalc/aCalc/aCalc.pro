@@ -13,7 +13,7 @@ CONFIG += c++14
 QMAKE_CFLAGS += -std=c++14
 QMAKE_CXXFLAGS += -std=c++14
 
-#QMAKE_LFLAGS += -static -static-libgcc
+QMAKE_LFLAGS += -static -static-libgcc
 #LIBS += -static-libgcc
 
 TARGET = acalc
