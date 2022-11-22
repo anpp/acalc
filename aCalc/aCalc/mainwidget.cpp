@@ -4,6 +4,8 @@
 #include "dialogvariables.h"
 #include "functors.h"
 
+#include <QElapsedTimer>
+
 inline int GetHFButton(int h)
 {
     return h - DIFF_HEIGHT > MIN_HEIGHT? h - DIFF_HEIGHT: MIN_HEIGHT;
