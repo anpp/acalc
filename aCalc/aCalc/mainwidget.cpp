@@ -11,7 +11,6 @@ inline int GetHFButton(int h)
     return h - DIFF_HEIGHT > MIN_HEIGHT? h - DIFF_HEIGHT: MIN_HEIGHT;
 }
 
-
 //----------------------------------------------------------------------------------------------------------------------
 MainWidget::MainWidget(QWidget *parent) :
         QWidget(parent, Qt::WindowMinimizeButtonHint | Qt::WindowCloseButtonHint),
