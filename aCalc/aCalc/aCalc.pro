@@ -11,9 +11,11 @@ QT       += core gui widgets
 CONFIG += c++14
 
 QMAKE_CFLAGS += -std=c++14
-QMAKE_CXXFLAGS += -std=c++14
+QMAKE_CXXFLAGS += -std=c++14 -pie
 
-QMAKE_LFLAGS += -static -static-libgcc
+QMAKE_LFLAGS += -pie
+
+#QMAKE_LFLAGS += -static -static-libgcc
 #LIBS += -static-libgcc
 
 TARGET = acalc
